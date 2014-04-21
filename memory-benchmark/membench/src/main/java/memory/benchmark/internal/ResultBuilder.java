@@ -51,7 +51,15 @@ public class ResultBuilder {
         return gcUsages;
     }
 
+    public Class getBenchmarkClass() {
+        return benchmarkClass;
+    }
+
+    public Method getBenchmarkMethod() {
+        return benchmarkMethod;
+    }
+
     public Result build(){
-        return new Result(benchmarkClass, benchmarkMethod, heapMemoryFootprint, nonHeapMemoryFootprint, memoryPoolFootprints, gcUsages);
+        return new Result(this);
     }
 }

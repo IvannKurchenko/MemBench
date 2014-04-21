@@ -1,5 +1,6 @@
 package memory.benchmark.api.report;
 
+import memory.benchmark.api.Options;
 import memory.benchmark.api.result.Result;
 
 import java.util.List;
@@ -10,5 +11,8 @@ import java.util.List;
  */
 public interface ReportFormatter<T> {
 
-    T formatReport(List<Result> results);
+    /**
+     *
+     */
+    T formatReport(Options options, List<Result> results);
 }

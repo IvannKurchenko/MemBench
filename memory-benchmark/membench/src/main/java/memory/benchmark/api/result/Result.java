@@ -1,5 +1,7 @@
 package memory.benchmark.api.result;
 
+import memory.benchmark.internal.ResultBuilder;
+
 import java.lang.reflect.Method;
 import java.util.List;
 
@@ -14,41 +16,59 @@ public class Result {
     private final List<MemoryPoolFootprint> memoryPoolFootprints;
     private final List<GcUsage> gcUsages;
 
-    public Result(Class benchmarkClass,
-                  Method benchmarkMethod,
-                  MemoryFootprint heapMemoryFootprint,
-                  MemoryFootprint nonHeapMemoryFootprint,
-                  List<MemoryPoolFootprint> memoryPoolFootprints,
-                  List<GcUsage> gcUsages) {
-
-        this.benchmarkClass = benchmarkClass;
-        this.benchmarkMethod = benchmarkMethod;
-        this.heapMemoryFootprint = heapMemoryFootprint;
-        this.nonHeapMemoryFootprint = nonHeapMemoryFootprint;
-        this.memoryPoolFootprints = memoryPoolFootprints;
-        this.gcUsages = gcUsages;
+    public Result(ResultBuilder builder) {
+        this.benchmarkClass = builder.getBenchmarkClass();
+        this.benchmarkMethod = builder.getBenchmarkMethod();
+        this.heapMemoryFootprint = builder.getHeapMemoryFootprint();
+        this.nonHeapMemoryFootprint = builder.getNonHeapMemoryFootprint();
+        this.memoryPoolFootprints = builder.getMemoryPoolFootprints();
+        this.gcUsages = builder.getGcUsages();
     }
 
+    /**
+     *
+     * @return
+     */
     public MemoryFootprint getHeapMemoryFootprint() {
         return heapMemoryFootprint;
     }
 
+    /**
+     *
+     * @return
+     */
     public MemoryFootprint getNonHeapMemoryFootprint() {
         return nonHeapMemoryFootprint;
     }
 
+    /**
+     *
+     * @return
+     */
     public List<MemoryPoolFootprint> getMemoryPoolFootprints() {
         return memoryPoolFootprints;
     }
 
+    /**
+     *
+     * @return
+     */
     public List<GcUsage> getGcUsages() {
         return gcUsages;
     }
 
+    /**
+     *
+     * @return
+     */
     public Class getBenchmarkClass() {
         return benchmarkClass;
     }
 
+    /**
+     *
+     * @return
+     */
     public Method getBenchmarkMethod() {
         return benchmarkMethod;
     }

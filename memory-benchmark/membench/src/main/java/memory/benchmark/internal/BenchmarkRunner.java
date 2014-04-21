@@ -50,7 +50,6 @@ public class BenchmarkRunner {
          return  results;
      }
 
-
     private List<Result> runTest(Class benchmarkClass, Optional<Method> beforeMethod, Optional<Method> afterMethod, List<Method> benchmarkMethods) {
         try {
 
@@ -70,5 +69,4 @@ public class BenchmarkRunner {
         afterMethod.ifPresent(methodBenchmarkValidator::validate);
         benchmarkMethods.forEach(methodBenchmarkValidator::validate);
     }
-
 }

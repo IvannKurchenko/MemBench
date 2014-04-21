@@ -8,9 +8,9 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
+import static java.util.stream.Collectors.toList;
 import static memory.benchmark.internal.ArgumentChecker.checkListSize;
 
 public class BenchmarkMethodExtractor {
@@ -34,11 +34,6 @@ public class BenchmarkMethodExtractor {
 
     private List<Method> extractAnnotatedMethods(Class testClass, Class<? extends Annotation> annotation) {
         Method[] methods = testClass.getMethods();
-        return asList(methods).stream().filter(m -> containsAnnotation(m, annotation)).collect(Collectors.toList());
-    }
-
-    private boolean containsAnnotation(Method method, Class<? extends Annotation> annotation) {
-        Annotation[] annotations = method.getDeclaredAnnotations();
-        return asList(annotations).stream().filter(a -> annotation == a.annotationType()).count() > 0;
+        return asList(methods).stream().filter(m -> m.isAnnotationPresent(annotation)).collect(toList());
     }
 }

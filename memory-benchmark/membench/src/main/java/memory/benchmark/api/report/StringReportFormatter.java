@@ -2,10 +2,7 @@ package memory.benchmark.api.report;
 
 import memory.benchmark.api.Options;
 import memory.benchmark.api.Options.ReportInformation;
-import memory.benchmark.api.result.GcUsage;
-import memory.benchmark.api.result.MemoryFootprint;
-import memory.benchmark.api.result.MemoryPoolFootprint;
-import memory.benchmark.api.result.Result;
+import memory.benchmark.api.result.*;
 import memory.benchmark.api.util.MemoryValueConverter;
 
 import java.lang.management.MemoryType;
@@ -21,59 +18,86 @@ public class StringReportFormatter implements ReportFormatter<String> {
     private static final String EOL = Character.toString('\n');
     private static final String TAB = Character.toString('\t');
 
-    private final MemoryValueConverter memoryValueConverter;
+    private final Options options;
 
-    public StringReportFormatter(MemoryValueConverter memoryValueConverter) {
-        this.memoryValueConverter = memoryValueConverter;
+    public StringReportFormatter(Options options) {
+        this.options = options;
     }
 
     @Override
-    public String formatReport(Options options, List<Result> results) {
+    public String formatReport(List<Result> results) {
         StringBuilder builder = new StringBuilder();
-        results.forEach(result -> appendResult(builder, options, result));
+        results.forEach(result -> appendResult(builder, result));
         return builder.toString();
     }
 
-    private void appendResult(StringBuilder builder, Options options, Result result) {
+    private void appendResult(StringBuilder builder, Result result) {
         builder.append("Class : ").append(result.getBenchmarkClass().getSimpleName()).append(EOL);
         builder.append("- Method : ").append(result.getBenchmarkMethod().getName()).append(EOL);
 
-        appendMemoryFootprint(builder, TAB + TAB, TAB, "- Heap memory footprint : ", options, HEAP_MEMORY_FOOTPRINT, result.getHeapMemoryFootprint());
-        appendMemoryFootprint(builder, TAB + TAB, TAB, "- Non heap memory footprint : ", options, NON_HEAP_MEMORY_FOOTPRINT, result.getHeapMemoryFootprint());
+        appendMemoryFootprint(builder, TAB + TAB, TAB, "- Heap memory footprint : ", HEAP_MEMORY_FOOTPRINT, result.getHeapMemoryFootprint());
+        appendMemoryFootprint(builder, TAB + TAB, TAB, "- Non heap memory footprint : ", NON_HEAP_MEMORY_FOOTPRINT, result.getHeapMemoryFootprint());
 
-        appendMemoryPoolFootPrints(builder, TAB, options, result.getMemoryPoolFootprints());
+        appendMemoryPoolFootPrints(builder, TAB, result.getMemoryPoolFootprints());
 
-        appendGcUsages(builder, TAB, options, result.getGcUsages());
+        appendGcUsages(builder, TAB, result.getGcUsages());
 
         builder.append(EOL);
     }
 
-    private void appendMemoryFootprint(StringBuilder builder, String appender, String headerAppender, String header, Options options, ReportInformation information, MemoryFootprint footprint) {
-        if(!allowedToPrint(options, information)) {
+    private void appendMemoryFootprint(StringBuilder builder, String appender, String headerAppender, String header, ReportInformation information, StatisticView<MemoryFootprint> footprint) {
+        if(!allowedToPrint(information)) {
             return;
         }
         append(builder, headerAppender, header);
         appendMemoryFootprint(builder, appender, footprint);
     }
 
+    private void appendMemoryFootprint(StringBuilder builder, String appender, StatisticView<MemoryFootprint> footprint) {
+        if(footprint.containsSingleValue()) {
+            appendMemoryFootprint(builder, appender, footprint.getSingleValue());
+        } else {
+            append(builder, appender, "- Minimum : ");
+            appendMemoryFootprint(builder, appender + TAB, footprint.getMinimumValue());
+            append(builder, appender, "- Maximum : ");
+            appendMemoryFootprint(builder, appender + TAB, footprint.getMaximumValue());
+            append(builder, appender, "- Average : ");
+            appendMemoryFootprint(builder, appender + TAB, footprint.getAverageValue());
+        }
+    }
+
     private void appendMemoryFootprint(StringBuilder builder, String appender, MemoryFootprint footprint) {
+        MemoryValueConverter memoryValueConverter = options.getMemoryValueConverter();
         append(builder, appender, "- Used memory footprint : " + memoryValueConverter.convert(footprint.getUsedMemoryFootprint()));
         append(builder, appender, "- Committed memory footprint : " + memoryValueConverter.convert(footprint.getCommittedMemoryFootprint()));
         append(builder, appender, "- Max memory footprint : " + memoryValueConverter.convert(footprint.getMaxMemoryFootprint()));
     }
 
-    private void appendMemoryPoolFootPrints(StringBuilder builder, String appender, Options options, List<MemoryPoolFootprint> footprints) {
-        if (!allowedToPrint(options, HEAP_MEMORY_POOL_FOOTPRINT) && !allowedToPrint(options, NON_HEAP_MEMORY_POOL_FOOTPRINT)) {
+    private void appendMemoryPoolFootPrints(StringBuilder builder, String appender, List<StatisticView<MemoryPoolFootprint>> footprints) {
+        if (!allowedToPrint(HEAP_MEMORY_POOL_FOOTPRINT) && !allowedToPrint(NON_HEAP_MEMORY_POOL_FOOTPRINT)) {
             return;
         }
         append(builder, appender, "- Memory pool footprint : ");
-        footprints.forEach(f -> appendMemoryPoolFootPrint(builder, TAB + appender, options, f));
+        footprints.forEach(f -> appendMemoryPoolFootPrint(builder, TAB + appender, f));
     }
 
-    private void appendMemoryPoolFootPrint(StringBuilder builder, String appender, Options options, MemoryPoolFootprint footprint) {
+    private void appendMemoryPoolFootPrint(StringBuilder builder, String appender, StatisticView<MemoryPoolFootprint> footprint) {
+        if(footprint.containsSingleValue()) {
+            appendMemoryPoolFootPrint(builder, appender, footprint.getSingleValue());
+        } else {
+            append(builder, appender, "- Minimum : ");
+            appendMemoryPoolFootPrint(builder, appender, footprint.getMinimumValue());
+            append(builder, appender, "- Maximum : ");
+            appendMemoryPoolFootPrint(builder, appender, footprint.getMaximumValue());
+            append(builder, appender, "- Average : ");
+            appendMemoryPoolFootPrint(builder, appender, footprint.getAverageValue());
+        }
+    }
+
+    private void appendMemoryPoolFootPrint(StringBuilder builder, String appender, MemoryPoolFootprint footprint) {
         MemoryType footprintType = footprint.getMemoryType();
-        boolean allowed =   (footprintType == MemoryType.HEAP && allowedToPrint(options, HEAP_MEMORY_POOL_FOOTPRINT)) ||
-                            (footprintType == MemoryType.NON_HEAP && allowedToPrint(options, NON_HEAP_MEMORY_POOL_FOOTPRINT));
+        boolean allowed =   (footprintType == MemoryType.HEAP && allowedToPrint(HEAP_MEMORY_POOL_FOOTPRINT)) ||
+                            (footprintType == MemoryType.NON_HEAP && allowedToPrint(NON_HEAP_MEMORY_POOL_FOOTPRINT));
         if(!allowed) {
             return;
         }
@@ -83,13 +107,26 @@ public class StringReportFormatter implements ReportFormatter<String> {
         appendMemoryFootprint(builder, TAB + appender, footprint);
     }
 
-    private void appendGcUsages(StringBuilder builder, String appender, Options options, List<GcUsage> gcUsages) {
-        if(!allowedToPrint(options, GC_USAGE)){
+    private void appendGcUsages(StringBuilder builder, String appender, List<StatisticView<GcUsage>> gcUsages) {
+        if(!allowedToPrint(GC_USAGE)){
             return;
         }
 
         append(builder, appender, "- GC usage: ");
         gcUsages.forEach(gc -> appendGcUsage(builder, appender + TAB, gc));
+    }
+
+    private void appendGcUsage(StringBuilder builder, String appender, StatisticView<GcUsage> gcUsage) {
+        if(gcUsage.containsSingleValue()){
+            appendGcUsage(builder, appender, gcUsage.getSingleValue());
+        } else {
+            append(builder, appender, "- Minimum : ");
+            appendGcUsage(builder, appender, gcUsage.getMinimumValue());
+            append(builder, appender, "- Maximum : ");
+            appendGcUsage(builder, appender, gcUsage.getMaximumValue());
+            append(builder, appender, "- Average : ");
+            appendGcUsage(builder, appender, gcUsage.getAverageValue());
+        }
     }
 
     private void appendGcUsage(StringBuilder builder, String appender, GcUsage gcUsage) {
@@ -102,7 +139,7 @@ public class StringReportFormatter implements ReportFormatter<String> {
         builder.append(appender).append(message).append(EOL);
     }
 
-    private boolean allowedToPrint(Options options, ReportInformation information) {
+    private boolean allowedToPrint(ReportInformation information) {
         return options.getReportInformation().contains(information);
     }
 }

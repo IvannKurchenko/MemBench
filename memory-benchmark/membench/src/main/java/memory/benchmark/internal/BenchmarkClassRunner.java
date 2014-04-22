@@ -45,19 +45,20 @@ class BenchmarkClassRunner {
                 ResultBuilder resultBuilder = new ResultBuilder(testObject.getClass(), testMethod);
                 Benchmark benchmark = testMethod.getAnnotation(Benchmark.class);
 
-                for (int i = 0; i < benchmark.testTimes(); i++) {
-                    runBefore();
+                for (int i = 0; i <= benchmark.testTimes(); i++) {
+                    invokeBefore();
 
                     benchmarkResultCollector.onBeforeTest();
 
-                    runTest(testMethod);
+                    invokeTest(testMethod);
 
                     benchmarkResultCollector.onAfterTest();
 
-                    runAfter();
+                    invokeAfter();
                 }
 
                 benchmarkResultCollector.collectBenchmarkResult(resultBuilder);
+                benchmarkResultCollector.clear();
                 resultList.add(resultBuilder.build());
 
             } catch (InvocationTargetException | IllegalAccessException e) {
@@ -68,21 +69,22 @@ class BenchmarkClassRunner {
         return resultList;
     }
 
-    private void runBefore() throws InvocationTargetException, IllegalAccessException {
-        if(beforeMethod.isPresent()) {
-            beforeMethod.get().invoke(testObject);
+    private void invokeBefore() throws InvocationTargetException, IllegalAccessException {
+        invokeOptionalMethod(beforeMethod);
+    }
+
+    private void invokeAfter() throws InvocationTargetException, IllegalAccessException {
+        invokeOptionalMethod(afterMethod);
+    }
+
+    private void invokeOptionalMethod(Optional<Method> optional) throws InvocationTargetException, IllegalAccessException {
+        if(optional.isPresent()) {
+            optional.get().invoke(testObject);
         }
         tryGc();
     }
 
-    private void runAfter() throws InvocationTargetException, IllegalAccessException {
-        if(afterMethod.isPresent()) {
-            afterMethod.get().invoke(testObject);
-        }
-        tryGc();
-    }
-
-    private void runTest(Method testMethod) throws InvocationTargetException, IllegalAccessException {
+    private void invokeTest(Method testMethod) throws InvocationTargetException, IllegalAccessException {
         testMethod.invoke(testObject);
     }
 

@@ -1,9 +1,6 @@
 package memory.benchmark.internal;
 
-import memory.benchmark.api.result.GcUsage;
-import memory.benchmark.api.result.MemoryFootprint;
-import memory.benchmark.api.result.MemoryPoolFootprint;
-import memory.benchmark.api.result.Result;
+import memory.benchmark.api.result.*;
 
 import java.lang.reflect.Method;
 import java.util.List;
@@ -13,41 +10,42 @@ public class ResultBuilder {
     private Class benchmarkClass;
     private Method benchmarkMethod;
 
-    private MemoryFootprint heapMemoryFootprint, nonHeapMemoryFootprint;
-    private List<MemoryPoolFootprint> memoryPoolFootprints;
-    private List<GcUsage> gcUsages;
+    private StatisticView<MemoryFootprint> heapMemoryFootprint, nonHeapMemoryFootprint;
+    private List<StatisticView<MemoryPoolFootprint>> memoryPoolFootprints;
+    private List<StatisticView<GcUsage>> gcUsages;
 
     public ResultBuilder(Class benchmarkClass, Method benchmarkMethod) {
         this.benchmarkClass = benchmarkClass;
         this.benchmarkMethod = benchmarkMethod;
     }
 
-    public void setHeapMemoryDifference(MemoryFootprint heapMemoryFootprint, MemoryFootprint nonHeapMemoryFootprint) {
+    public void setHeapMemoryDifference(StatisticView<MemoryFootprint> heapMemoryFootprint,
+                                        StatisticView<MemoryFootprint> nonHeapMemoryFootprint) {
         this.heapMemoryFootprint = heapMemoryFootprint;
         this.nonHeapMemoryFootprint = nonHeapMemoryFootprint;
     }
 
-    public void setMemoryPoolFootprints(List<MemoryPoolFootprint> memoryPoolFootprints) {
+    public void setMemoryPoolFootprints(List<StatisticView<MemoryPoolFootprint>> memoryPoolFootprints) {
         this.memoryPoolFootprints = memoryPoolFootprints;
     }
 
-    public void setGcUsages(List<GcUsage> gcUsages) {
+    public void setGcUsages(List<StatisticView<GcUsage>> gcUsages) {
         this.gcUsages = gcUsages;
     }
 
-    public MemoryFootprint getHeapMemoryFootprint() {
+    public StatisticView<MemoryFootprint> getHeapMemoryFootprint() {
         return heapMemoryFootprint;
     }
 
-    public MemoryFootprint getNonHeapMemoryFootprint() {
+    public StatisticView<MemoryFootprint> getNonHeapMemoryFootprint() {
         return nonHeapMemoryFootprint;
     }
 
-    public List<MemoryPoolFootprint> getMemoryPoolFootprints() {
+    public List<StatisticView<MemoryPoolFootprint>> getMemoryPoolFootprints() {
         return memoryPoolFootprints;
     }
 
-    public List<GcUsage> getGcUsages() {
+    public List<StatisticView<GcUsage>> getGcUsages() {
         return gcUsages;
     }
 

@@ -1,6 +1,7 @@
 package memory.benchmark.internal.collect;
 
 import memory.benchmark.api.result.MemoryPoolFootprint;
+import memory.benchmark.api.result.StatisticView;
 import memory.benchmark.internal.ResultBuilder;
 import org.junit.Before;
 import org.junit.Test;
@@ -45,7 +46,7 @@ public class MemoryPoolResultCollectorTest {
 
         ResultBuilder expectedResult = new ResultBuilder(null, null);
         MemoryPoolFootprint memoryPoolFootprint = new MemoryPoolFootprint(beforeMemoryUsage, afterMemoryUsage, TEST_POOL_BEAN_NAME, TEST_MEMORY_TYPE);
-        expectedResult.setMemoryPoolFootprints(asList(memoryPoolFootprint));
+        expectedResult.setMemoryPoolFootprints(asList(new StatisticView<>(memoryPoolFootprint)));
 
         ResultBuilder actualResult = new ResultBuilder(null, null);
         memoryPoolResultCollector.collectBenchmarkResult(actualResult);

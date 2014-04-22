@@ -1,6 +1,7 @@
 package memory.benchmark.internal.collect;
 
 import memory.benchmark.api.result.MemoryFootprint;
+import memory.benchmark.api.result.StatisticView;
 import memory.benchmark.internal.ResultBuilder;
 import org.junit.Before;
 import org.junit.Test;
@@ -40,7 +41,7 @@ public class MemoryResultCollectorTest {
         ResultBuilder expectedResult = new ResultBuilder(null, null);
         MemoryFootprint heapMemoryFootprint = new MemoryFootprint(beforeHeapMemoryUsage, afterHeapMemoryUsage);
         MemoryFootprint nonHeapMemoryFootprint = new MemoryFootprint(beforeNonHeapMemoryUsage, afterNonHeapMemoryUsage);
-        expectedResult.setHeapMemoryDifference(heapMemoryFootprint, nonHeapMemoryFootprint);
+        expectedResult.setHeapMemoryDifference(new StatisticView<>(heapMemoryFootprint), new StatisticView<>(nonHeapMemoryFootprint));
 
         ResultBuilder actualResult = new ResultBuilder(null, null);
         memoryResultCollector.collectBenchmarkResult(actualResult);

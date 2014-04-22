@@ -16,11 +16,15 @@ import java.util.List;
 
 public class ListMemoryTest {
 
-    public static void main(String... args){
-        ReportFormatter<String> formatter = new StringReportFormatter(MemoryValueConverter.TO_MEGA_BYTES);
-        Options options = new Options.Builder().reportInformation(Options.ReportInformation.HEAP_MEMORY_FOOTPRINT).build();
+    public static void main(String... args) {
+        Options options = new Options.Builder().
+                reportInformation(Options.ReportInformation.HEAP_MEMORY_FOOTPRINT).
+                memoryValueConverter(MemoryValueConverter.TO_MEGA_BYTES).
+                build();
+
+        ReportFormatter<String> formatter = new StringReportFormatter(options);
         List<Result> resultList = Runner.run(options, ListMemoryTest.class);
-        System.out.println(formatter.formatReport(options, resultList));
+        System.out.println(formatter.formatReport(resultList));
     }
 
     private static final int TEST_DATA_COUNT = 1_000_000;
@@ -42,12 +46,12 @@ public class ListMemoryTest {
         linkedList = new LinkedList<>();
     }
 
-    @Benchmark
+    @Benchmark(testTimes = 4)
     public void addArrayList() {
         data.forEach(arrayList::add);
     }
 
-    @Benchmark
+    @Benchmark(testTimes = 4)
     public void addLinkedList() {
         data.forEach(linkedList::add);
     }

@@ -17,6 +17,12 @@ public class MemoryPoolFootprint extends MemoryFootprint {
         this.memoryType = memoryType;
     }
 
+    public MemoryPoolFootprint(long usedMemoryFootprint, long maxMemoryFootprint, long committedMemoryFootprint,String poolName, MemoryType memoryType) {
+        super(usedMemoryFootprint, maxMemoryFootprint, committedMemoryFootprint);
+        this.poolName = poolName;
+        this.memoryType = memoryType;
+    }
+
     /**
      *
      * @return

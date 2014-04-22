@@ -17,6 +17,12 @@ public class MemoryFootprint {
         this.committedMemoryFootprint = after.getCommitted() - before.getCommitted();
     }
 
+    public MemoryFootprint(long usedMemoryFootprint, long maxMemoryFootprint, long committedMemoryFootprint) {
+        this.usedMemoryFootprint = usedMemoryFootprint;
+        this.maxMemoryFootprint = maxMemoryFootprint;
+        this.committedMemoryFootprint = committedMemoryFootprint;
+    }
+
     /**
      *
      * @return

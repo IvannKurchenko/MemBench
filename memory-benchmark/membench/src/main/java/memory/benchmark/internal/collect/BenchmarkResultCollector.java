@@ -9,4 +9,6 @@ public interface BenchmarkResultCollector {
     void onAfterTest();
 
     void collectBenchmarkResult(ResultBuilder result);
+
+    void clear();
 }

@@ -47,29 +47,30 @@ public class Options {
          * Includes information about garbage collector usage.
          * @see  memory.benchmark.api.result.GcUsage
          */
-        GC_USAGE;
+        GC_USAGE
     }
 
 
     /**
-     *
+     * Enum that represents way to run benchmark tests.
      */
     public enum RunMode{
 
         /**
-         *
+         * Run benchmarks in same java process.
          */
         SAME_PROCESS,
 
         /**
-         *
+         * Run benchmarks in separate java process.
          */
-        SEPARATE_PROCESS;
+        SEPARATE_PROCESS
     }
-    private final Set<ReportInformation> reportInformation;
 
+    private final Set<ReportInformation> reportInformation;
     private final MemoryValueConverter memoryValueConverter;
     private final RunMode runMode;
+
     private Options(Builder builder) {
         this.reportInformation = builder.reportInformation;
         this.memoryValueConverter = builder.memoryValueConverter;
@@ -99,6 +100,8 @@ public class Options {
 
         public Builder() {
             reportInformation = EnumSet.allOf(ReportInformation.class);
+            memoryValueConverter = MemoryValueConverter.TO_KILO_BYTES;
+            runMode = RunMode.SEPARATE_PROCESS;
         }
 
         /**

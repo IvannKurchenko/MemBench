@@ -6,6 +6,12 @@ public class GcUsage {
     private final long gcCount;
     private final long gcTime;
 
+    public GcUsage(GcUsage before, GcUsage after) {
+        this.name = after.getName();
+        this.gcCount = after.getGcCount() - before.getGcCount();
+        this.gcTime = after.getGcTime() - before.getGcTime();
+    }
+
     public GcUsage(String name, long gcCount, long gcTime) {
         this.name = name;
         this.gcCount = gcCount;

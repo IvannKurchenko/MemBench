@@ -15,6 +15,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
+import static memory.benchmark.internal.collect.BenchmarkResultCollectorFactory.createResultCollector;
+
 public class BenchmarkRunner {
 
     private final Collection<Class<?>> benchmarkClasses;
@@ -54,9 +56,9 @@ public class BenchmarkRunner {
         try {
 
             Object benchmarkObject = benchmarkClass.newInstance();
-            BenchmarkResultCollector benchmarkResultCollector = BenchmarkResultCollectorFactory.createResultCollector();
+            BenchmarkResultCollector benchmarkResultCollector = createResultCollector();
             BenchmarkClassRunner benchmarkClassRunner = new BenchmarkClassRunner(benchmarkObject, beforeMethod, afterMethod, benchmarkMethods, benchmarkResultCollector);
-            return  benchmarkClassRunner.runTests();
+            return benchmarkClassRunner.runTests();
 
         } catch (InstantiationException | IllegalAccessException e) {
             throw new BenchmarkRunException(e);

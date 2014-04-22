@@ -6,8 +6,10 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.lang.reflect.Method;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import static java.util.Arrays.asList;
 import static junit.framework.Assert.assertEquals;
@@ -39,10 +41,17 @@ public class BenchmarkMethodExtractorTest {
 
     @Test
     public void testGetTestMethods() throws Exception {
-        List<Method> expectedTestMethods = asList(  testClass.getMethod("firstBenchmark"),
-                                                    testClass.getMethod("secondBenchmark"));
+        List<Method> expectedTestMethods = asList(testClass.getMethod("firstBenchmark"),
+                testClass.getMethod("secondBenchmark"));
         List<Method> actualTestMethods = benchmarkMethodExtractor.getTestMethods(testClass);
         assertEquals(expectedTestMethods, actualTestMethods);
+    }
+
+    private <T> void assertEqualsIgnoreOrder(List<T> first, List<T> second) {
+        Set<T> firstSet = new HashSet<>(first);
+        Set<T> secondSet = new HashSet<>(second);
+        assertEquals(first.size(), secondSet.size());
+        assertEquals(first, secondSet);
     }
 
     private static class TestClass {

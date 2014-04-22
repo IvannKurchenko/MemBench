@@ -28,4 +28,9 @@ public class BenchmarkResultCollectors implements BenchmarkResultCollector {
     public void collectBenchmarkResult(ResultBuilder result) {
         benchmarkResultCollectors.forEach(b -> b.collectBenchmarkResult(result));
     }
+
+    @Override
+    public void clear() {
+        benchmarkResultCollectors.forEach(BenchmarkResultCollector::clear);
+    }
 }

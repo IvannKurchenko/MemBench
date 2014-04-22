@@ -18,7 +18,7 @@ public class ListMemoryTest {
 
     public static void main(String... args){
         ReportFormatter<String> formatter = new StringReportFormatter(MemoryValueConverter.TO_MEGA_BYTES);
-        Options options = new Options.Builder().build();
+        Options options = new Options.Builder().reportInformation(Options.ReportInformation.HEAP_MEMORY_FOOTPRINT).build();
         List<Result> resultList = Runner.run(options, ListMemoryTest.class);
         System.out.println(formatter.formatReport(options, resultList));
     }

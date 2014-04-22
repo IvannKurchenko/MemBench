@@ -63,6 +63,9 @@ public class StringReportFormatter implements ReportFormatter<String> {
     }
 
     private void appendMemoryPoolFootPrints(StringBuilder builder, String appender, Options options, List<MemoryPoolFootprint> footprints) {
+        if (!allowedToPrint(options, HEAP_MEMORY_POOL_FOOTPRINT) && !allowedToPrint(options, NON_HEAP_MEMORY_POOL_FOOTPRINT)) {
+            return;
+        }
         append(builder, appender, "- Memory pool footprint : ");
         footprints.forEach(f -> appendMemoryPoolFootPrint(builder, TAB + appender, options, f));
     }

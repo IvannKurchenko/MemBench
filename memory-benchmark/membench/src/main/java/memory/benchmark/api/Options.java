@@ -1,5 +1,7 @@
 package memory.benchmark.api;
 
+import memory.benchmark.api.util.MemoryValueConverter;
+
 import java.util.EnumSet;
 import java.util.Set;
 
@@ -9,6 +11,8 @@ import static java.util.Objects.requireNonNull;
  *
  */
 public class Options {
+
+
 
     /**
      * Enum that represents information included to report.
@@ -43,16 +47,45 @@ public class Options {
          * Includes information about garbage collector usage.
          * @see  memory.benchmark.api.result.GcUsage
          */
-        GC_USAGE
+        GC_USAGE;
+    }
+
+
+    /**
+     *
+     */
+    public enum RunMode{
+
+        /**
+         *
+         */
+        SAME_PROCESS,
+
+        /**
+         *
+         */
+        SEPARATE_PROCESS;
     }
     private final Set<ReportInformation> reportInformation;
 
+    private final MemoryValueConverter memoryValueConverter;
+    private final RunMode runMode;
     private Options(Builder builder) {
         this.reportInformation = builder.reportInformation;
+        this.memoryValueConverter = builder.memoryValueConverter;
+        this.runMode = builder.runMode;
     }
 
     public Set<ReportInformation> getReportInformation() {
         return reportInformation;
+    }
+
+    public MemoryValueConverter getMemoryValueConverter() {
+        return memoryValueConverter;
+    }
+
+    public RunMode getRunMode() {
+        return runMode;
     }
 
     /**
@@ -61,6 +94,8 @@ public class Options {
     public static class Builder {
 
         private Set<ReportInformation> reportInformation;
+        private MemoryValueConverter memoryValueConverter;
+        private RunMode runMode;
 
         public Builder() {
             reportInformation = EnumSet.allOf(ReportInformation.class);
@@ -73,6 +108,26 @@ public class Options {
             requireNonNull(first);
             requireNonNull(reportInformation);
             this.reportInformation = EnumSet.of(first, reportInformation);
+            return this;
+        }
+
+        /**
+         *
+         * @param memoryValueConverter
+         * @return
+         */
+        public Builder memoryValueConverter(MemoryValueConverter memoryValueConverter) {
+            this.memoryValueConverter = memoryValueConverter;
+            return this;
+        }
+
+        /**
+         *
+         * @param runMode
+         * @return
+         */
+        public Builder runMode(RunMode runMode) {
+            this.runMode = runMode;
             return this;
         }
 

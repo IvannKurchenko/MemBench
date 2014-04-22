@@ -11,7 +11,6 @@ import java.util.Optional;
 
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
-import static memory.benchmark.internal.ArgumentChecker.checkListSize;
 
 public class BenchmarkMethodExtractor {
 
@@ -35,5 +34,12 @@ public class BenchmarkMethodExtractor {
     private List<Method> extractAnnotatedMethods(Class testClass, Class<? extends Annotation> annotation) {
         Method[] methods = testClass.getMethods();
         return asList(methods).stream().filter(m -> m.isAnnotationPresent(annotation)).collect(toList());
+    }
+
+    private  List<Method> checkListSize(List<Method> list, int requiredSize) {
+        if(list.size() > requiredSize){
+            throw new IllegalArgumentException();
+        }
+        return list;
     }
 }

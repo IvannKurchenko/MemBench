@@ -1,6 +1,6 @@
 package memory.benchmark.internal;
 
-import memory.benchmark.api.BenchmarkRunException;
+import memory.benchmark.api.exception.BenchmarkRunException;
 import memory.benchmark.api.annotations.Benchmark;
 import memory.benchmark.api.result.Result;
 import memory.benchmark.internal.collect.BenchmarkResultCollector;
@@ -47,7 +47,13 @@ class BenchmarkClassRunner {
 
                 for (int i = 0; i < benchmark.testTimes(); i++) {
                     runBefore();
+
+                    benchmarkResultCollector.onBeforeTest();
+
                     runTest(testMethod);
+
+                    benchmarkResultCollector.onAfterTest();
+
                     runAfter();
                 }
 
@@ -67,7 +73,6 @@ class BenchmarkClassRunner {
             beforeMethod.get().invoke(testObject);
         }
         tryGc();
-        benchmarkResultCollector.onBeforeTest();
     }
 
     private void runAfter() throws InvocationTargetException, IllegalAccessException {
@@ -75,7 +80,6 @@ class BenchmarkClassRunner {
             afterMethod.get().invoke(testObject);
         }
         tryGc();
-        benchmarkResultCollector.onAfterTest();
     }
 
     private void runTest(Method testMethod) throws InvocationTargetException, IllegalAccessException {

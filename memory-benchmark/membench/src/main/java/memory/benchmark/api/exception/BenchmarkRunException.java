@@ -1,4 +1,4 @@
-package memory.benchmark.api;
+package memory.benchmark.api.exception;
 
 /**
  *

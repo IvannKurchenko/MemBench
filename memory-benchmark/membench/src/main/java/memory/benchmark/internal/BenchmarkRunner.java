@@ -1,6 +1,6 @@
 package memory.benchmark.internal;
 
-import memory.benchmark.api.BenchmarkRunException;
+import memory.benchmark.api.exception.BenchmarkRunException;
 import memory.benchmark.api.Options;
 import memory.benchmark.api.result.Result;
 import memory.benchmark.internal.collect.BenchmarkResultCollector;

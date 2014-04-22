@@ -74,6 +74,42 @@ public class Result {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+
+        Result result = (Result) o;
+
+        if (benchmarkClass != null ? !benchmarkClass.equals(result.benchmarkClass) : result.benchmarkClass != null)
+            return false;
+        if (benchmarkMethod != null ? !benchmarkMethod.equals(result.benchmarkMethod) : result.benchmarkMethod != null)
+            return false;
+        if (gcUsages != null ? !gcUsages.equals(result.gcUsages) : result.gcUsages != null)
+            return false;
+        if (heapMemoryFootprint != null ? !heapMemoryFootprint.equals(result.heapMemoryFootprint) : result.heapMemoryFootprint != null)
+            return false;
+        if (memoryPoolFootprints != null ? !memoryPoolFootprints.equals(result.memoryPoolFootprints) : result.memoryPoolFootprints != null)
+            return false;
+        if (nonHeapMemoryFootprint != null ? !nonHeapMemoryFootprint.equals(result.nonHeapMemoryFootprint) : result.nonHeapMemoryFootprint != null)
+            return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = benchmarkClass != null ? benchmarkClass.hashCode() : 0;
+        result = 31 * result + (benchmarkMethod != null ? benchmarkMethod.hashCode() : 0);
+        result = 31 * result + (heapMemoryFootprint != null ? heapMemoryFootprint.hashCode() : 0);
+        result = 31 * result + (nonHeapMemoryFootprint != null ? nonHeapMemoryFootprint.hashCode() : 0);
+        result = 31 * result + (memoryPoolFootprints != null ? memoryPoolFootprints.hashCode() : 0);
+        result = 31 * result + (gcUsages != null ? gcUsages.hashCode() : 0);
+        return result;
+    }
+
+    @Override
     public String toString() {
         return "Result{" +
                 "benchmarkClass = " + benchmarkClass +

@@ -13,7 +13,7 @@ public class Result {
     private final Class benchmarkClass;
     private final Method benchmarkMethod;
     private final StatisticView<MemoryFootprint> heapMemoryFootprint, nonHeapMemoryFootprint;
-    private final List<StatisticView<MemoryPoolFootprint>> memoryPoolFootprints;
+    private final List<MemoryPoolStatisticView> memoryPoolFootprints;
     private final List<StatisticView<GcUsage>> gcUsages;
 
     public Result(ResultBuilder builder) {
@@ -45,7 +45,7 @@ public class Result {
      *
      * @return
      */
-    public List<StatisticView<MemoryPoolFootprint>> getMemoryPoolFootprints() {
+    public List<MemoryPoolStatisticView> getMemoryPoolFootprints() {
         return memoryPoolFootprints;
     }
 

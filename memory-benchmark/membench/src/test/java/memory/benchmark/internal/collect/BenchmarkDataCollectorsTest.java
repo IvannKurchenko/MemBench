@@ -7,15 +7,15 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
-public class BenchmarkResultCollectorsTest {
+public class BenchmarkDataCollectorsTest {
 
-    private BenchmarkResultCollector mockedCollector;
-    private BenchmarkResultCollectors benchmarkResultCollectors;
+    private BenchmarkDataCollector mockedCollector;
+    private BenchmarkDataCollectors benchmarkResultCollectors;
 
     @Before
     public void setUp(){
-        mockedCollector = mock(BenchmarkResultCollector.class);
-        benchmarkResultCollectors = new BenchmarkResultCollectors(mockedCollector);
+        mockedCollector = mock(BenchmarkDataCollector.class);
+        benchmarkResultCollectors = new BenchmarkDataCollectors(mockedCollector);
     }
 
     @Test
@@ -34,8 +34,8 @@ public class BenchmarkResultCollectorsTest {
 
     @Test
     public void testCollectBenchmarkResult(){
-        benchmarkResultCollectors.collectBenchmarkResult(null);
-        verify(mockedCollector).collectBenchmarkResult(null);
+        benchmarkResultCollectors.collectBenchmarkData(null);
+        verify(mockedCollector).collectBenchmarkData(null);
         verifyNoMoreInteractions(mockedCollector);
     }
 }

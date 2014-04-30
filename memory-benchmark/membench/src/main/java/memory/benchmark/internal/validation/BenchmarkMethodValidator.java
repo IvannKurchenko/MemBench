@@ -16,13 +16,13 @@ public class BenchmarkMethodValidator implements BenchmarkValidator<Method>{
 
     private void validateMethodNoParams(Method method) {
         if(method.getParameterCount() > 0) {
-            throw new InvalidBenchmarkException("Method should have no parameters!");
+            throw new InvalidBenchmarkException(method, "Method should have no parameters!");
         }
     }
 
     private void validateMethodPublic(Method method) {
         if(!Modifier.isPublic(method.getModifiers())) {
-            throw new InvalidBenchmarkException("Method should have be public!");
+            throw new InvalidBenchmarkException(method, "Method should have be public!");
         }
     }
 }

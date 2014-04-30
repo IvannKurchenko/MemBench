@@ -1,8 +1,7 @@
 package memory.benchmark.internal.collect;
 
 import memory.benchmark.api.result.MemoryFootprint;
-import memory.benchmark.api.result.MemoryPoolFootprint;
-import memory.benchmark.api.result.StatisticView;
+import memory.benchmark.api.result.MemoryPoolStatisticView;
 import memory.benchmark.internal.ResultBuilder;
 
 import java.lang.management.MemoryPoolMXBean;
@@ -15,13 +14,13 @@ import java.util.Map;
 
 import static memory.benchmark.internal.collect.StatisticCollector.*;
 
-public class MemoryPoolResultCollector implements BenchmarkResultCollector {
+public class MemoryPoolDataCollector implements BenchmarkDataCollector {
 
     private final List<MemoryPoolMXBean> memoryPoolMxBeans;
     private final Map<MemoryPoolMXBean, List<MemoryUsage>> beforeMemoryPoolUsage;
     private final Map<MemoryPoolMXBean, List<MemoryUsage>> afterMemoryPoolUsage;
 
-    public MemoryPoolResultCollector(List<MemoryPoolMXBean> memoryPoolMxBeans) {
+    public MemoryPoolDataCollector(List<MemoryPoolMXBean> memoryPoolMxBeans) {
         this.memoryPoolMxBeans = memoryPoolMxBeans;
         this.beforeMemoryPoolUsage = new HashMap<>();
         this.afterMemoryPoolUsage = new HashMap<>();
@@ -47,8 +46,8 @@ public class MemoryPoolResultCollector implements BenchmarkResultCollector {
     }
 
     @Override
-    public void collectBenchmarkResult(ResultBuilder result) {
-        List<StatisticView<MemoryPoolFootprint>> memoryPoolFootprints = new ArrayList<>();
+    public void collectBenchmarkData(ResultBuilder result) {
+        List<MemoryPoolStatisticView> memoryPoolFootprints = new ArrayList<>();
         beforeMemoryPoolUsage.keySet().forEach(mxBean-> memoryPoolFootprints.add(createMemoryPoolFootprint(mxBean)));
         result.setMemoryPoolFootprints(memoryPoolFootprints);
     }
@@ -59,7 +58,7 @@ public class MemoryPoolResultCollector implements BenchmarkResultCollector {
         afterMemoryPoolUsage.clear();
     }
 
-    private StatisticView<MemoryPoolFootprint> createMemoryPoolFootprint(MemoryPoolMXBean poolMXBean) {
+    private MemoryPoolStatisticView createMemoryPoolFootprint(MemoryPoolMXBean poolMXBean) {
         List<MemoryUsage> beforeMemoryUsages = beforeMemoryPoolUsage.get(poolMXBean);
         List<MemoryUsage> afterMemoryUsages = afterMemoryPoolUsage.get(poolMXBean);
 
@@ -69,17 +68,18 @@ public class MemoryPoolResultCollector implements BenchmarkResultCollector {
         if(beforeMemoryUsages.size() == 1) {
             MemoryUsage beforeMemoryUsage = beforeMemoryUsages.get(0);
             MemoryUsage afterMemoryUsage = afterMemoryUsages.get(0);
-            return new StatisticView<>(new MemoryPoolFootprint(beforeMemoryUsage, afterMemoryUsage, name, type));
+            return new MemoryPoolStatisticView(new MemoryFootprint(beforeMemoryUsage, afterMemoryUsage), type, name);
 
         }  else {
             Statistic usedMemory = getStatistic(afterMemoryUsages, beforeMemoryUsages, MemoryUsage::getUsed);
             Statistic committedMemory = getStatistic(afterMemoryUsages, beforeMemoryUsages, MemoryUsage::getCommitted);
             Statistic maxMemory = getStatistic(afterMemoryUsages, beforeMemoryUsages, MemoryUsage::getMax);
 
-            MemoryPoolFootprint minimum = new MemoryPoolFootprint(usedMemory.min, maxMemory.min, committedMemory.min, name, type);
-            MemoryPoolFootprint maximum = new MemoryPoolFootprint(usedMemory.max, maxMemory.max, committedMemory.max, name, type);
-            MemoryPoolFootprint average = new MemoryPoolFootprint(usedMemory.average, maxMemory.average, committedMemory.average, name, type);
-            return new StatisticView<>(minimum, maximum, average);
+            MemoryFootprint minimum = new MemoryFootprint(usedMemory.min, maxMemory.min, committedMemory.min);
+            MemoryFootprint maximum = new MemoryFootprint(usedMemory.max, maxMemory.max, committedMemory.max);
+            MemoryFootprint average = new MemoryFootprint(usedMemory.average, maxMemory.average, committedMemory.average);
+
+            return new MemoryPoolStatisticView(minimum, maximum, average, type, name);
         }
     }
 

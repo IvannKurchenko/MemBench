@@ -11,13 +11,13 @@ import java.util.List;
 
 import static memory.benchmark.internal.collect.StatisticCollector.getStatistic;
 
-public class MemoryResultCollector implements BenchmarkResultCollector {
+public class MemoryDataCollector implements BenchmarkDataCollector {
 
     private final MemoryMXBean memoryMXBean;
     private final List<MemoryUsage> beforeHeapMemoryUsages, beforeNonHeapMemoryUsages;
     private final List<MemoryUsage> afterHeapMemoryUsages, afterNonHeapMemoryUsages;
 
-    public MemoryResultCollector(MemoryMXBean memoryMXBean) {
+    public MemoryDataCollector(MemoryMXBean memoryMXBean) {
         this.memoryMXBean = memoryMXBean;
         beforeHeapMemoryUsages = new ArrayList<>();
         beforeNonHeapMemoryUsages = new ArrayList<>();
@@ -38,7 +38,7 @@ public class MemoryResultCollector implements BenchmarkResultCollector {
     }
 
     @Override
-    public void collectBenchmarkResult(ResultBuilder resultBuilder) {
+    public void collectBenchmarkData(ResultBuilder resultBuilder) {
         StatisticView<MemoryFootprint> heapFootprint = getMemoryStatistic(beforeHeapMemoryUsages, afterHeapMemoryUsages);
         StatisticView<MemoryFootprint> nonHeapFootprint = getMemoryStatistic(beforeNonHeapMemoryUsages, afterNonHeapMemoryUsages);
         resultBuilder.setHeapMemoryDifference(heapFootprint, nonHeapFootprint);

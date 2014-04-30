@@ -15,13 +15,13 @@ import static org.mockito.Mockito.when;
 
 public class MemoryResultCollectorTest {
 
-    private MemoryResultCollector memoryResultCollector;
+    private MemoryDataCollector memoryResultCollector;
     private MemoryMXBean mockedMemoryMXBean;
 
     @Before
     public void setUp(){
         mockedMemoryMXBean = mock(MemoryMXBean.class);
-        memoryResultCollector = new MemoryResultCollector(mockedMemoryMXBean);
+        memoryResultCollector = new MemoryDataCollector(mockedMemoryMXBean);
     }
 
     @Test
@@ -44,7 +44,7 @@ public class MemoryResultCollectorTest {
         expectedResult.setHeapMemoryDifference(new StatisticView<>(heapMemoryFootprint), new StatisticView<>(nonHeapMemoryFootprint));
 
         ResultBuilder actualResult = new ResultBuilder(null, null);
-        memoryResultCollector.collectBenchmarkResult(actualResult);
+        memoryResultCollector.collectBenchmarkData(actualResult);
 
         assertEquals(expectedResult.build(), actualResult.build());
     }

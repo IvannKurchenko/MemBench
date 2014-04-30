@@ -18,13 +18,13 @@ public class GcResultCollectorTest {
     private static final String TEST_GC_NAME = "testGc";
 
     private GarbageCollectorMXBean mockedGarbageCollectorMXBean;
-    private GcResultCollector gcResultCollector;
+    private GcDataCollector gcResultCollector;
 
     @Before
     public void setUp() {
         mockedGarbageCollectorMXBean = mock(GarbageCollectorMXBean.class);
         when(mockedGarbageCollectorMXBean.getName()).thenReturn(TEST_GC_NAME);
-        gcResultCollector = new GcResultCollector(asList(mockedGarbageCollectorMXBean));
+        gcResultCollector = new GcDataCollector(asList(mockedGarbageCollectorMXBean));
     }
 
     @Test
@@ -45,7 +45,7 @@ public class GcResultCollectorTest {
         expectedBuilder.setGcUsages(asList(new StatisticView<GcUsage>(new GcUsage(TEST_GC_NAME, 100, 100))));
 
         ResultBuilder actualBuilder = new ResultBuilder(null, null);
-        gcResultCollector.collectBenchmarkResult(actualBuilder);
+        gcResultCollector.collectBenchmarkData(actualBuilder);
 
         assertEquals(expectedBuilder.build(), actualBuilder.build());
     }

@@ -1,7 +1,6 @@
 package memory.benchmark.internal.collect;
 
 import memory.benchmark.api.result.GcUsage;
-import memory.benchmark.api.result.MemoryFootprint;
 import memory.benchmark.api.result.StatisticView;
 import memory.benchmark.internal.ResultBuilder;
 
@@ -13,13 +12,13 @@ import java.util.Map;
 
 import static memory.benchmark.internal.collect.StatisticCollector.*;
 
-public class GcResultCollector implements BenchmarkResultCollector {
+public class GcDataCollector implements BenchmarkDataCollector {
 
     private final List<GarbageCollectorMXBean> garbageCollectorMXBeans;
     private final Map<GarbageCollectorMXBean, List<GcUsage>> beforeGarbageCollection;
     private final Map<GarbageCollectorMXBean, List<GcUsage>> afterGarbageCollection;
 
-    public GcResultCollector(List<GarbageCollectorMXBean> garbageCollectorMXBeans) {
+    public GcDataCollector(List<GarbageCollectorMXBean> garbageCollectorMXBeans) {
         this.garbageCollectorMXBeans = garbageCollectorMXBeans;
         this.beforeGarbageCollection = new HashMap<>();
         this.afterGarbageCollection = new HashMap<>();
@@ -47,7 +46,7 @@ public class GcResultCollector implements BenchmarkResultCollector {
     }
 
     @Override
-    public void collectBenchmarkResult(ResultBuilder result) {
+    public void collectBenchmarkData(ResultBuilder result) {
         List<StatisticView<GcUsage>> gcUsages = new ArrayList<>();
         garbageCollectorMXBeans.forEach(g -> gcUsages.add(createGcUsage(g)));
         result.setGcUsages(gcUsages);

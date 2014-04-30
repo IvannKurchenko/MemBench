@@ -19,13 +19,13 @@ public class BenchmarkClassValidator implements BenchmarkValidator<Class> {
 
     private void validateNotAbstract(Class clazz) {
         if(isAbstract(clazz.getModifiers())) {
-            throw new InvalidBenchmarkException(clazz.getName() + " should be not abstract!");
+            throw new InvalidBenchmarkException(clazz, " should be not abstract!");
         }
     }
 
     private void validatePublic(Class clazz) {
         if(!isPublic(clazz.getModifiers())) {
-            throw new InvalidBenchmarkException(clazz.getName() + " should be public!");
+            throw new InvalidBenchmarkException(clazz, " should be public!");
         }
     }
 
@@ -34,15 +34,15 @@ public class BenchmarkClassValidator implements BenchmarkValidator<Class> {
         if(constructors.length == 1) {
             validatePublicEmptyConstructor(clazz, constructors[0]);
         } else if(constructors.length > 1) {
-            throw new InvalidBenchmarkException(clazz.getName() + " should have one empty public constructor!");
+            throw new InvalidBenchmarkException(clazz, " should have one empty public constructor!");
         } else {
-            throw new InvalidBenchmarkException(clazz.getName() + " should have public constructor!");
+            throw new InvalidBenchmarkException(clazz, " should have public constructor!");
         }
     }
 
     private void validatePublicEmptyConstructor(Class clazz, Constructor<?> constructor) {
         if(!isPublic(constructor.getModifiers()) || constructor.getParameterCount() > 0) {
-            throw new InvalidBenchmarkException(clazz.getName() + " should have one empty public constructor!");
+            throw new InvalidBenchmarkException(clazz, " should have one empty public constructor!");
         }
     }
 }

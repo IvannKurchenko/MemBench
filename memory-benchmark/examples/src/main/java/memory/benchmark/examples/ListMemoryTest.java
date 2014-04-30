@@ -6,7 +6,7 @@ import memory.benchmark.api.annotations.After;
 import memory.benchmark.api.annotations.Before;
 import memory.benchmark.api.annotations.Benchmark;
 import memory.benchmark.api.report.ReportFormatter;
-import memory.benchmark.api.report.StringReportFormatter;
+import memory.benchmark.api.report.ConsoleReportFormatter;
 import memory.benchmark.api.result.Result;
 import memory.benchmark.api.util.MemoryValueConverter;
 
@@ -18,11 +18,12 @@ public class ListMemoryTest {
 
     public static void main(String... args) {
         Options options = new Options.Builder().
-                reportInformation(Options.ReportInformation.HEAP_MEMORY_FOOTPRINT).
+                reportInformation(Options.ReportInformation.HEAP_MEMORY_POOL_FOOTPRINT).
                 memoryValueConverter(MemoryValueConverter.TO_MEGA_BYTES).
+                runMode(Options.RunMode.SEPARATE_PROCESS).
                 build();
 
-        ReportFormatter<String> formatter = new StringReportFormatter(options);
+        ReportFormatter<String> formatter = new ConsoleReportFormatter(options);
         List<Result> resultList = Runner.run(options, ListMemoryTest.class);
         System.out.println(formatter.formatReport(resultList));
     }

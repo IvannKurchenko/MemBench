@@ -19,6 +19,7 @@ public class StatisticCollector {
         }
     }
 
+    //TODO : rewrite to functional style!
     public static <T> Statistic getStatistic(List<T> afterValueItems ,List<T> beforeValueItems, ValueExtractor<T> valueExtractor) {
         long max = 0, min = 0;
         double sum = 0;

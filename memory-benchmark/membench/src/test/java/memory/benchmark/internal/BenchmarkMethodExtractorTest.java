@@ -2,6 +2,7 @@ package memory.benchmark.internal;
 
 import memory.benchmark.api.annotations.After;
 import memory.benchmark.api.annotations.Benchmark;
+import memory.benchmark.api.exception.InvalidBenchmarkException;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -17,11 +18,13 @@ import static junit.framework.Assert.assertEquals;
 public class BenchmarkMethodExtractorTest {
 
     private Class<TestClass> testClass;
+    private Class<InvalidTestClass> invalidTestClass;
     private BenchmarkMethodExtractor benchmarkMethodExtractor;
 
     @Before
-    public void setUp(){
+    public void setUp() {
         testClass = TestClass.class;
+        invalidTestClass = InvalidTestClass.class;
         benchmarkMethodExtractor = new BenchmarkMethodExtractor();
     }
 
@@ -47,11 +50,14 @@ public class BenchmarkMethodExtractorTest {
         assertEquals(expectedTestMethods, actualTestMethods);
     }
 
-    private <T> void assertEqualsIgnoreOrder(List<T> first, List<T> second) {
-        Set<T> firstSet = new HashSet<>(first);
-        Set<T> secondSet = new HashSet<>(second);
-        assertEquals(first.size(), secondSet.size());
-        assertEquals(first, secondSet);
+    @Test(expected = InvalidBenchmarkException.class)
+    public void testGetBeforeMethod_shouldThrowException() {
+        benchmarkMethodExtractor.getBeforeMethod(invalidTestClass);
+    }
+
+    @Test(expected = InvalidBenchmarkException.class)
+    public void testGetAfterMethod_shouldThrowException() {
+        benchmarkMethodExtractor.getAfterMethod(invalidTestClass);
     }
 
     private static class TestClass {
@@ -70,6 +76,25 @@ public class BenchmarkMethodExtractorTest {
 
         @memory.benchmark.api.annotations.After
         public void tearDown() {
+        }
+    }
+
+    private static class InvalidTestClass {
+
+        @memory.benchmark.api.annotations.Before
+        public void setUpFirst() {
+        }
+
+        @memory.benchmark.api.annotations.Before
+        public void setUpSecond() {
+        }
+
+        @memory.benchmark.api.annotations.After
+        public void tearDownFirst() {
+        }
+
+        @memory.benchmark.api.annotations.After
+        public void tearDownSecond() {
         }
     }
 }

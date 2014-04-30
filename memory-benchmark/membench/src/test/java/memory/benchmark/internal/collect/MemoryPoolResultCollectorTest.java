@@ -1,7 +1,7 @@
 package memory.benchmark.internal.collect;
 
-import memory.benchmark.api.result.MemoryPoolFootprint;
-import memory.benchmark.api.result.StatisticView;
+import memory.benchmark.api.result.MemoryFootprint;
+import memory.benchmark.api.result.MemoryPoolStatisticView;
 import memory.benchmark.internal.ResultBuilder;
 import org.junit.Before;
 import org.junit.Test;
@@ -21,12 +21,12 @@ public class MemoryPoolResultCollectorTest {
     private static final MemoryType TEST_MEMORY_TYPE = MemoryType.HEAP;
 
     private MemoryPoolMXBean mockedMemoryPoolMXBean;
-    private MemoryPoolResultCollector memoryPoolResultCollector;
+    private MemoryPoolDataCollector memoryPoolResultCollector;
 
     @Before
     public void setUp() {
         mockedMemoryPoolMXBean = mock(MemoryPoolMXBean.class);
-        memoryPoolResultCollector = new MemoryPoolResultCollector(asList(mockedMemoryPoolMXBean));
+        memoryPoolResultCollector = new MemoryPoolDataCollector(asList(mockedMemoryPoolMXBean));
 
         when(mockedMemoryPoolMXBean.getName()).thenReturn(TEST_POOL_BEAN_NAME);
         when(mockedMemoryPoolMXBean.getType()).thenReturn(TEST_MEMORY_TYPE);
@@ -45,11 +45,11 @@ public class MemoryPoolResultCollectorTest {
         memoryPoolResultCollector.onAfterTest();
 
         ResultBuilder expectedResult = new ResultBuilder(null, null);
-        MemoryPoolFootprint memoryPoolFootprint = new MemoryPoolFootprint(beforeMemoryUsage, afterMemoryUsage, TEST_POOL_BEAN_NAME, TEST_MEMORY_TYPE);
-        expectedResult.setMemoryPoolFootprints(asList(new StatisticView<>(memoryPoolFootprint)));
+        MemoryFootprint memoryPoolFootprint = new MemoryFootprint(beforeMemoryUsage, afterMemoryUsage);
+        expectedResult.setMemoryPoolFootprints(asList(new MemoryPoolStatisticView(memoryPoolFootprint, TEST_MEMORY_TYPE, TEST_POOL_BEAN_NAME)));
 
         ResultBuilder actualResult = new ResultBuilder(null, null);
-        memoryPoolResultCollector.collectBenchmarkResult(actualResult);
+        memoryPoolResultCollector.collectBenchmarkData(actualResult);
 
         assertEquals(expectedResult.build(), actualResult.build());
     }

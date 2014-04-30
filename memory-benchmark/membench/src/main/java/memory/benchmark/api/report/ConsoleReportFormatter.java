@@ -13,14 +13,14 @@ import static memory.benchmark.api.Options.ReportInformation.*;
 /**
  *
  */
-public class StringReportFormatter implements ReportFormatter<String> {
+public class ConsoleReportFormatter implements ReportFormatter<String> {
 
     private static final String EOL = Character.toString('\n');
     private static final String TAB = Character.toString('\t');
 
     private final Options options;
 
-    public StringReportFormatter(Options options) {
+    public ConsoleReportFormatter(Options options) {
         this.options = options;
     }
 
@@ -73,7 +73,7 @@ public class StringReportFormatter implements ReportFormatter<String> {
         append(builder, appender, "- Max memory footprint : " + memoryValueConverter.convert(footprint.getMaxMemoryFootprint()));
     }
 
-    private void appendMemoryPoolFootPrints(StringBuilder builder, String appender, List<StatisticView<MemoryPoolFootprint>> footprints) {
+    private void appendMemoryPoolFootPrints(StringBuilder builder, String appender, List<MemoryPoolStatisticView> footprints) {
         if (!allowedToPrint(HEAP_MEMORY_POOL_FOOTPRINT) && !allowedToPrint(NON_HEAP_MEMORY_POOL_FOOTPRINT)) {
             return;
         }
@@ -81,30 +81,31 @@ public class StringReportFormatter implements ReportFormatter<String> {
         footprints.forEach(f -> appendMemoryPoolFootPrint(builder, TAB + appender, f));
     }
 
-    private void appendMemoryPoolFootPrint(StringBuilder builder, String appender, StatisticView<MemoryPoolFootprint> footprint) {
-        if(footprint.containsSingleValue()) {
-            appendMemoryPoolFootPrint(builder, appender, footprint.getSingleValue());
-        } else {
-            append(builder, appender, "- Minimum : ");
-            appendMemoryPoolFootPrint(builder, appender, footprint.getMinimumValue());
-            append(builder, appender, "- Maximum : ");
-            appendMemoryPoolFootPrint(builder, appender, footprint.getMaximumValue());
-            append(builder, appender, "- Average : ");
-            appendMemoryPoolFootPrint(builder, appender, footprint.getAverageValue());
-        }
-    }
-
-    private void appendMemoryPoolFootPrint(StringBuilder builder, String appender, MemoryPoolFootprint footprint) {
-        MemoryType footprintType = footprint.getMemoryType();
-        boolean allowed =   (footprintType == MemoryType.HEAP && allowedToPrint(HEAP_MEMORY_POOL_FOOTPRINT)) ||
-                            (footprintType == MemoryType.NON_HEAP && allowedToPrint(NON_HEAP_MEMORY_POOL_FOOTPRINT));
-        if(!allowed) {
+    private void appendMemoryPoolFootPrint(StringBuilder builder, String appender, MemoryPoolStatisticView footprint) {
+        if(!allowedMemoryPoolFootprint(footprint)) {
             return;
         }
 
-        append(builder, appender, "- Pool name : " + footprint.getPoolName());
+        append(builder, appender, "- Pool name : " + footprint.getName());
         append(builder, appender, "- Pool memory type : " + footprint.getMemoryType());
-        appendMemoryFootprint(builder, TAB + appender, footprint);
+
+        if(footprint.containsSingleValue()) {
+            appendMemoryFootprint(builder, TAB + appender, footprint.getSingleValue());
+        } else {
+            appender = appender + TAB;
+            append(builder, appender, "- Minimum : ");
+            appendMemoryFootprint(builder, TAB + appender, footprint.getMinimumValue());
+            append(builder, appender, "- Maximum : ");
+            appendMemoryFootprint(builder, TAB + appender, footprint.getMaximumValue());
+            append(builder, appender, "- Average : ");
+            appendMemoryFootprint(builder, TAB + appender, footprint.getAverageValue());
+        }
+    }
+
+    private boolean allowedMemoryPoolFootprint(MemoryPoolStatisticView footprint) {
+        MemoryType footprintType = footprint.getMemoryType();
+        return  (footprintType == MemoryType.HEAP && allowedToPrint(HEAP_MEMORY_POOL_FOOTPRINT)) ||
+                (footprintType == MemoryType.NON_HEAP && allowedToPrint(NON_HEAP_MEMORY_POOL_FOOTPRINT));
     }
 
     private void appendGcUsages(StringBuilder builder, String appender, List<StatisticView<GcUsage>> gcUsages) {

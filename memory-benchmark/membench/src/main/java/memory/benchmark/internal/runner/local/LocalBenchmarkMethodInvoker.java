@@ -2,13 +2,14 @@ package memory.benchmark.internal.runner.local;
 
 import memory.benchmark.api.Options;
 import memory.benchmark.internal.runner.BenchmarkMethodInvoker;
+import memory.benchmark.internal.util.ThrowableHandler;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Optional;
 
-import static memory.benchmark.internal.util.ThrowableActionHandler.wrapToBenchmarkRunException;
+import static memory.benchmark.internal.util.ThrowableHandler.handleThrowableFunction;
 
 public class LocalBenchmarkMethodInvoker implements BenchmarkMethodInvoker {
 
@@ -32,17 +33,17 @@ public class LocalBenchmarkMethodInvoker implements BenchmarkMethodInvoker {
 
     @Override
     public void invokeBefore() {
-        wrapToBenchmarkRunException(() -> invokeOptionalMethod(beforeMethod));
+        ThrowableHandler.handleThrowableAction(() -> invokeOptionalMethod(beforeMethod));
     }
 
     @Override
     public void invokeBenchmark(Method benchmarkMethod) {
-        wrapToBenchmarkRunException(() -> benchmarkMethod.invoke(benchmarkObject));
+        handleThrowableFunction(() -> benchmarkMethod.invoke(benchmarkObject));
     }
 
     @Override
     public void invokeAfter() {
-        wrapToBenchmarkRunException(() -> invokeOptionalMethod(afterMethod));
+        ThrowableHandler.handleThrowableAction(() -> invokeOptionalMethod(afterMethod));
     }
 
     @Override
@@ -51,7 +52,8 @@ public class LocalBenchmarkMethodInvoker implements BenchmarkMethodInvoker {
     }
 
     private void invokeOptionalMethod(Optional<Method> optional) throws InvocationTargetException, IllegalAccessException {
-        optional.ifPresent(m -> {wrapToBenchmarkRunException(() -> m.invoke(benchmarkObject));});
+        optional.ifPresent(m -> {
+            handleThrowableFunction(() -> m.invoke(benchmarkObject));});
         tryGc();
     }
 

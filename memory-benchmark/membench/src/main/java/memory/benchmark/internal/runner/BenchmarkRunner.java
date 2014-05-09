@@ -29,7 +29,7 @@ public class BenchmarkRunner {
     public List<Result> run() {
          List<Result> results = new ArrayList<>();
          for (Class benchmarkClass : benchmarkClasses) {
-
+             //TODO place inside to 'benchmarkMethods.size() > 0' statement!
              BenchmarkMethodInvoker benchmarkMethodInvoker = methodInvokerFactory.create(benchmarkClass);
              BenchmarkDataCollector benchmarkDataCollector = collectorFactory.create();
              List<Method> benchmarkMethods = benchmarkMethodInvoker.getBenchmarkMethods();
@@ -39,13 +39,14 @@ public class BenchmarkRunner {
              }
          }
          return  results;
-     }
+    }
 
     private List<Result> runTests(BenchmarkMethodInvoker benchmarkMethodInvoker, BenchmarkDataCollector benchmarkDataCollector) {
         List<Result> resultList = new ArrayList<>();
 
-        for (Method testMethod : benchmarkMethodInvoker.getBenchmarkMethods()) {
-            try {
+        try {
+
+            for (Method testMethod : benchmarkMethodInvoker.getBenchmarkMethods()) {
 
                 ResultBuilder resultBuilder = new ResultBuilder(testMethod.getDeclaringClass(), testMethod);
                 Benchmark benchmark = testMethod.getAnnotation(Benchmark.class);
@@ -66,11 +67,11 @@ public class BenchmarkRunner {
                 benchmarkDataCollector.clear();
 
                 resultList.add(resultBuilder.build());
-
-            } finally {
-                benchmarkMethodInvoker.close();
-                benchmarkDataCollector.close();
             }
+
+        } finally {
+            benchmarkMethodInvoker.close();
+            benchmarkDataCollector.close();
         }
 
         return resultList;

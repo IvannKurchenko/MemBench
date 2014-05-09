@@ -18,9 +18,9 @@ public class ListMemoryTest {
 
     public static void main(String... args) {
         Options options = new Options.Builder().
-                reportInformation(Options.ReportInformation.HEAP_MEMORY_POOL_FOOTPRINT).
+                /*reportInformation(Options.ReportInformation.HEAP_MEMORY_POOL_FOOTPRINT).
                 memoryValueConverter(MemoryValueConverter.TO_MEGA_BYTES).
-                runMode(Options.RunMode.SEPARATE_PROCESS).
+                runMode(Options.RunMode.SEPARATE_PROCESS).*/
                 build();
 
         ReportFormatter<String> formatter = new ConsoleReportFormatter(options);

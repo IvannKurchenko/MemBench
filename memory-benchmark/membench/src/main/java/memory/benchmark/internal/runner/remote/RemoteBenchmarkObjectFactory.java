@@ -9,7 +9,7 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.concurrent.TimeUnit;
 
-import static memory.benchmark.internal.util.ThrowableActionHandler.wrapToBenchmarkRunException;
+import static memory.benchmark.internal.util.ThrowableHandler.handleThrowableFunction;
 
 public class RemoteBenchmarkObjectFactory implements Factory<BenchmarkRemote, Class> {
 
@@ -21,7 +21,7 @@ public class RemoteBenchmarkObjectFactory implements Factory<BenchmarkRemote, Cl
 
     @Override
     public BenchmarkRemote create(Class clazz) {
-        //wrapToBenchmarkRunException(() -> runRemoteProcess(clazz));
+        //handleThrowableAction(() -> runRemoteProcess(clazz));
         return bindToProcess();
     }
 
@@ -30,13 +30,13 @@ public class RemoteBenchmarkObjectFactory implements Factory<BenchmarkRemote, Cl
         String javaBin = javaHome + File.separator + "bin" + File.separator + "java";
         String classpath = System.getProperty("java.class.path");
         String className = clazz.getCanonicalName();
-        ProcessBuilder builder = new ProcessBuilder(javaBin, "-cp", classpath, RemoteMain.class.getCanonicalName(), className);
+        ProcessBuilder builder = new ProcessBuilder(javaBin, "-cp", classpath, RemoteServer.class.getCanonicalName(), className);
         Process process = builder.start();
         process.waitFor(1, TimeUnit.SECONDS);
     }
 
     public BenchmarkRemote bindToProcess() {
-        Registry registry = wrapToBenchmarkRunException(() -> LocateRegistry.getRegistry(options.getRemotePort()));
-        return wrapToBenchmarkRunException(() -> (BenchmarkRemote) registry.lookup(RemoteMain.BENCHMARK_OBJECT_NAME));
+        Registry registry = handleThrowableFunction(() -> LocateRegistry.getRegistry(options.getRemotePort()));
+        return handleThrowableFunction(() -> (BenchmarkRemote) registry.lookup(RemoteServer.BENCHMARK_OBJECT_NAME));
     }
 }

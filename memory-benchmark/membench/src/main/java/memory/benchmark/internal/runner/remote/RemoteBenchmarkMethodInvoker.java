@@ -1,13 +1,11 @@
 package memory.benchmark.internal.runner.remote;
 
 import memory.benchmark.internal.runner.BenchmarkMethodInvoker;
+import memory.benchmark.internal.util.ThrowableHandler;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Optional;
-
-import static memory.benchmark.internal.util.ThrowableActionHandler.wrapToBenchmarkRunException;
 
 public class RemoteBenchmarkMethodInvoker implements BenchmarkMethodInvoker {
 
@@ -37,7 +35,7 @@ public class RemoteBenchmarkMethodInvoker implements BenchmarkMethodInvoker {
 
     @Override
     public void invokeBenchmark(Method benchmarkMethod) {
-        wrapToBenchmarkRunException(() -> benchmarkRemote.invoke(benchmarkMethod.getName()));
+        ThrowableHandler.handleThrowableAction(() -> benchmarkRemote.invoke(benchmarkMethod.getName()));
     }
 
     @Override
@@ -51,6 +49,6 @@ public class RemoteBenchmarkMethodInvoker implements BenchmarkMethodInvoker {
     }
 
     private void invokeOptionalMethod(Optional<Method> optional) {
-        optional.ifPresent(m -> wrapToBenchmarkRunException(() -> benchmarkRemote.invoke(m.getName())));
+        optional.ifPresent(m -> ThrowableHandler.handleThrowableAction(() -> benchmarkRemote.invoke(m.getName())));
     }
 }

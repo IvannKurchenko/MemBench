@@ -3,6 +3,7 @@ package memory.benchmark.internal.collect;
 import memory.benchmark.api.result.MemoryFootprint;
 import memory.benchmark.api.result.MemoryPoolStatisticView;
 import memory.benchmark.internal.ResultBuilder;
+import memory.benchmark.internal.runner.local.collect.LocalMemoryPoolDataCollector;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -21,12 +22,12 @@ public class MemoryPoolResultCollectorTest {
     private static final MemoryType TEST_MEMORY_TYPE = MemoryType.HEAP;
 
     private MemoryPoolMXBean mockedMemoryPoolMXBean;
-    private MemoryPoolDataCollector memoryPoolResultCollector;
+    private LocalMemoryPoolDataCollector memoryPoolResultCollector;
 
     @Before
     public void setUp() {
         mockedMemoryPoolMXBean = mock(MemoryPoolMXBean.class);
-        memoryPoolResultCollector = new MemoryPoolDataCollector(asList(mockedMemoryPoolMXBean));
+        memoryPoolResultCollector = new LocalMemoryPoolDataCollector(asList(mockedMemoryPoolMXBean));
 
         when(mockedMemoryPoolMXBean.getName()).thenReturn(TEST_POOL_BEAN_NAME);
         when(mockedMemoryPoolMXBean.getType()).thenReturn(TEST_MEMORY_TYPE);

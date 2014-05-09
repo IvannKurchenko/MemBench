@@ -10,7 +10,7 @@ public class StatisticCollector {
     }
 
     public static class Statistic {
-        final long max, min, average;
+        public final long max, min, average;
 
         public Statistic(long max, long min, long average) {
             this.max = max;

@@ -1,8 +1,9 @@
-package memory.benchmark.internal.runner.remote;
+package memory.benchmark.internal.runner.remote.collect;
 
 import memory.benchmark.internal.collect.BenchmarkDataCollector;
 import memory.benchmark.internal.collect.BenchmarkDataCollectors;
 
+import javax.management.MBeanServerConnection;
 import javax.management.remote.JMXConnector;
 import java.io.IOException;
 

@@ -3,6 +3,7 @@ package memory.benchmark.internal.collect;
 import memory.benchmark.api.result.GcUsage;
 import memory.benchmark.api.result.StatisticView;
 import memory.benchmark.internal.ResultBuilder;
+import memory.benchmark.internal.runner.local.collect.LocalGcDataCollector;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -18,13 +19,13 @@ public class GcResultCollectorTest {
     private static final String TEST_GC_NAME = "testGc";
 
     private GarbageCollectorMXBean mockedGarbageCollectorMXBean;
-    private GcDataCollector gcResultCollector;
+    private LocalGcDataCollector gcResultCollector;
 
     @Before
     public void setUp() {
         mockedGarbageCollectorMXBean = mock(GarbageCollectorMXBean.class);
         when(mockedGarbageCollectorMXBean.getName()).thenReturn(TEST_GC_NAME);
-        gcResultCollector = new GcDataCollector(asList(mockedGarbageCollectorMXBean));
+        gcResultCollector = new LocalGcDataCollector(asList(mockedGarbageCollectorMXBean));
     }
 
     @Test

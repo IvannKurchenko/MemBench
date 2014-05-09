@@ -4,37 +4,22 @@ import memory.benchmark.api.result.MemoryFootprint;
 import memory.benchmark.api.result.StatisticView;
 import memory.benchmark.internal.ResultBuilder;
 
-import java.lang.management.MemoryMXBean;
 import java.lang.management.MemoryUsage;
 import java.util.ArrayList;
 import java.util.List;
 
 import static memory.benchmark.internal.collect.StatisticCollector.getStatistic;
 
-public class MemoryDataCollector implements BenchmarkDataCollector {
+public abstract class AbstractMemoryDataCollector implements BenchmarkDataCollector{
 
-    private final MemoryMXBean memoryMXBean;
     private final List<MemoryUsage> beforeHeapMemoryUsages, beforeNonHeapMemoryUsages;
     private final List<MemoryUsage> afterHeapMemoryUsages, afterNonHeapMemoryUsages;
 
-    public MemoryDataCollector(MemoryMXBean memoryMXBean) {
-        this.memoryMXBean = memoryMXBean;
+    public AbstractMemoryDataCollector() {
         beforeHeapMemoryUsages = new ArrayList<>();
         beforeNonHeapMemoryUsages = new ArrayList<>();
         afterHeapMemoryUsages = new ArrayList<>();
         afterNonHeapMemoryUsages = new ArrayList<>();
-    }
-
-    @Override
-    public void onBeforeTest() {
-        beforeHeapMemoryUsages.add(memoryMXBean.getHeapMemoryUsage());
-        beforeNonHeapMemoryUsages.add(memoryMXBean.getNonHeapMemoryUsage());
-    }
-
-    @Override
-    public void onAfterTest() {
-        afterHeapMemoryUsages.add(memoryMXBean.getHeapMemoryUsage());
-        afterNonHeapMemoryUsages.add(memoryMXBean.getNonHeapMemoryUsage());
     }
 
     @Override
@@ -48,6 +33,16 @@ public class MemoryDataCollector implements BenchmarkDataCollector {
     public void clear() {
         beforeHeapMemoryUsages.clear();
         afterHeapMemoryUsages.clear();
+    }
+
+    protected void addBeforeMemoryUsage(MemoryUsage heap, MemoryUsage nonHeap) {
+        beforeHeapMemoryUsages.add(heap);
+        beforeNonHeapMemoryUsages.add(nonHeap);
+    }
+
+    protected void addAfterMemoryUsage(MemoryUsage heap, MemoryUsage nonHeap) {
+        afterHeapMemoryUsages.add(heap);
+        afterNonHeapMemoryUsages.add(nonHeap);
     }
 
     private StatisticView<MemoryFootprint> getMemoryStatistic(List<MemoryUsage> before, List<MemoryUsage> after) {

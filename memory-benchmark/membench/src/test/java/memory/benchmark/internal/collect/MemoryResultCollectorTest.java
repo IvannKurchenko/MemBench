@@ -3,6 +3,7 @@ package memory.benchmark.internal.collect;
 import memory.benchmark.api.result.MemoryFootprint;
 import memory.benchmark.api.result.StatisticView;
 import memory.benchmark.internal.ResultBuilder;
+import memory.benchmark.internal.runner.local.collect.LocalMemoryDataCollector;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -15,13 +16,13 @@ import static org.mockito.Mockito.when;
 
 public class MemoryResultCollectorTest {
 
-    private MemoryDataCollector memoryResultCollector;
+    private LocalMemoryDataCollector memoryResultCollector;
     private MemoryMXBean mockedMemoryMXBean;
 
     @Before
     public void setUp(){
         mockedMemoryMXBean = mock(MemoryMXBean.class);
-        memoryResultCollector = new MemoryDataCollector(mockedMemoryMXBean);
+        memoryResultCollector = new LocalMemoryDataCollector(mockedMemoryMXBean);
     }
 
     @Test

@@ -2,12 +2,10 @@ package memory.benchmark.internal.runner.remote;
 
 import java.lang.reflect.Method;
 import java.util.Map;
-import java.util.Set;
 
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toMap;
-import static java.util.stream.Collectors.toSet;
-import static memory.benchmark.internal.util.ThrowableActionHandler.wrapToBenchmarkRunException;
+import static memory.benchmark.internal.util.ThrowableHandler.handleThrowableFunction;
 
 public class BenchmarkRemoteImpl implements BenchmarkRemote {
 
@@ -26,6 +24,6 @@ public class BenchmarkRemoteImpl implements BenchmarkRemote {
 
     @Override
     public void invoke(String benchmarkMethod) {
-        wrapToBenchmarkRunException(() -> methodNameMap.get(benchmarkMethod).invoke(benchmarkObject));
+        handleThrowableFunction(() -> methodNameMap.get(benchmarkMethod).invoke(benchmarkObject));
     }
 }

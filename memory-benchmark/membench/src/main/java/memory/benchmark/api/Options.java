@@ -66,7 +66,7 @@ public class Options {
         /**
          * Run benchmarks in separate java process.
          */
-        SEPARATE_PROCESS;
+        SEPARATE_PROCESS
     }
     private final Set<ReportInformation> reportInformation;
 
@@ -80,9 +80,9 @@ public class Options {
         this.reportInformation = builder.reportInformation;
         this.memoryValueConverter = builder.memoryValueConverter;
         this.runMode = builder.runMode;
-        gcTime = builder.gcTime;
-        gcTimeUnit = builder.gcTimeUnit;
-        remotePort = builder.remotePort;
+        this.gcTime = builder.gcTime;
+        this.gcTimeUnit = builder.gcTimeUnit;
+        this.remotePort = builder.remotePort;
     }
 
     public Set<ReportInformation> getReportInformation() {

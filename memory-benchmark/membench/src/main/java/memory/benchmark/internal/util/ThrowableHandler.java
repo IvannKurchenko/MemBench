@@ -2,9 +2,9 @@ package memory.benchmark.internal.util;
 
 import memory.benchmark.api.exception.BenchmarkRunException;
 
-public class ThrowableActionHandler {
+public class ThrowableHandler {
 
-    public static void wrapToBenchmarkRunException(ThrowableAction action) {
+    public static void handleThrowableAction(ThrowableAction action) {
         try {
             action.execute();
         } catch (Throwable throwable) {
@@ -13,7 +13,7 @@ public class ThrowableActionHandler {
         }
     }
 
-    public static <T> T wrapToBenchmarkRunException(ThrowableFunction<T> function) {
+    public static <T> T handleThrowableFunction(ThrowableFunction<T> function) {
         try {
             return function.apply();
         } catch (Throwable throwable) {

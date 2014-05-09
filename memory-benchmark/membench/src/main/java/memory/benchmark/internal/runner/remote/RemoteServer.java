@@ -1,17 +1,15 @@
 package memory.benchmark.internal.runner.remote;
 
-import memory.benchmark.examples.ListMemoryTest;
-
 import javax.management.*;
 import javax.management.remote.JMXConnectorServer;
 import javax.management.remote.JMXServiceURL;
 import java.lang.management.*;
 import java.rmi.registry.Registry;
 
+import static java.lang.String.format;
 import static java.lang.management.ManagementFactory.*;
 import static java.rmi.registry.LocateRegistry.createRegistry;
 import static java.rmi.server.UnicastRemoteObject.exportObject;
-import static java.util.Arrays.asList;
 import static java.util.Collections.emptyMap;
 import static javax.management.MBeanServerFactory.createMBeanServer;
 import static javax.management.remote.JMXConnectorServerFactory.newJMXConnectorServer;
@@ -19,15 +17,12 @@ import static javax.management.remote.JMXConnectorServerFactory.newJMXConnectorS
 public class RemoteServer {
 
     static final String BENCHMARK_OBJECT_NAME = "benchmark";
-    static final String SERVER_URL = "service:jmx:rmi:///jndi/rmi://localhost:3000/jmxrmi";
-    public static final String MBEAN_SERVER_DOMAIN = "jmxrmi";
-
+    static final String SERVER_DOMAIN = "jmxrmi";
+    static final String SERVER_URL_PATTERN = "service:jmx:rmi:///jndi/rmi://localhost:%d/jmxrmi" + SERVER_DOMAIN;
 
     private static RemoteServer serverHolder;
 
     public static void main(String... args) throws Exception {
-        args = (String[]) asList(ListMemoryTest.class.getCanonicalName(), "10000", "3000").toArray();
-
         String clazz = args[0];
         int benchmarkRmiPort = Integer.parseInt(args[1]);
         int mBeanServerRmiPort = Integer.parseInt(args[2]);
@@ -38,12 +33,12 @@ public class RemoteServer {
 
     private final String benchmarkClassName;
     private final int benchmarkRmiPort;
-    private final int mBeanServerRmiPort;
+    private final int mxBeanServerRmiPort;
 
-    public RemoteServer(String benchmarkClassName, int benchmarkRmiPort, int mBeanServerRmiPort) {
+    public RemoteServer(String benchmarkClassName, int benchmarkRmiPort, int mxBeanServerRmiPort) {
         this.benchmarkClassName = benchmarkClassName;
         this.benchmarkRmiPort = benchmarkRmiPort;
-        this.mBeanServerRmiPort = mBeanServerRmiPort;
+        this.mxBeanServerRmiPort = mxBeanServerRmiPort;
     }
 
     private void startServer() throws Exception {
@@ -61,10 +56,11 @@ public class RemoteServer {
     }
 
     private void registerMBeansServer() throws Exception {
-        createRegistry(mBeanServerRmiPort);
-        MBeanServer server = createMBeanServer(MBEAN_SERVER_DOMAIN);
+        createRegistry(mxBeanServerRmiPort);
+        MBeanServer server = createMBeanServer(SERVER_DOMAIN);
 
-        JMXConnectorServer connector = newJMXConnectorServer(new JMXServiceURL(SERVER_URL), emptyMap(), server);
+        JMXServiceURL jmxServiceURL = new JMXServiceURL(format(SERVER_URL_PATTERN, mxBeanServerRmiPort));
+        JMXConnectorServer connector = newJMXConnectorServer(jmxServiceURL, emptyMap(), server);
 
         register(server, getMemoryMXBean(), MEMORY_MXBEAN_NAME);
 

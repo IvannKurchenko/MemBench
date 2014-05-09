@@ -9,20 +9,17 @@ import java.util.Optional;
 
 public class RemoteBenchmarkMethodInvoker implements BenchmarkMethodInvoker {
 
-    private final BenchmarkRemote benchmarkRemote;
+    private final BenchmarkProcess benchmarkProcess;
     private final Optional<Method> beforeMethod;
     private final Optional<Method> afterMethod;
     private final List<Method> benchmarkMethods;
-    private final Process process;
 
-    public RemoteBenchmarkMethodInvoker(Process process,
-                                        BenchmarkRemote benchmarkRemote,
+    public RemoteBenchmarkMethodInvoker(BenchmarkProcess benchmarkProcess,
                                         Optional<Method> beforeMethod,
                                         Optional<Method> afterMethod,
                                         List<Method> benchmarkMethods) {
 
-        this.process = process;
-        this.benchmarkRemote = benchmarkRemote;
+        this.benchmarkProcess = benchmarkProcess;
         this.beforeMethod = beforeMethod;
         this.afterMethod = afterMethod;
         this.benchmarkMethods = benchmarkMethods;
@@ -35,7 +32,7 @@ public class RemoteBenchmarkMethodInvoker implements BenchmarkMethodInvoker {
 
     @Override
     public void invokeBenchmark(Method benchmarkMethod) {
-        ThrowableHandler.handleThrowableAction(() -> benchmarkRemote.invoke(benchmarkMethod.getName()));
+        ThrowableHandler.handleThrowableAction(() -> benchmarkProcess.getBenchmarkRemote().invoke(benchmarkMethod.getName()));
     }
 
     @Override
@@ -48,7 +45,12 @@ public class RemoteBenchmarkMethodInvoker implements BenchmarkMethodInvoker {
         return benchmarkMethods;
     }
 
+    @Override
+    public void close(){
+        benchmarkProcess.getProcess().destroy();
+    }
+
     private void invokeOptionalMethod(Optional<Method> optional) {
-        optional.ifPresent(m -> ThrowableHandler.handleThrowableAction(() -> benchmarkRemote.invoke(m.getName())));
+        optional.ifPresent(m -> ThrowableHandler.handleThrowableAction(() -> benchmarkProcess.getBenchmarkRemote().invoke(m.getName())));
     }
 }

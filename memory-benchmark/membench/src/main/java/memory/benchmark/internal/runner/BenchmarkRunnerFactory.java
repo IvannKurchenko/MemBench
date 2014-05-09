@@ -6,10 +6,10 @@ import memory.benchmark.internal.collect.BenchmarkDataCollector;
 import memory.benchmark.internal.runner.local.collect.LocalBenchmarkDataCollectorFactory;
 import memory.benchmark.internal.runner.local.LocalBenchmarkMethodInvokerFactory;
 import memory.benchmark.internal.runner.local.LocalBenchmarkObjectFactory;
-import memory.benchmark.internal.runner.remote.BenchmarkRemote;
+import memory.benchmark.internal.runner.remote.BenchmarkProcess;
 import memory.benchmark.internal.runner.remote.collect.RemoteBenchmarkDataCollectorFactory;
 import memory.benchmark.internal.runner.remote.RemoteBenchmarkMethodInvokerFactory;
-import memory.benchmark.internal.runner.remote.RemoteBenchmarkObjectFactory;
+import memory.benchmark.internal.runner.remote.RemoteBenchmarkProcessFactory;
 import memory.benchmark.internal.util.Factory;
 import memory.benchmark.internal.validation.BenchmarkClassValidator;
 import memory.benchmark.internal.validation.BenchmarkMethodValidator;
@@ -52,7 +52,7 @@ public class BenchmarkRunnerFactory {
         BenchmarkMethodValidator methodBenchmarkValidator = new BenchmarkMethodValidator();
         BenchmarkClassValidator classBenchmarkValidator = new BenchmarkClassValidator();
         BenchmarkMethodExtractor methodExtractor = new BenchmarkMethodExtractor();
-        Factory<BenchmarkRemote, Class> benchmarkRemoteFactory = new RemoteBenchmarkObjectFactory(options);
+        Factory<BenchmarkProcess, Class> benchmarkRemoteFactory = new RemoteBenchmarkProcessFactory(options);
         return new RemoteBenchmarkMethodInvokerFactory( methodBenchmarkValidator,
                                                         classBenchmarkValidator,
                                                         methodExtractor,

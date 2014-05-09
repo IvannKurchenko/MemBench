@@ -24,6 +24,8 @@ import static memory.benchmark.internal.util.ThrowableHandler.handleThrowableFun
 
 public class RemoteBenchmarkDataCollectorFactory implements Factory<BenchmarkDataCollector, Object> {
 
+    private static final String SERVICE_URL_PATTERN = "service:jmx:rmi:///jndi/rmi://localhost:%d/jmxrmi";
+
     private final Options options;
 
     public RemoteBenchmarkDataCollectorFactory(Options options) {
@@ -36,7 +38,7 @@ public class RemoteBenchmarkDataCollectorFactory implements Factory<BenchmarkDat
     }
 
     private BenchmarkDataCollector createCollector() throws IOException {
-        JMXServiceURL target = new JMXServiceURL("service:jmx:rmi:///jndi/rmi://localhost:3000/jmxrmi");
+        JMXServiceURL target = new JMXServiceURL(String.format(SERVICE_URL_PATTERN, options.getMxBeanRemotePort()));
         JMXConnector connector = JMXConnectorFactory.connect(target);
         MBeanServerConnection remote = connector.getMBeanServerConnection();
 

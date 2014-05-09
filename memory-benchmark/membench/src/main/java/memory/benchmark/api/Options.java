@@ -13,8 +13,6 @@ import static java.util.Objects.requireNonNull;
  */
 public class Options {
 
-
-
     /**
      * Enum that represents information included to report.
      */
@@ -48,10 +46,8 @@ public class Options {
          * Includes information about garbage collector usage.
          * @see  memory.benchmark.api.result.GcUsage
          */
-        GC_USAGE;
+        GC_USAGE
     }
-
-
 
     /**
      * Enum that represents way to run benchmark tests.
@@ -75,6 +71,7 @@ public class Options {
     private final TimeUnit gcTimeUnit;
     private final long gcTime;
     private final int remotePort;
+    private final int mxBeanRemotePort;
 
     private Options(Builder builder) {
         this.reportInformation = builder.reportInformation;
@@ -83,6 +80,7 @@ public class Options {
         this.gcTime = builder.gcTime;
         this.gcTimeUnit = builder.gcTimeUnit;
         this.remotePort = builder.remotePort;
+        this.mxBeanRemotePort = builder.mxBeanRemotePort;
     }
 
     public Set<ReportInformation> getReportInformation() {
@@ -109,6 +107,10 @@ public class Options {
         return remotePort;
     }
 
+    public int getMxBeanRemotePort() {
+        return mxBeanRemotePort;
+    }
+
     /**
      *
      */
@@ -117,6 +119,7 @@ public class Options {
         private static final long DEFAULT_GC_TIME = 1;
         private static final TimeUnit DEFAULT_GC_TIME_UNIT = TimeUnit.SECONDS;
         private static final int DEFAULT_REMOTE_PORT = 10000;
+        private static final int DEFAULT_MX_BEAN_REMOTE_PORT = 10001;
 
         private Set<ReportInformation> reportInformation;
         private MemoryValueConverter memoryValueConverter;
@@ -124,6 +127,7 @@ public class Options {
         private TimeUnit gcTimeUnit;
         private long gcTime;
         private int remotePort;
+        private int mxBeanRemotePort;
 
         public Builder() {
             reportInformation = EnumSet.allOf(ReportInformation.class);
@@ -132,6 +136,7 @@ public class Options {
             gcTimeUnit = DEFAULT_GC_TIME_UNIT;
             gcTime = DEFAULT_GC_TIME;
             remotePort = DEFAULT_REMOTE_PORT;
+            mxBeanRemotePort = DEFAULT_MX_BEAN_REMOTE_PORT;
         }
 
         /**
@@ -178,6 +183,16 @@ public class Options {
 
         public Builder remotePort(int remotePort) {
             this.remotePort = remotePort;
+            return this;
+        }
+
+        /**
+         *
+         * @param mxBeanRemotePort
+         * @return
+         */
+        public Builder mxBeanRemotePort(int mxBeanRemotePort) {
+            this.mxBeanRemotePort = mxBeanRemotePort;
             return this;
         }
 

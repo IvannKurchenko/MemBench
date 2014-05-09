@@ -29,12 +29,12 @@ public class BenchmarkRunner {
     public List<Result> run() {
          List<Result> results = new ArrayList<>();
          for (Class benchmarkClass : benchmarkClasses) {
-             //TODO place inside to 'benchmarkMethods.size() > 0' statement!
+
              BenchmarkMethodInvoker benchmarkMethodInvoker = methodInvokerFactory.create(benchmarkClass);
-             BenchmarkDataCollector benchmarkDataCollector = collectorFactory.create();
              List<Method> benchmarkMethods = benchmarkMethodInvoker.getBenchmarkMethods();
 
              if(benchmarkMethods.size() > 0) {
+                 BenchmarkDataCollector benchmarkDataCollector = collectorFactory.create();
                  results.addAll(runTests(benchmarkMethodInvoker, benchmarkDataCollector));
              }
          }

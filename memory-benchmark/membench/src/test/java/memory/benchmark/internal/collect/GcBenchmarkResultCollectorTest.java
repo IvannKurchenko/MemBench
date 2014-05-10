@@ -42,10 +42,10 @@ public class GcBenchmarkResultCollectorTest {
 
         gcResultCollector.onAfterTest();
 
-        ResultBuilder expectedBuilder = new ResultBuilder(null, null);
+        ResultBuilder expectedBuilder = new ResultBuilder(null, null, null);
         expectedBuilder.setGcUsages(asList(new StatisticView<GcUsage>(new GcUsage(TEST_GC_NAME, 100, 100))));
 
-        ResultBuilder actualBuilder = new ResultBuilder(null, null);
+        ResultBuilder actualBuilder = new ResultBuilder(null, null, null);
         gcResultCollector.collectBenchmarkData(actualBuilder);
 
         assertEquals(expectedBuilder.build(), actualBuilder.build());

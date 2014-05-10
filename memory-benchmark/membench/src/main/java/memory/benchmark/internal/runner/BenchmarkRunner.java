@@ -67,8 +67,8 @@ public class BenchmarkRunner {
         for (Method testMethod : benchmarkMethodInvoker.getBenchmarkMethods()) {
             log.log("Starting benchmark method : " + testMethod.getName());
 
-            ResultBuilder resultBuilder = new ResultBuilder(testMethod.getDeclaringClass(), testMethod);
             Benchmark benchmark = testMethod.getAnnotation(Benchmark.class);
+            ResultBuilder resultBuilder = new ResultBuilder(testMethod.getDeclaringClass(), testMethod, benchmark);
 
             for (int i = 0; i < benchmark.testTimes(); i++) {
 

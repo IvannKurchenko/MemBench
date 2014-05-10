@@ -6,4 +6,6 @@ import java.rmi.RemoteException;
 public interface BenchmarkRemote extends Remote {
 
     void invoke(String benchmarkMethod) throws RemoteException;
+
+    void gc() throws RemoteException;
 }

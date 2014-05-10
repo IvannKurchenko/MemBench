@@ -45,11 +45,11 @@ public class MemoryPoolBenchmarkResultCollectorTest {
 
         memoryPoolResultCollector.onAfterTest();
 
-        ResultBuilder expectedResult = new ResultBuilder(null, null);
+        ResultBuilder expectedResult = new ResultBuilder(null, null, null);
         MemoryFootprint memoryPoolFootprint = new MemoryFootprint(beforeMemoryUsage, afterMemoryUsage);
         expectedResult.setMemoryPoolFootprints(asList(new MemoryPoolStatisticView(memoryPoolFootprint, TEST_MEMORY_TYPE, TEST_POOL_BEAN_NAME)));
 
-        ResultBuilder actualResult = new ResultBuilder(null, null);
+        ResultBuilder actualResult = new ResultBuilder(null, null, null);
         memoryPoolResultCollector.collectBenchmarkData(actualResult);
 
         assertEquals(expectedResult.build(), actualResult.build());

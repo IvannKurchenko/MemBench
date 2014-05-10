@@ -29,6 +29,7 @@ public class RemoteBenchmarkMethodInvoker implements BenchmarkMethodInvoker {
     @Override
     public void invokeBefore() {
         invokeOptionalMethod(beforeMethod);
+        invokeGc();
     }
 
     @Override
@@ -39,6 +40,7 @@ public class RemoteBenchmarkMethodInvoker implements BenchmarkMethodInvoker {
     @Override
     public void invokeAfter() {
         invokeOptionalMethod(afterMethod);
+        invokeGc();
     }
 
     @Override
@@ -49,6 +51,10 @@ public class RemoteBenchmarkMethodInvoker implements BenchmarkMethodInvoker {
     @Override
     public void close() {
         benchmarkProcess.getProcess().destroy();
+    }
+
+    private void invokeGc() {
+        handleThrowableAction(benchmarkProcess.getBenchmarkRemote()::gc);
     }
 
     private void invokeOptionalMethod(Optional<Method> optional) {

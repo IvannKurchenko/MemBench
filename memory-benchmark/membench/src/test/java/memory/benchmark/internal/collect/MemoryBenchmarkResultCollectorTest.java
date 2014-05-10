@@ -39,12 +39,12 @@ public class MemoryBenchmarkResultCollectorTest {
 
         memoryResultCollector.onAfterTest();
 
-        ResultBuilder expectedResult = new ResultBuilder(null, null);
+        ResultBuilder expectedResult = new ResultBuilder(null, null, null);
         MemoryFootprint heapMemoryFootprint = new MemoryFootprint(beforeHeapMemoryUsage, afterHeapMemoryUsage);
         MemoryFootprint nonHeapMemoryFootprint = new MemoryFootprint(beforeNonHeapMemoryUsage, afterNonHeapMemoryUsage);
         expectedResult.setHeapMemoryDifference(new StatisticView<>(heapMemoryFootprint), new StatisticView<>(nonHeapMemoryFootprint));
 
-        ResultBuilder actualResult = new ResultBuilder(null, null);
+        ResultBuilder actualResult = new ResultBuilder(null, null, null);
         memoryResultCollector.collectBenchmarkData(actualResult);
 
         assertEquals(expectedResult.build(), actualResult.build());

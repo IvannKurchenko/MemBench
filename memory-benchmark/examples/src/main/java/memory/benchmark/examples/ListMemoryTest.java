@@ -8,6 +8,7 @@ import memory.benchmark.api.annotations.Benchmark;
 import memory.benchmark.api.report.BenchmarkReportFormatter;
 import memory.benchmark.api.report.ConsoleBenchmarkReportFormatter;
 import memory.benchmark.api.result.BenchmarkResult;
+import memory.benchmark.api.util.MemoryValueConverter;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -17,9 +18,9 @@ public class ListMemoryTest {
 
     public static void main(String... args) {
         Options options = new Options.Builder().
-                /*reportInformation(Options.ReportInformation.HEAP_MEMORY_POOL_FOOTPRINT).
+                reportInformation(Options.ReportInformation.HEAP_MEMORY_POOL_FOOTPRINT).
                 memoryValueConverter(MemoryValueConverter.TO_MEGA_BYTES).
-                runMode(Options.RunMode.SEPARATE_PROCESS).*/
+                runMode(Options.RunMode.SEPARATE_PROCESS).
                 build();
 
         BenchmarkReportFormatter<String> formatter = new ConsoleBenchmarkReportFormatter(options);

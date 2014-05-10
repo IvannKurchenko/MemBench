@@ -33,7 +33,7 @@ public class RemoteMemoryDataCollector extends AbstractMemoryDataCollector {
         addAfterMemoryUsage(getMemoryUsage(HEAP_MEMORY_USAGE), getMemoryUsage(NON_HEAP_MEMORY_USAGE));
     }
 
-    private MemoryUsage getMemoryUsage(String usageProperty){
+    private MemoryUsage getMemoryUsage(String usageProperty) {
         return toMemoryUsage(handleThrowableFunction(() -> (CompositeData) remote.getAttribute(OBJECT_NAME, usageProperty)));
     }
 }

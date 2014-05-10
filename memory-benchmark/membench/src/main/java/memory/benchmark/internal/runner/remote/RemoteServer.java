@@ -2,11 +2,13 @@ package memory.benchmark.internal.runner.remote;
 
 import memory.benchmark.internal.util.Log;
 
-import javax.management.*;
+import javax.management.MBeanServer;
+import javax.management.ObjectName;
 import javax.management.remote.JMXConnectorServer;
 import javax.management.remote.JMXServiceURL;
-import java.lang.management.*;
-import java.lang.reflect.Array;
+import java.lang.management.GarbageCollectorMXBean;
+import java.lang.management.MemoryPoolMXBean;
+import java.lang.management.PlatformManagedObject;
 import java.rmi.registry.Registry;
 import java.util.Arrays;
 
@@ -20,14 +22,13 @@ import static javax.management.remote.JMXConnectorServerFactory.newJMXConnectorS
 
 public class RemoteServer {
 
-    private static final Log LOG = Log.SYS_OUT;
-
     static final String BENCHMARK_OBJECT_NAME = "benchmark";
+
     static final String SERVER_DOMAIN = "jmxrmi";
     static final String SERVER_URL_PATTERN = "service:jmx:rmi:///jndi/rmi://localhost:%d/" + SERVER_DOMAIN;
+    private static final Log LOG = Log.SYS_OUT;
 
     private static RemoteServer serverHolder;
-
     public static void main(String... args) throws Exception {
         LOG.log("Starting remote server with args : " + Arrays.toString(args));
         String clazz = args[0];
@@ -38,9 +39,9 @@ public class RemoteServer {
         serverHolder.startServer();
     }
 
-    private final String benchmarkClassName;
     private final int benchmarkRmiPort;
     private final int mxBeanServerRmiPort;
+    private final String benchmarkClassName;
 
     public RemoteServer(String benchmarkClassName, int benchmarkRmiPort, int mxBeanServerRmiPort) {
         this.benchmarkClassName = benchmarkClassName;
@@ -73,11 +74,11 @@ public class RemoteServer {
 
         register(server, getMemoryMXBean(), MEMORY_MXBEAN_NAME);
 
-        for(MemoryPoolMXBean b : getMemoryPoolMXBeans()) {
+        for (MemoryPoolMXBean b : getMemoryPoolMXBeans()) {
             register(server, b, MEMORY_POOL_MXBEAN_DOMAIN_TYPE + b.getName());
         }
 
-        for(GarbageCollectorMXBean gc : getGarbageCollectorMXBeans()) {
+        for (GarbageCollectorMXBean gc : getGarbageCollectorMXBeans()) {
             register(server, gc, GARBAGE_COLLECTOR_MXBEAN_DOMAIN_TYPE + gc.getName());
         }
 
@@ -86,7 +87,7 @@ public class RemoteServer {
 
     private void register(MBeanServer server, PlatformManagedObject mBean, String name) throws Exception {
         ObjectName mBeanName = new ObjectName(name);
-        if(!server.isRegistered(mBeanName)) {
+        if (!server.isRegistered(mBeanName)) {
             server.registerMBean(mBean, mBeanName);
         }
     }

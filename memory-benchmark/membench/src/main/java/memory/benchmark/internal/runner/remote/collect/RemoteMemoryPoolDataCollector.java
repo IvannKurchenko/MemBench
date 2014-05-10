@@ -2,7 +2,9 @@ package memory.benchmark.internal.runner.remote.collect;
 
 import memory.benchmark.internal.collect.AbstractMemoryPoolDataCollector;
 
-import javax.management.*;
+import javax.management.MBeanServerConnection;
+import javax.management.MalformedObjectNameException;
+import javax.management.ObjectName;
 import javax.management.openmbean.CompositeData;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
@@ -11,7 +13,6 @@ import java.lang.management.MemoryUsage;
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;
-import static javax.management.Query.value;
 import static memory.benchmark.internal.runner.remote.collect.CompositeDataConverter.toMemoryUsage;
 import static memory.benchmark.internal.util.ThrowableHandler.handleThrowableFunction;
 
@@ -30,7 +31,7 @@ public class RemoteMemoryPoolDataCollector extends AbstractMemoryPoolDataCollect
     }
 
     private List<ObjectName> queryMemoryPoolBeanNames() throws MalformedObjectNameException, IOException {
-        return  remote.queryNames(null, null).
+        return remote.queryNames(null, null).
                 stream().
                 filter(i -> i.getCanonicalName().startsWith(ManagementFactory.MEMORY_POOL_MXBEAN_DOMAIN_TYPE)).
                 collect(toList());
@@ -46,11 +47,11 @@ public class RemoteMemoryPoolDataCollector extends AbstractMemoryPoolDataCollect
         memoryBeanPoolNames.forEach(b -> putAfterMemoryUsage(getMemoryPool(b), getMemoryUsage(b)));
     }
 
-    private Pool getMemoryPool(ObjectName name){
+    private Pool getMemoryPool(ObjectName name) {
         return new Pool(getAttribute(name, NAME).toString(), MemoryType.valueOf(getAttribute(name, TYPE).toString()));
     }
 
-    private MemoryUsage getMemoryUsage(ObjectName name){
+    private MemoryUsage getMemoryUsage(ObjectName name) {
         return toMemoryUsage((CompositeData) getAttribute(name, MEMORY_USAGE));
     }
 

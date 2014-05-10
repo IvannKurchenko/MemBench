@@ -3,10 +3,7 @@ package memory.benchmark.internal.runner.local.collect;
 import memory.benchmark.internal.collect.AbstractMemoryPoolDataCollector;
 
 import java.lang.management.MemoryPoolMXBean;
-import java.lang.management.MemoryUsage;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class LocalMemoryPoolDataCollector extends AbstractMemoryPoolDataCollector {
 

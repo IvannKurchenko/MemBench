@@ -58,6 +58,7 @@ public class BenchmarkRunnerTest {
 
     private static class TestClass {
         @Benchmark
-        public void testMethod(){}
+        public void testMethod() {
+        }
     }
 }

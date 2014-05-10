@@ -17,7 +17,6 @@ import static java.util.Arrays.asList;
 public class Runner {
 
     /**
-     *
      * @param options
      * @param testClasses
      * @return
@@ -28,7 +27,6 @@ public class Runner {
     }
 
     /**
-     *
      * @param options
      * @param testClass
      * @return
@@ -44,7 +42,7 @@ public class Runner {
      */
     public static List<Result> run(Options options, String packageName) {
         Reflections reflections = new Reflections(packageName);
-        Set<Class<?>> allClasses =  reflections.getSubTypesOf(Object.class);
+        Set<Class<?>> allClasses = reflections.getSubTypesOf(Object.class);
         return run(options, allClasses);
     }
 }

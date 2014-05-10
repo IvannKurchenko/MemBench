@@ -1,16 +1,13 @@
 package memory.benchmark.internal;
 
-import memory.benchmark.api.annotations.After;
 import memory.benchmark.api.annotations.Benchmark;
 import memory.benchmark.api.exception.InvalidBenchmarkException;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.lang.reflect.Method;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import static java.util.Arrays.asList;
 import static junit.framework.Assert.assertEquals;
@@ -67,11 +64,11 @@ public class BenchmarkMethodExtractorTest {
         }
 
         @Benchmark
-        public void firstBenchmark(){
+        public void firstBenchmark() {
         }
 
         @Benchmark
-        public void secondBenchmark(){
+        public void secondBenchmark() {
         }
 
         @memory.benchmark.api.annotations.After

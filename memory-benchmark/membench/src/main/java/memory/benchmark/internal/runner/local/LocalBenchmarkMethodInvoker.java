@@ -53,7 +53,8 @@ public class LocalBenchmarkMethodInvoker implements BenchmarkMethodInvoker {
 
     private void invokeOptionalMethod(Optional<Method> optional) throws InvocationTargetException, IllegalAccessException {
         optional.ifPresent(m -> {
-            handleThrowableFunction(() -> m.invoke(benchmarkObject));});
+            handleThrowableFunction(() -> m.invoke(benchmarkObject));
+        });
         tryGc();
     }
 

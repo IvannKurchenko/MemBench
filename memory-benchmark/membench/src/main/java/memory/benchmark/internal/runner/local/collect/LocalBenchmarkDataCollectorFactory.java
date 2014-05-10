@@ -1,6 +1,7 @@
 package memory.benchmark.internal.runner.local.collect;
 
-import memory.benchmark.internal.collect.*;
+import memory.benchmark.internal.collect.BenchmarkDataCollector;
+import memory.benchmark.internal.collect.BenchmarkDataCollectors;
 import memory.benchmark.internal.util.Factory;
 
 import java.lang.management.ManagementFactory;

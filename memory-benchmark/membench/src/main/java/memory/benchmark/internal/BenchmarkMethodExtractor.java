@@ -37,8 +37,8 @@ public class BenchmarkMethodExtractor {
         return asList(methods).stream().filter(m -> m.isAnnotationPresent(annotation)).collect(toList());
     }
 
-    private  List<Method> checkAnnotatedMethodsSize(Class clazz, List<Method> list, Class<? extends Annotation> annotation) {
-        if(list.size() > 1){
+    private List<Method> checkAnnotatedMethodsSize(Class clazz, List<Method> list, Class<? extends Annotation> annotation) {
+        if (list.size() > 1) {
             throw new InvalidBenchmarkException(clazz, "should have one method annotated with : " + annotation.getSimpleName());
         }
         return list;

@@ -24,7 +24,6 @@ public class MemoryFootprint {
     }
 
     /**
-     *
      * @return
      */
     public long getUsedMemoryFootprint() {
@@ -32,7 +31,6 @@ public class MemoryFootprint {
     }
 
     /**
-     *
      * @return
      */
     public long getMaxMemoryFootprint() {
@@ -40,7 +38,6 @@ public class MemoryFootprint {
     }
 
     /**
-     *
      * @return
      */
     public long getCommittedMemoryFootprint() {

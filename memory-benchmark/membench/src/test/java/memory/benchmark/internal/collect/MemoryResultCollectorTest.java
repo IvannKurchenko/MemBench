@@ -20,13 +20,13 @@ public class MemoryResultCollectorTest {
     private MemoryMXBean mockedMemoryMXBean;
 
     @Before
-    public void setUp(){
+    public void setUp() {
         mockedMemoryMXBean = mock(MemoryMXBean.class);
         memoryResultCollector = new LocalMemoryDataCollector(mockedMemoryMXBean);
     }
 
     @Test
-    public void testCollectBenchmarkResult(){
+    public void testCollectBenchmarkResult() {
         MemoryUsage beforeHeapMemoryUsage = new MemoryUsage(100, 100, 100, 100);
         MemoryUsage beforeNonHeapMemoryUsage = new MemoryUsage(100, 100, 100, 100);
         mockMemoryMXBeanBehaviour(beforeHeapMemoryUsage, beforeNonHeapMemoryUsage);

@@ -13,8 +13,8 @@ public class BenchmarkRemoteImpl implements BenchmarkRemote {
     private final Map<String, Method> methodNameMap;
 
     public BenchmarkRemoteImpl(Object benchmarkObject) {
-            this.benchmarkObject = benchmarkObject;
-            this.methodNameMap = asList(benchmarkObject.getClass().getDeclaredMethods()).stream().collect(toMap(Method::getName, m -> m));
+        this.benchmarkObject = benchmarkObject;
+        this.methodNameMap = asList(benchmarkObject.getClass().getDeclaredMethods()).stream().collect(toMap(Method::getName, m -> m));
     }
 
     @Override

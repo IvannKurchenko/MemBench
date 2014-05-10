@@ -20,39 +20,45 @@ public class Options {
 
         /**
          * Includes information about heap memory usage.
-         * @see  memory.benchmark.api.result.MemoryFootprint
+         *
+         * @see memory.benchmark.api.result.MemoryFootprint
          */
         HEAP_MEMORY_FOOTPRINT,
 
         /**
          * Includes information about non heap memory usage.
-         * @see  memory.benchmark.api.result.MemoryFootprint
+         *
+         * @see memory.benchmark.api.result.MemoryFootprint
          */
         NON_HEAP_MEMORY_FOOTPRINT,
 
         /**
          * Includes information about heap memory polls usage.
-         * @see  memory.benchmark.api.result.MemoryPoolStatisticView
+         *
+         * @see memory.benchmark.api.result.MemoryPoolStatisticView
          */
         HEAP_MEMORY_POOL_FOOTPRINT,
 
         /**
          * Includes information about non heap memory polls usage.
-         * @see  memory.benchmark.api.result.MemoryPoolStatisticView
+         *
+         * @see memory.benchmark.api.result.MemoryPoolStatisticView
          */
         NON_HEAP_MEMORY_POOL_FOOTPRINT,
 
         /**
          * Includes information about garbage collector usage.
-         * @see  memory.benchmark.api.result.GcUsage
+         *
+         * @see memory.benchmark.api.result.GcUsage
          */
         GC_USAGE
     }
 
+
     /**
      * Enum that represents way to run benchmark tests.
      */
-    public enum RunMode{
+    public enum RunMode {
 
         /**
          * Run benchmarks in same java process.
@@ -64,14 +70,15 @@ public class Options {
          */
         SEPARATE_PROCESS
     }
-    private final Set<ReportInformation> reportInformation;
 
+    private final Set<ReportInformation> reportInformation;
     private final MemoryValueConverter memoryValueConverter;
     private final RunMode runMode;
     private final TimeUnit gcTimeUnit;
     private final long gcTime;
     private final int remotePort;
     private final int mxBeanRemotePort;
+    private final boolean allowedInternalLogging;
 
     private Options(Builder builder) {
         this.reportInformation = builder.reportInformation;
@@ -81,6 +88,7 @@ public class Options {
         this.gcTimeUnit = builder.gcTimeUnit;
         this.remotePort = builder.remotePort;
         this.mxBeanRemotePort = builder.mxBeanRemotePort;
+        this.allowedInternalLogging = builder.allowedInternalLogging;
     }
 
     public Set<ReportInformation> getReportInformation() {
@@ -111,6 +119,10 @@ public class Options {
         return mxBeanRemotePort;
     }
 
+    public boolean isAllowedInternalLogging() {
+        return allowedInternalLogging;
+    }
+
     /**
      *
      */
@@ -128,6 +140,7 @@ public class Options {
         private long gcTime;
         private int remotePort;
         private int mxBeanRemotePort;
+        private boolean allowedInternalLogging;
 
         public Builder() {
             reportInformation = EnumSet.allOf(ReportInformation.class);
@@ -137,6 +150,7 @@ public class Options {
             gcTime = DEFAULT_GC_TIME;
             remotePort = DEFAULT_REMOTE_PORT;
             mxBeanRemotePort = DEFAULT_MX_BEAN_REMOTE_PORT;
+            allowedInternalLogging = true;
         }
 
         /**
@@ -150,7 +164,6 @@ public class Options {
         }
 
         /**
-         *
          * @param memoryValueConverter
          * @return
          */
@@ -160,7 +173,6 @@ public class Options {
         }
 
         /**
-         *
          * @param runMode
          * @return
          */
@@ -170,7 +182,6 @@ public class Options {
         }
 
         /**
-         *
          * @param gcTimeUnit
          * @param gcTime
          * @return
@@ -187,7 +198,6 @@ public class Options {
         }
 
         /**
-         *
          * @param mxBeanRemotePort
          * @return
          */

@@ -4,7 +4,6 @@ import memory.benchmark.api.result.MemoryFootprint;
 import memory.benchmark.api.result.MemoryPoolStatisticView;
 import memory.benchmark.internal.ResultBuilder;
 
-import java.lang.management.MemoryPoolMXBean;
 import java.lang.management.MemoryType;
 import java.lang.management.MemoryUsage;
 import java.util.ArrayList;
@@ -27,7 +26,7 @@ public abstract class AbstractMemoryPoolDataCollector implements BenchmarkDataCo
     @Override
     public void collectBenchmarkData(ResultBuilder result) {
         List<MemoryPoolStatisticView> memoryPoolFootprints = new ArrayList<>();
-        beforeMemoryPoolUsage.keySet().forEach(mxBean-> memoryPoolFootprints.add(createMemoryPoolFootprint(mxBean)));
+        beforeMemoryPoolUsage.keySet().forEach(mxBean -> memoryPoolFootprints.add(createMemoryPoolFootprint(mxBean)));
         result.setMemoryPoolFootprints(memoryPoolFootprints);
     }
 
@@ -37,17 +36,17 @@ public abstract class AbstractMemoryPoolDataCollector implements BenchmarkDataCo
         afterMemoryPoolUsage.clear();
     }
 
-    protected void putBeforeMemoryUsage(Pool pool, MemoryUsage memoryUsage){
+    protected void putBeforeMemoryUsage(Pool pool, MemoryUsage memoryUsage) {
         putMemoryUsage(beforeMemoryPoolUsage, pool, memoryUsage);
     }
 
-    protected void putAfterMemoryUsage(Pool pool, MemoryUsage memoryUsage){
+    protected void putAfterMemoryUsage(Pool pool, MemoryUsage memoryUsage) {
         putMemoryUsage(afterMemoryPoolUsage, pool, memoryUsage);
     }
 
     private void putMemoryUsage(Map<Pool, List<MemoryUsage>> memoryUsageMap, Pool pool, MemoryUsage memoryUsage) {
         List<MemoryUsage> memoryUsages = memoryUsageMap.get(pool);
-        if(memoryUsages == null) {
+        if (memoryUsages == null) {
             memoryUsages = new ArrayList<>();
             memoryUsageMap.put(pool, memoryUsages);
         }
@@ -58,12 +57,12 @@ public abstract class AbstractMemoryPoolDataCollector implements BenchmarkDataCo
         List<MemoryUsage> beforeMemoryUsages = beforeMemoryPoolUsage.get(pool);
         List<MemoryUsage> afterMemoryUsages = afterMemoryPoolUsage.get(pool);
 
-        if(beforeMemoryUsages.size() == 1) {
+        if (beforeMemoryUsages.size() == 1) {
             MemoryUsage beforeMemoryUsage = beforeMemoryUsages.get(0);
             MemoryUsage afterMemoryUsage = afterMemoryUsages.get(0);
             return new MemoryPoolStatisticView(new MemoryFootprint(beforeMemoryUsage, afterMemoryUsage), pool.type, pool.name);
 
-        }  else {
+        } else {
 
             StatisticCollector.Statistic usedMemory = getStatistic(afterMemoryUsages, beforeMemoryUsages, MemoryUsage::getUsed);
             StatisticCollector.Statistic committedMemory = getStatistic(afterMemoryUsages, beforeMemoryUsages, MemoryUsage::getCommitted);

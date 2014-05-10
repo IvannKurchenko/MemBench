@@ -3,9 +3,7 @@ package memory.benchmark.internal.collect;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.*;
 
 public class BenchmarkDataCollectorsTest {
 
@@ -13,7 +11,7 @@ public class BenchmarkDataCollectorsTest {
     private BenchmarkDataCollectors benchmarkResultCollectors;
 
     @Before
-    public void setUp(){
+    public void setUp() {
         mockedCollector = mock(BenchmarkDataCollector.class);
         benchmarkResultCollectors = new BenchmarkDataCollectors(mockedCollector);
     }
@@ -26,14 +24,14 @@ public class BenchmarkDataCollectorsTest {
     }
 
     @Test
-    public void testOnAfter(){
+    public void testOnAfter() {
         benchmarkResultCollectors.onAfterTest();
         verify(mockedCollector).onAfterTest();
         verifyNoMoreInteractions(mockedCollector);
     }
 
     @Test
-    public void testCollectBenchmarkResult(){
+    public void testCollectBenchmarkResult() {
         benchmarkResultCollectors.collectBenchmarkData(null);
         verify(mockedCollector).collectBenchmarkData(null);
         verifyNoMoreInteractions(mockedCollector);

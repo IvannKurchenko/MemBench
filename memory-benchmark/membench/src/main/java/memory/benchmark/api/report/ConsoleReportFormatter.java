@@ -46,7 +46,7 @@ public class ConsoleReportFormatter implements ReportFormatter<String> {
     }
 
     private void appendMemoryFootprint(StringBuilder builder, String appender, String headerAppender, String header, ReportInformation information, StatisticView<MemoryFootprint> footprint) {
-        if(!allowedToPrint(information)) {
+        if (!allowedToPrint(information)) {
             return;
         }
         append(builder, headerAppender, header);
@@ -54,7 +54,7 @@ public class ConsoleReportFormatter implements ReportFormatter<String> {
     }
 
     private void appendMemoryFootprint(StringBuilder builder, String appender, StatisticView<MemoryFootprint> footprint) {
-        if(footprint.containsSingleValue()) {
+        if (footprint.containsSingleValue()) {
             appendMemoryFootprint(builder, appender, footprint.getSingleValue());
         } else {
             append(builder, appender, "- Minimum : ");
@@ -82,14 +82,14 @@ public class ConsoleReportFormatter implements ReportFormatter<String> {
     }
 
     private void appendMemoryPoolFootPrint(StringBuilder builder, String appender, MemoryPoolStatisticView footprint) {
-        if(!allowedMemoryPoolFootprint(footprint)) {
+        if (!allowedMemoryPoolFootprint(footprint)) {
             return;
         }
 
         append(builder, appender, "- Pool name : " + footprint.getName());
         append(builder, appender, "- Pool memory type : " + footprint.getMemoryType());
 
-        if(footprint.containsSingleValue()) {
+        if (footprint.containsSingleValue()) {
             appendMemoryFootprint(builder, TAB + appender, footprint.getSingleValue());
         } else {
             appender = appender + TAB;
@@ -104,12 +104,12 @@ public class ConsoleReportFormatter implements ReportFormatter<String> {
 
     private boolean allowedMemoryPoolFootprint(MemoryPoolStatisticView footprint) {
         MemoryType footprintType = footprint.getMemoryType();
-        return  (footprintType == MemoryType.HEAP && allowedToPrint(HEAP_MEMORY_POOL_FOOTPRINT)) ||
+        return (footprintType == MemoryType.HEAP && allowedToPrint(HEAP_MEMORY_POOL_FOOTPRINT)) ||
                 (footprintType == MemoryType.NON_HEAP && allowedToPrint(NON_HEAP_MEMORY_POOL_FOOTPRINT));
     }
 
     private void appendGcUsages(StringBuilder builder, String appender, List<StatisticView<GcUsage>> gcUsages) {
-        if(!allowedToPrint(GC_USAGE)){
+        if (!allowedToPrint(GC_USAGE)) {
             return;
         }
 
@@ -118,7 +118,7 @@ public class ConsoleReportFormatter implements ReportFormatter<String> {
     }
 
     private void appendGcUsage(StringBuilder builder, String appender, StatisticView<GcUsage> gcUsage) {
-        if(gcUsage.containsSingleValue()){
+        if (gcUsage.containsSingleValue()) {
             appendGcUsage(builder, appender, gcUsage.getSingleValue());
         } else {
             append(builder, appender, "- Minimum : ");

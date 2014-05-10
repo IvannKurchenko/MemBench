@@ -44,7 +44,7 @@ public abstract class AbstractGcDataCollector implements BenchmarkDataCollector 
 
     private void addGc(String gcName, long collectionsCount, long collectionsTime, Map<String, List<GcUsage>> mxBeanMap) {
         List<GcUsage> gcList = mxBeanMap.get(gcName);
-        if(gcList == null) {
+        if (gcList == null) {
             gcList = new ArrayList<>();
             mxBeanMap.put(gcName, gcList);
         }
@@ -55,11 +55,11 @@ public abstract class AbstractGcDataCollector implements BenchmarkDataCollector 
         List<GcUsage> before = beforeGarbageCollection.get(gcMxBeanName);
         List<GcUsage> after = afterGarbageCollection.get(gcMxBeanName);
 
-        if(before.size() == 1) {
+        if (before.size() == 1) {
             GcUsage beforeGcUsage = before.get(0);
             GcUsage afterGcUsage = after.get(0);
             return new StatisticView<>(new GcUsage(beforeGcUsage, afterGcUsage));
-        }  else {
+        } else {
 
             StatisticCollector.Statistic gcTime = getStatistic(after, before, GcUsage::getGcTime);
             StatisticCollector.Statistic gcCount = getStatistic(after, before, GcUsage::getGcCount);

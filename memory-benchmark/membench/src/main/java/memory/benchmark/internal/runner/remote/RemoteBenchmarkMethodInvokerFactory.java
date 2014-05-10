@@ -9,7 +9,7 @@ import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Optional;
 
-public class RemoteBenchmarkMethodInvokerFactory implements Factory<BenchmarkMethodInvoker, Class>{
+public class RemoteBenchmarkMethodInvokerFactory implements Factory<BenchmarkMethodInvoker, Class> {
 
     private final BenchmarkValidator<Method> methodBenchmarkValidator;
     private final BenchmarkValidator<Class> classBenchmarkValidator;
@@ -37,7 +37,7 @@ public class RemoteBenchmarkMethodInvokerFactory implements Factory<BenchmarkMet
         return new RemoteBenchmarkMethodInvoker(benchmarkProcess, beforeMethod, afterMethod, benchmarkMethods);
     }
 
-    private void validate(Class benchmarkClass, Optional<Method> beforeMethod, Optional<Method> afterMethod, List<Method> benchmarkMethods){
+    private void validate(Class benchmarkClass, Optional<Method> beforeMethod, Optional<Method> afterMethod, List<Method> benchmarkMethods) {
         classBenchmarkValidator.validate(benchmarkClass);
         beforeMethod.ifPresent(methodBenchmarkValidator::validate);
         afterMethod.ifPresent(methodBenchmarkValidator::validate);

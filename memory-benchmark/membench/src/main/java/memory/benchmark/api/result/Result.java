@@ -26,7 +26,6 @@ public class Result {
     }
 
     /**
-     *
      * @return
      */
     public StatisticView<MemoryFootprint> getHeapMemoryFootprint() {
@@ -34,7 +33,6 @@ public class Result {
     }
 
     /**
-     *
      * @return
      */
     public StatisticView<MemoryFootprint> getNonHeapMemoryFootprint() {
@@ -42,7 +40,6 @@ public class Result {
     }
 
     /**
-     *
      * @return
      */
     public List<MemoryPoolStatisticView> getMemoryPoolFootprints() {
@@ -50,7 +47,6 @@ public class Result {
     }
 
     /**
-     *
      * @return
      */
     public List<StatisticView<GcUsage>> getGcUsages() {
@@ -58,7 +54,6 @@ public class Result {
     }
 
     /**
-     *
      * @return
      */
     public Class getBenchmarkClass() {
@@ -66,7 +61,6 @@ public class Result {
     }
 
     /**
-     *
      * @return
      */
     public Method getBenchmarkMethod() {

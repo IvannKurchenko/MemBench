@@ -3,6 +3,7 @@ package memory.benchmark.api.result;
 /**
  * Represents holder that contains minimum, maximum and average statistic data.
  * Can contain multiple data and single date.
+ *
  * @param <T> - data type
  */
 public class StatisticView<T> {

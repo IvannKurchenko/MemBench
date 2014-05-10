@@ -4,20 +4,13 @@ import memory.benchmark.internal.collect.AbstractGcDataCollector;
 
 import javax.management.MBeanServerConnection;
 import javax.management.MalformedObjectNameException;
-import javax.management.ObjectInstance;
 import javax.management.ObjectName;
-import javax.management.remote.JMXConnector;
 import java.io.IOException;
-import java.lang.management.GarbageCollectorMXBean;
 import java.lang.management.ManagementFactory;
-import java.lang.management.MemoryPoolMXBean;
 import java.util.List;
-import java.util.Set;
 
 import static java.lang.Integer.parseInt;
 import static java.util.stream.Collectors.toList;
-import static javax.management.Query.isInstanceOf;
-import static javax.management.Query.value;
 import static memory.benchmark.internal.util.ThrowableHandler.handleThrowableFunction;
 
 public class RemoteGcDataCollector extends AbstractGcDataCollector {
@@ -35,7 +28,7 @@ public class RemoteGcDataCollector extends AbstractGcDataCollector {
     }
 
     private List<ObjectName> queryGcBeanNames() throws MalformedObjectNameException, IOException {
-        return  remote.queryNames(null, null).
+        return remote.queryNames(null, null).
                 stream().
                 filter(i -> i.getCanonicalName().startsWith(ManagementFactory.GARBAGE_COLLECTOR_MXBEAN_DOMAIN_TYPE)).
                 collect(toList());

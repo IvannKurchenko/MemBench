@@ -1,7 +1,6 @@
 package memory.benchmark.internal.runner.remote;
 
 import memory.benchmark.internal.runner.BenchmarkMethodInvoker;
-import memory.benchmark.internal.util.ThrowableHandler;
 
 import java.lang.reflect.Method;
 import java.util.List;
@@ -48,7 +47,7 @@ public class RemoteBenchmarkMethodInvoker implements BenchmarkMethodInvoker {
     }
 
     @Override
-    public void close(){
+    public void close() {
         benchmarkProcess.getProcess().destroy();
     }
 

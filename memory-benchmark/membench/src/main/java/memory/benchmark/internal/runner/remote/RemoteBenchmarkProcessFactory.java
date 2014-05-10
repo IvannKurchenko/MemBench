@@ -33,10 +33,10 @@ public class RemoteBenchmarkProcessFactory implements Factory<BenchmarkProcess, 
         String serverClassName = RemoteServer.class.getCanonicalName();
         String benchmarkClassName = benchmarkClass.getCanonicalName();
         ProcessBuilder builder = new ProcessBuilder().command(
-                                        javaBin, "-cp", classpath,
-                                        serverClassName, benchmarkClassName,
-                                        Integer.toString(options.getRemotePort()),
-                                        Integer.toString(options.getMxBeanRemotePort()));
+                javaBin, "-cp", classpath,
+                serverClassName, benchmarkClassName,
+                Integer.toString(options.getRemotePort()),
+                Integer.toString(options.getMxBeanRemotePort()));
         builder.redirectOutput(ProcessBuilder.Redirect.INHERIT);
         builder.redirectError(ProcessBuilder.Redirect.INHERIT);
         Process process = builder.start();

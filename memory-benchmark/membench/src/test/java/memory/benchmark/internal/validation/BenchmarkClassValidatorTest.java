@@ -9,7 +9,7 @@ public class BenchmarkClassValidatorTest {
     private BenchmarkClassValidator benchmarkClassValidator;
 
     @Before
-    public void setUp(){
+    public void setUp() {
         benchmarkClassValidator = new BenchmarkClassValidator();
     }
 
@@ -45,11 +45,13 @@ public class BenchmarkClassValidatorTest {
     }
 
     public static class NotEmptyConstructorClass {
-        public NotEmptyConstructorClass(Object param){}
+        public NotEmptyConstructorClass(Object param) {
+        }
     }
 
     public static class NotPublicConstructorClass {
-        private NotPublicConstructorClass(){}
+        private NotPublicConstructorClass() {
+        }
     }
 
     public static class ValidClass {

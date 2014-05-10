@@ -10,7 +10,7 @@ import java.util.List;
 
 import static memory.benchmark.internal.collect.StatisticCollector.getStatistic;
 
-public abstract class AbstractMemoryDataCollector implements BenchmarkDataCollector{
+public abstract class AbstractMemoryDataCollector implements BenchmarkDataCollector {
 
     private final List<MemoryUsage> beforeHeapMemoryUsages, beforeNonHeapMemoryUsages;
     private final List<MemoryUsage> afterHeapMemoryUsages, afterNonHeapMemoryUsages;
@@ -46,12 +46,12 @@ public abstract class AbstractMemoryDataCollector implements BenchmarkDataCollec
     }
 
     private StatisticView<MemoryFootprint> getMemoryStatistic(List<MemoryUsage> before, List<MemoryUsage> after) {
-        if(before.size() == 1) {
+        if (before.size() == 1) {
             MemoryUsage beforeMemoryUsage = before.get(0);
             MemoryUsage afterMemoryUsage = after.get(0);
             return new StatisticView<>(new MemoryFootprint(beforeMemoryUsage, afterMemoryUsage));
 
-        }  else {
+        } else {
             StatisticCollector.Statistic usedMemory = getStatistic(after, before, MemoryUsage::getUsed);
             StatisticCollector.Statistic committedMemory = getStatistic(after, before, MemoryUsage::getCommitted);
             StatisticCollector.Statistic maxMemory = getStatistic(after, before, MemoryUsage::getMax);

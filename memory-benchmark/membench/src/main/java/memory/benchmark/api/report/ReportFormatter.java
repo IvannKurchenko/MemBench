@@ -5,7 +5,6 @@ import memory.benchmark.api.result.Result;
 import java.util.List;
 
 /**
- *
  * @param <T> - report format type
  */
 public interface ReportFormatter<T> {

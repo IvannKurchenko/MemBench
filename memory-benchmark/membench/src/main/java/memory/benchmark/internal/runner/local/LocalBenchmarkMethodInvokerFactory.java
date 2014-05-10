@@ -42,7 +42,7 @@ public class LocalBenchmarkMethodInvokerFactory implements Factory<BenchmarkMeth
         return new LocalBenchmarkMethodInvoker(options, benchmarkObject, beforeMethod, benchmarkMethods, afterMethod);
     }
 
-    private void validate(Class benchmarkClass, Optional<Method> beforeMethod, Optional<Method> afterMethod, List<Method> benchmarkMethods){
+    private void validate(Class benchmarkClass, Optional<Method> beforeMethod, Optional<Method> afterMethod, List<Method> benchmarkMethods) {
         classBenchmarkValidator.validate(benchmarkClass);
         beforeMethod.ifPresent(methodBenchmarkValidator::validate);
         afterMethod.ifPresent(methodBenchmarkValidator::validate);

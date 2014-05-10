@@ -8,7 +8,6 @@ import java.lang.reflect.Method;
 public class InvalidBenchmarkException extends RuntimeException {
 
     /**
-     *
      * @param clazz
      * @param message
      */
@@ -17,7 +16,6 @@ public class InvalidBenchmarkException extends RuntimeException {
     }
 
     /**
-     *
      * @param method
      * @param message
      */

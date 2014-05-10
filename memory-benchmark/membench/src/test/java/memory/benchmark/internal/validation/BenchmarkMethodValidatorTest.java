@@ -9,7 +9,7 @@ public class BenchmarkMethodValidatorTest {
     private BenchmarkMethodValidator benchmarkMethodValidator;
 
     @Before
-    public void setUp(){
+    public void setUp() {
         benchmarkMethodValidator = new BenchmarkMethodValidator();
     }
 

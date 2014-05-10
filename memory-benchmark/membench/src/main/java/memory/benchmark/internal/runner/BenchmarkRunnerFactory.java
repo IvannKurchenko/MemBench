@@ -11,6 +11,7 @@ import memory.benchmark.internal.runner.remote.RemoteBenchmarkMethodInvokerFacto
 import memory.benchmark.internal.runner.remote.RemoteBenchmarkProcessFactory;
 import memory.benchmark.internal.runner.remote.collect.RemoteBenchmarkDataCollectorFactory;
 import memory.benchmark.internal.util.Factory;
+import memory.benchmark.internal.util.Log;
 import memory.benchmark.internal.validation.BenchmarkClassValidator;
 import memory.benchmark.internal.validation.BenchmarkMethodValidator;
 
@@ -21,7 +22,8 @@ public class BenchmarkRunnerFactory {
     public static BenchmarkRunner createBenchmarkRunner(Collection<Class<?>> benchmarkClasses, Options options) {
         Factory<BenchmarkDataCollector, ?> collectorFactory = createCollectorFactory(options);
         Factory<BenchmarkMethodInvoker, Class> methodInvokerFactory = createMethodInvokerFactory(options);
-        return new BenchmarkRunner(benchmarkClasses, collectorFactory, methodInvokerFactory);
+        Log log = Log.of(Log.SYS_OUT, options);
+        return new BenchmarkRunner(benchmarkClasses, collectorFactory, methodInvokerFactory, log);
     }
 
     private static Factory<BenchmarkDataCollector, ?> createCollectorFactory(Options options) {

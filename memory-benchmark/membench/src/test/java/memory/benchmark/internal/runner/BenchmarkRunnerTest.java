@@ -4,6 +4,7 @@ import memory.benchmark.api.annotations.Benchmark;
 import memory.benchmark.internal.ResultBuilder;
 import memory.benchmark.internal.collect.BenchmarkDataCollector;
 import memory.benchmark.internal.util.Factory;
+import memory.benchmark.internal.util.Log;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -30,7 +31,7 @@ public class BenchmarkRunnerTest {
         benchmarkMethodInvoker = mock(BenchmarkMethodInvoker.class);
         benchmarkDataCollector = mock(BenchmarkDataCollector.class);
 
-        benchmarkRunner = new BenchmarkRunner(benchmarkClasses, collectorFactory, methodInvokerFactory);
+        benchmarkRunner = new BenchmarkRunner(benchmarkClasses, collectorFactory, methodInvokerFactory, Log.EMPTY_LOG);
 
         when(methodInvokerFactory.create(TestClass.class)).thenReturn(benchmarkMethodInvoker);
         when(collectorFactory.create()).thenReturn(benchmarkDataCollector);

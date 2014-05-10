@@ -37,6 +37,8 @@ public class RemoteBenchmarkProcessFactory implements Factory<BenchmarkProcess, 
                                         serverClassName, benchmarkClassName,
                                         Integer.toString(options.getRemotePort()),
                                         Integer.toString(options.getMxBeanRemotePort()));
+        builder.redirectOutput(ProcessBuilder.Redirect.INHERIT);
+        builder.redirectError(ProcessBuilder.Redirect.INHERIT);
         Process process = builder.start();
         process.waitFor(1, TimeUnit.SECONDS);
         return process;

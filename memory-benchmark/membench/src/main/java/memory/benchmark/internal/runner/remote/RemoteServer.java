@@ -1,10 +1,14 @@
 package memory.benchmark.internal.runner.remote;
 
+import memory.benchmark.internal.util.Log;
+
 import javax.management.*;
 import javax.management.remote.JMXConnectorServer;
 import javax.management.remote.JMXServiceURL;
 import java.lang.management.*;
+import java.lang.reflect.Array;
 import java.rmi.registry.Registry;
+import java.util.Arrays;
 
 import static java.lang.String.format;
 import static java.lang.management.ManagementFactory.*;
@@ -16,13 +20,16 @@ import static javax.management.remote.JMXConnectorServerFactory.newJMXConnectorS
 
 public class RemoteServer {
 
+    private static final Log LOG = Log.SYS_OUT;
+
     static final String BENCHMARK_OBJECT_NAME = "benchmark";
     static final String SERVER_DOMAIN = "jmxrmi";
-    static final String SERVER_URL_PATTERN = "service:jmx:rmi:///jndi/rmi://localhost:%d/jmxrmi" + SERVER_DOMAIN;
+    static final String SERVER_URL_PATTERN = "service:jmx:rmi:///jndi/rmi://localhost:%d/" + SERVER_DOMAIN;
 
     private static RemoteServer serverHolder;
 
     public static void main(String... args) throws Exception {
+        LOG.log("Starting remote server with args : " + Arrays.toString(args));
         String clazz = args[0];
         int benchmarkRmiPort = Integer.parseInt(args[1]);
         int mBeanServerRmiPort = Integer.parseInt(args[2]);
@@ -43,7 +50,9 @@ public class RemoteServer {
 
     private void startServer() throws Exception {
         registerBenchmarkRemote();
+        LOG.log("Registered benchmark server...");
         registerMBeansServer();
+        LOG.log("Registered mBean server...");
     }
 
     private void registerBenchmarkRemote() throws Exception {

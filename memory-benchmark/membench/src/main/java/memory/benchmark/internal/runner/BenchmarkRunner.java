@@ -10,6 +10,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 public class BenchmarkRunner {
 
@@ -29,13 +30,24 @@ public class BenchmarkRunner {
     public List<Result> run() {
          List<Result> results = new ArrayList<>();
          for (Class benchmarkClass : benchmarkClasses) {
+             Optional<BenchmarkMethodInvoker> benchmarkMethodInvokerOpt = Optional.empty();
+             Optional<BenchmarkDataCollector> benchmarkDataCollectorOpt = Optional.empty();
 
-             BenchmarkMethodInvoker benchmarkMethodInvoker = methodInvokerFactory.create(benchmarkClass);
-             List<Method> benchmarkMethods = benchmarkMethodInvoker.getBenchmarkMethods();
+             try {
+                 BenchmarkMethodInvoker benchmarkMethodInvoker = methodInvokerFactory.create(benchmarkClass);
+                 benchmarkMethodInvokerOpt = Optional.of(benchmarkMethodInvoker);
 
-             if(benchmarkMethods.size() > 0) {
-                 BenchmarkDataCollector benchmarkDataCollector = collectorFactory.create();
-                 results.addAll(runTests(benchmarkMethodInvoker, benchmarkDataCollector));
+                 List<Method> benchmarkMethods = benchmarkMethodInvoker.getBenchmarkMethods();
+
+                 if(benchmarkMethods.size() > 0) {
+                     BenchmarkDataCollector benchmarkDataCollector = collectorFactory.create();
+                     benchmarkDataCollectorOpt = Optional.of(benchmarkDataCollector);
+                     results.addAll(runTests(benchmarkMethodInvoker, benchmarkDataCollector));
+                 }
+
+             } finally {
+                 benchmarkMethodInvokerOpt.ifPresent(BenchmarkMethodInvoker::close);
+                 benchmarkDataCollectorOpt.ifPresent(BenchmarkDataCollector::close);
              }
          }
          return  results;
@@ -43,8 +55,6 @@ public class BenchmarkRunner {
 
     private List<Result> runTests(BenchmarkMethodInvoker benchmarkMethodInvoker, BenchmarkDataCollector benchmarkDataCollector) {
         List<Result> resultList = new ArrayList<>();
-
-        try {
 
             for (Method testMethod : benchmarkMethodInvoker.getBenchmarkMethods()) {
 
@@ -68,12 +78,6 @@ public class BenchmarkRunner {
 
                 resultList.add(resultBuilder.build());
             }
-
-        } finally {
-            benchmarkMethodInvoker.close();
-            benchmarkDataCollector.close();
-        }
-
         return resultList;
     }
 }

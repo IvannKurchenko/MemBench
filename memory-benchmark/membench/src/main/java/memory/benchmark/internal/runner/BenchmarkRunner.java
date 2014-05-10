@@ -1,7 +1,7 @@
 package memory.benchmark.internal.runner;
 
 import memory.benchmark.api.annotations.Benchmark;
-import memory.benchmark.api.result.Result;
+import memory.benchmark.api.result.BenchmarkResult;
 import memory.benchmark.internal.ResultBuilder;
 import memory.benchmark.internal.collect.BenchmarkDataCollector;
 import memory.benchmark.internal.util.Factory;
@@ -31,8 +31,8 @@ public class BenchmarkRunner {
         this.log = log;
     }
 
-    public List<Result> run() {
-        List<Result> results = new ArrayList<>();
+    public List<BenchmarkResult> run() {
+        List<BenchmarkResult> benchmarkResults = new ArrayList<>();
         for (Class benchmarkClass : benchmarkClasses) {
             log.log("Starting benchmark class : " + benchmarkClass.getCanonicalName());
 
@@ -48,7 +48,7 @@ public class BenchmarkRunner {
                 if (benchmarkMethods.size() > 0) {
                     BenchmarkDataCollector benchmarkDataCollector = collectorFactory.create();
                     benchmarkDataCollectorOpt = Optional.of(benchmarkDataCollector);
-                    results.addAll(runTests(benchmarkMethodInvoker, benchmarkDataCollector));
+                    benchmarkResults.addAll(runTests(benchmarkMethodInvoker, benchmarkDataCollector));
                 }
 
             } finally {
@@ -58,11 +58,11 @@ public class BenchmarkRunner {
 
             log.log("Finished benchmark class : " + benchmarkClass.getCanonicalName());
         }
-        return results;
+        return benchmarkResults;
     }
 
-    private List<Result> runTests(BenchmarkMethodInvoker benchmarkMethodInvoker, BenchmarkDataCollector benchmarkDataCollector) {
-        List<Result> resultList = new ArrayList<>();
+    private List<BenchmarkResult> runTests(BenchmarkMethodInvoker benchmarkMethodInvoker, BenchmarkDataCollector benchmarkDataCollector) {
+        List<BenchmarkResult> benchmarkResultList = new ArrayList<>();
 
         for (Method testMethod : benchmarkMethodInvoker.getBenchmarkMethods()) {
             log.log("Starting benchmark method : " + testMethod.getName());
@@ -88,10 +88,10 @@ public class BenchmarkRunner {
             benchmarkDataCollector.collectBenchmarkData(resultBuilder);
             benchmarkDataCollector.clear();
 
-            resultList.add(resultBuilder.build());
+            benchmarkResultList.add(resultBuilder.build());
 
             log.log("Finished benchmark method : " + testMethod.getName());
         }
-        return resultList;
+        return benchmarkResultList;
     }
 }

@@ -14,7 +14,7 @@ import static junit.framework.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class GcResultCollectorTest {
+public class GcBenchmarkResultCollectorTest {
 
     private static final String TEST_GC_NAME = "testGc";
 

@@ -1,5 +1,6 @@
 package memory.benchmark.internal;
 
+import memory.benchmark.api.annotations.Benchmark;
 import memory.benchmark.api.result.*;
 
 import java.lang.reflect.Method;
@@ -9,14 +10,16 @@ public class ResultBuilder {
 
     private Class benchmarkClass;
     private Method benchmarkMethod;
+    private Benchmark benchmark;
 
     private StatisticView<MemoryFootprint> heapMemoryFootprint, nonHeapMemoryFootprint;
     private List<MemoryPoolStatisticView> memoryPoolFootprints;
     private List<StatisticView<GcUsage>> gcUsages;
 
-    public ResultBuilder(Class benchmarkClass, Method benchmarkMethod) {
+    public ResultBuilder(Class benchmarkClass, Method benchmarkMethod, Benchmark benchmark) {
         this.benchmarkClass = benchmarkClass;
         this.benchmarkMethod = benchmarkMethod;
+        this.benchmark = benchmark;
     }
 
     public void setHeapMemoryDifference(StatisticView<MemoryFootprint> heapMemoryFootprint,
@@ -57,7 +60,11 @@ public class ResultBuilder {
         return benchmarkMethod;
     }
 
-    public Result build() {
-        return new Result(this);
+    public Benchmark getBenchmark() {
+        return benchmark;
+    }
+
+    public BenchmarkResult build() {
+        return new BenchmarkResult(this);
     }
 }

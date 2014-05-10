@@ -16,7 +16,7 @@ import static junit.framework.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class MemoryPoolResultCollectorTest {
+public class MemoryPoolBenchmarkResultCollectorTest {
 
     private static final String TEST_POOL_BEAN_NAME = "testPool";
     private static final MemoryType TEST_MEMORY_TYPE = MemoryType.HEAP;

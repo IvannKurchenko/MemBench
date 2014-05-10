@@ -13,34 +13,35 @@ import static memory.benchmark.api.Options.ReportInformation.*;
 /**
  *
  */
-public class ConsoleReportFormatter implements ReportFormatter<String> {
+public class ConsoleBenchmarkReportFormatter implements BenchmarkReportFormatter<String> {
 
     private static final String EOL = Character.toString('\n');
     private static final String TAB = Character.toString('\t');
 
     private final Options options;
 
-    public ConsoleReportFormatter(Options options) {
+    public ConsoleBenchmarkReportFormatter(Options options) {
         this.options = options;
     }
 
     @Override
-    public String formatReport(List<Result> results) {
+    public String formatReport(List<BenchmarkResult> benchmarkResults) {
         StringBuilder builder = new StringBuilder();
-        results.forEach(result -> appendResult(builder, result));
+        benchmarkResults.forEach(result -> appendResult(builder, result));
         return builder.toString();
     }
 
-    private void appendResult(StringBuilder builder, Result result) {
-        builder.append("Class : ").append(result.getBenchmarkClass().getSimpleName()).append(EOL);
-        builder.append("- Method : ").append(result.getBenchmarkMethod().getName()).append(EOL);
+    private void appendResult(StringBuilder builder, BenchmarkResult benchmarkResult) {
+        builder.append("Class : ").append(benchmarkResult.getBenchmarkClass().getSimpleName()).append(EOL);
+        builder.append("- Method : ").append(benchmarkResult.getBenchmarkMethod().getName()).append(EOL);
+        builder.append("- Test times : ").append(benchmarkResult.getBenchmark().testTimes()).append(EOL);
 
-        appendMemoryFootprint(builder, TAB + TAB, TAB, "- Heap memory footprint : ", HEAP_MEMORY_FOOTPRINT, result.getHeapMemoryFootprint());
-        appendMemoryFootprint(builder, TAB + TAB, TAB, "- Non heap memory footprint : ", NON_HEAP_MEMORY_FOOTPRINT, result.getHeapMemoryFootprint());
+        appendMemoryFootprint(builder, TAB + TAB, TAB, "- Heap memory footprint : ", HEAP_MEMORY_FOOTPRINT, benchmarkResult.getHeapMemoryFootprint());
+        appendMemoryFootprint(builder, TAB + TAB, TAB, "- Non heap memory footprint : ", NON_HEAP_MEMORY_FOOTPRINT, benchmarkResult.getNonHeapMemoryFootprint());
 
-        appendMemoryPoolFootPrints(builder, TAB, result.getMemoryPoolFootprints());
+        appendMemoryPoolFootPrints(builder, TAB, benchmarkResult.getMemoryPoolFootprints());
 
-        appendGcUsages(builder, TAB, result.getGcUsages());
+        appendGcUsages(builder, TAB, benchmarkResult.getGcUsages());
 
         builder.append(EOL);
     }

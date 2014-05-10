@@ -1,5 +1,6 @@
 package memory.benchmark.api.result;
 
+import memory.benchmark.api.annotations.Benchmark;
 import memory.benchmark.internal.ResultBuilder;
 
 import java.lang.reflect.Method;
@@ -8,17 +9,19 @@ import java.util.List;
 /**
  *
  */
-public class Result {
+public class BenchmarkResult {
 
     private final Class benchmarkClass;
     private final Method benchmarkMethod;
+    private final Benchmark benchmark;
     private final StatisticView<MemoryFootprint> heapMemoryFootprint, nonHeapMemoryFootprint;
     private final List<MemoryPoolStatisticView> memoryPoolFootprints;
     private final List<StatisticView<GcUsage>> gcUsages;
 
-    public Result(ResultBuilder builder) {
+    public BenchmarkResult(ResultBuilder builder) {
         this.benchmarkClass = builder.getBenchmarkClass();
         this.benchmarkMethod = builder.getBenchmarkMethod();
+        this.benchmark = builder.getBenchmark();
         this.heapMemoryFootprint = builder.getHeapMemoryFootprint();
         this.nonHeapMemoryFootprint = builder.getNonHeapMemoryFootprint();
         this.memoryPoolFootprints = builder.getMemoryPoolFootprints();
@@ -74,19 +77,19 @@ public class Result {
         if (o == null || getClass() != o.getClass())
             return false;
 
-        Result result = (Result) o;
+        BenchmarkResult benchmarkResult = (BenchmarkResult) o;
 
-        if (benchmarkClass != null ? !benchmarkClass.equals(result.benchmarkClass) : result.benchmarkClass != null)
+        if (benchmarkClass != null ? !benchmarkClass.equals(benchmarkResult.benchmarkClass) : benchmarkResult.benchmarkClass != null)
             return false;
-        if (benchmarkMethod != null ? !benchmarkMethod.equals(result.benchmarkMethod) : result.benchmarkMethod != null)
+        if (benchmarkMethod != null ? !benchmarkMethod.equals(benchmarkResult.benchmarkMethod) : benchmarkResult.benchmarkMethod != null)
             return false;
-        if (gcUsages != null ? !gcUsages.equals(result.gcUsages) : result.gcUsages != null)
+        if (gcUsages != null ? !gcUsages.equals(benchmarkResult.gcUsages) : benchmarkResult.gcUsages != null)
             return false;
-        if (heapMemoryFootprint != null ? !heapMemoryFootprint.equals(result.heapMemoryFootprint) : result.heapMemoryFootprint != null)
+        if (heapMemoryFootprint != null ? !heapMemoryFootprint.equals(benchmarkResult.heapMemoryFootprint) : benchmarkResult.heapMemoryFootprint != null)
             return false;
-        if (memoryPoolFootprints != null ? !memoryPoolFootprints.equals(result.memoryPoolFootprints) : result.memoryPoolFootprints != null)
+        if (memoryPoolFootprints != null ? !memoryPoolFootprints.equals(benchmarkResult.memoryPoolFootprints) : benchmarkResult.memoryPoolFootprints != null)
             return false;
-        if (nonHeapMemoryFootprint != null ? !nonHeapMemoryFootprint.equals(result.nonHeapMemoryFootprint) : result.nonHeapMemoryFootprint != null)
+        if (nonHeapMemoryFootprint != null ? !nonHeapMemoryFootprint.equals(benchmarkResult.nonHeapMemoryFootprint) : benchmarkResult.nonHeapMemoryFootprint != null)
             return false;
 
         return true;
@@ -105,7 +108,7 @@ public class Result {
 
     @Override
     public String toString() {
-        return "Result{" +
+        return "BenchmarkResult{" +
                 "benchmarkClass = " + benchmarkClass +
                 ", benchmarkMethod=" + benchmarkMethod +
                 ", heapMemoryFootprint=" + heapMemoryFootprint +
@@ -113,5 +116,9 @@ public class Result {
                 ", memoryPoolFootprints=" + memoryPoolFootprints +
                 ", gcUsages=" + gcUsages +
                 '}';
+    }
+
+    public Benchmark getBenchmark() {
+        return benchmark;
     }
 }

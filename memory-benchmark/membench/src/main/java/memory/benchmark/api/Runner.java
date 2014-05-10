@@ -1,6 +1,6 @@
 package memory.benchmark.api;
 
-import memory.benchmark.api.result.Result;
+import memory.benchmark.api.result.BenchmarkResult;
 import memory.benchmark.internal.runner.BenchmarkRunner;
 import memory.benchmark.internal.runner.BenchmarkRunnerFactory;
 import org.reflections.Reflections;
@@ -21,7 +21,7 @@ public class Runner {
      * @param testClasses
      * @return
      */
-    public static List<Result> run(Options options, Collection<Class<?>> testClasses) {
+    public static List<BenchmarkResult> run(Options options, Collection<Class<?>> testClasses) {
         BenchmarkRunner benchmarkRunner = BenchmarkRunnerFactory.createBenchmarkRunner(testClasses, options);
         return benchmarkRunner.run();
     }
@@ -31,7 +31,7 @@ public class Runner {
      * @param testClass
      * @return
      */
-    public static List<Result> run(Options options, Class<?>... testClass) {
+    public static List<BenchmarkResult> run(Options options, Class<?>... testClass) {
         return run(options, asList(testClass));
     }
 
@@ -40,7 +40,7 @@ public class Runner {
      * @param packageName
      * @return
      */
-    public static List<Result> run(Options options, String packageName) {
+    public static List<BenchmarkResult> run(Options options, String packageName) {
         Reflections reflections = new Reflections(packageName);
         Set<Class<?>> allClasses = reflections.getSubTypesOf(Object.class);
         return run(options, allClasses);

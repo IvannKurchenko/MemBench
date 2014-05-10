@@ -5,10 +5,9 @@ import memory.benchmark.api.Runner;
 import memory.benchmark.api.annotations.After;
 import memory.benchmark.api.annotations.Before;
 import memory.benchmark.api.annotations.Benchmark;
-import memory.benchmark.api.report.ReportFormatter;
-import memory.benchmark.api.report.ConsoleReportFormatter;
-import memory.benchmark.api.result.Result;
-import memory.benchmark.api.util.MemoryValueConverter;
+import memory.benchmark.api.report.BenchmarkReportFormatter;
+import memory.benchmark.api.report.ConsoleBenchmarkReportFormatter;
+import memory.benchmark.api.result.BenchmarkResult;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -23,9 +22,9 @@ public class ListMemoryTest {
                 runMode(Options.RunMode.SEPARATE_PROCESS).*/
                 build();
 
-        ReportFormatter<String> formatter = new ConsoleReportFormatter(options);
-        List<Result> resultList = Runner.run(options, ListMemoryTest.class);
-        System.out.println(formatter.formatReport(resultList));
+        BenchmarkReportFormatter<String> formatter = new ConsoleBenchmarkReportFormatter(options);
+        List<BenchmarkResult> benchmarkResultList = Runner.run(options, ListMemoryTest.class);
+        System.out.println(formatter.formatReport(benchmarkResultList));
     }
 
     private static final int TEST_DATA_COUNT = 1_000_000;

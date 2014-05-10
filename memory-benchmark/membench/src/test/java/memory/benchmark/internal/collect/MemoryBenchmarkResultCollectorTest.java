@@ -14,7 +14,7 @@ import static junit.framework.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class MemoryResultCollectorTest {
+public class MemoryBenchmarkResultCollectorTest {
 
     private LocalMemoryDataCollector memoryResultCollector;
     private MemoryMXBean mockedMemoryMXBean;

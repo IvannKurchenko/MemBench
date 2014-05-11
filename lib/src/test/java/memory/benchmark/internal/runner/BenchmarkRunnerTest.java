@@ -47,6 +47,7 @@ public class BenchmarkRunnerTest {
         verify(benchmarkMethodInvoker).invokeBefore();
         verify(benchmarkMethodInvoker).invokeAfter();
         verify(benchmarkMethodInvoker).invokeBenchmark(testMethod);
+        verify(benchmarkMethodInvoker).close();
 
         verify(benchmarkDataCollector).onBeforeTest();
         verify(benchmarkDataCollector).collectBenchmarkData(any(ResultBuilder.class));

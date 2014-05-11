@@ -14,11 +14,17 @@ public class StatisticCollector {
             long afterValue = valueExtractor.getValue(afterValueItems.get(i));
             long value = afterValue - beforeValue;
 
-            if (value < min) {
-                min = value;
-            }
+            if(i > 0 ) {
+                if (value < min) {
+                    min = value;
+                }
 
-            if (value > max) {
+                if (value > max) {
+                    min = value;
+                }
+            }   else {
+
+                max = value;
                 min = value;
             }
 
@@ -39,6 +45,37 @@ public class StatisticCollector {
             this.max = max;
             this.min = min;
             this.average = average;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            Statistic statistic = (Statistic) o;
+
+            if (average != statistic.average) return false;
+            if (max != statistic.max) return false;
+            if (min != statistic.min) return false;
+
+            return true;
+        }
+
+        @Override
+        public int hashCode() {
+            int result = (int) (max ^ (max >>> 32));
+            result = 31 * result + (int) (min ^ (min >>> 32));
+            result = 31 * result + (int) (average ^ (average >>> 32));
+            return result;
+        }
+
+        @Override
+        public String toString() {
+            return "Statistic{" +
+                    "max=" + max +
+                    ", min=" + min +
+                    ", average=" + average +
+                    '}';
         }
     }
 }

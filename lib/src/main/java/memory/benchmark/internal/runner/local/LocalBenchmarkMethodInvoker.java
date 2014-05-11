@@ -9,6 +9,7 @@ import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Optional;
 
+import static memory.benchmark.internal.util.ThrowableHandler.handleThrowableAction;
 import static memory.benchmark.internal.util.ThrowableHandler.handleThrowableFunction;
 
 public class LocalBenchmarkMethodInvoker implements BenchmarkMethodInvoker {
@@ -33,7 +34,7 @@ public class LocalBenchmarkMethodInvoker implements BenchmarkMethodInvoker {
 
     @Override
     public void invokeBefore() {
-        ThrowableHandler.handleThrowableAction(() -> invokeOptionalMethod(beforeMethod));
+        handleThrowableAction(() -> invokeOptionalMethod(beforeMethod));
     }
 
     @Override
@@ -43,7 +44,7 @@ public class LocalBenchmarkMethodInvoker implements BenchmarkMethodInvoker {
 
     @Override
     public void invokeAfter() {
-        ThrowableHandler.handleThrowableAction(() -> invokeOptionalMethod(afterMethod));
+        handleThrowableAction(() -> invokeOptionalMethod(afterMethod));
     }
 
     @Override

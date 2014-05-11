@@ -19,7 +19,6 @@ public class RemoteBenchmarkMethodInvoker implements BenchmarkMethodInvoker {
                                         Optional<Method> beforeMethod,
                                         Optional<Method> afterMethod,
                                         List<Method> benchmarkMethods) {
-
         this.benchmarkProcess = benchmarkProcess;
         this.beforeMethod = beforeMethod;
         this.afterMethod = afterMethod;

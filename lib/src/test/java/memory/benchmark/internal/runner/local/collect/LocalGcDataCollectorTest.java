@@ -1,4 +1,4 @@
-package memory.benchmark.internal.collect;
+package memory.benchmark.internal.runner.local.collect;
 
 import memory.benchmark.api.result.GcUsage;
 import memory.benchmark.api.result.StatisticView;
@@ -14,7 +14,7 @@ import static junit.framework.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class GcBenchmarkResultCollectorTest {
+public class LocalGcDataCollectorTest {
 
     private static final String TEST_GC_NAME = "testGc";
 

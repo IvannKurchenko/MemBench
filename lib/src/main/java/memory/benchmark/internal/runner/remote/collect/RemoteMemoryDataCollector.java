@@ -13,9 +13,9 @@ import static memory.benchmark.internal.util.ThrowableHandler.handleThrowableFun
 
 public class RemoteMemoryDataCollector extends AbstractMemoryDataCollector {
 
-    private static final ObjectName OBJECT_NAME = handleThrowableFunction(() -> new ObjectName(ManagementFactory.MEMORY_MXBEAN_NAME));
-    private static final String HEAP_MEMORY_USAGE = "HeapMemoryUsage";
-    private static final String NON_HEAP_MEMORY_USAGE = "NonHeapMemoryUsage";
+    static final ObjectName OBJECT_NAME = handleThrowableFunction(() -> new ObjectName(ManagementFactory.MEMORY_MXBEAN_NAME));
+    static final String HEAP_MEMORY_USAGE = "HeapMemoryUsage";
+    static final String NON_HEAP_MEMORY_USAGE = "NonHeapMemoryUsage";
 
     private final MBeanServerConnection remote;
 

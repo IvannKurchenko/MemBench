@@ -1,4 +1,4 @@
-package memory.benchmark.internal.collect;
+package memory.benchmark.internal.runner.local.collect;
 
 import memory.benchmark.api.result.MemoryFootprint;
 import memory.benchmark.api.result.StatisticView;
@@ -14,7 +14,7 @@ import static junit.framework.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class MemoryBenchmarkResultCollectorTest {
+public class LocalMemoryDataCollectorTest {
 
     private LocalMemoryDataCollector memoryResultCollector;
     private MemoryMXBean mockedMemoryMXBean;

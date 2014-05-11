@@ -15,9 +15,9 @@ import static memory.benchmark.internal.util.ThrowableHandler.handleThrowableFun
 
 public class RemoteGcDataCollector extends AbstractGcDataCollector {
 
-    private static final String NAME = "Name";
-    private static final String GC_COUNT = "CollectionCount";
-    private static final String GC_TIME = "CollectionTime";
+    static final String NAME = "Name";
+    static final String GC_COUNT = "CollectionCount";
+    static final String GC_TIME = "CollectionTime";
 
     private final MBeanServerConnection remote;
     private final List<ObjectName> gcBeanPoolNames;

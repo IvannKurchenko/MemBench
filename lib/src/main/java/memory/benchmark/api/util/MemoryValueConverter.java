@@ -8,6 +8,7 @@ public interface MemoryValueConverter {
     static final int KILOBYTE = 1024;
     static final int MEGABYTE = 1000 * KILOBYTE;
     static final int GIGABYTE = 1000 * MEGABYTE;
+
     /**
      *
      */

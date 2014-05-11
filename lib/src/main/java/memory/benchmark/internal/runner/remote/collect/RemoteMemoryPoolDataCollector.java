@@ -18,9 +18,9 @@ import static memory.benchmark.internal.util.ThrowableHandler.handleThrowableFun
 
 public class RemoteMemoryPoolDataCollector extends AbstractMemoryPoolDataCollector {
 
-    private static final String MEMORY_USAGE = "Usage";
-    private static final String NAME = "Name";
-    private static final String TYPE = "Type";
+    static final String MEMORY_USAGE = "Usage";
+    static final String NAME = "Name";
+    static final String TYPE = "Type";
 
     private final MBeanServerConnection remote;
     private final List<ObjectName> memoryBeanPoolNames;

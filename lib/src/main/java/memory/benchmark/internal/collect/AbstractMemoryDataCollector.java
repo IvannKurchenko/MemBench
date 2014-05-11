@@ -8,7 +8,7 @@ import java.lang.management.MemoryUsage;
 import java.util.ArrayList;
 import java.util.List;
 
-import static memory.benchmark.internal.collect.StatisticCollector.getStatistic;
+import static memory.benchmark.internal.collect.Statistic.from;
 
 public abstract class AbstractMemoryDataCollector implements BenchmarkDataCollector {
 
@@ -52,9 +52,9 @@ public abstract class AbstractMemoryDataCollector implements BenchmarkDataCollec
             return new StatisticView<>(new MemoryFootprint(beforeMemoryUsage, afterMemoryUsage));
 
         } else {
-            StatisticCollector.Statistic usedMemory = getStatistic(after, before, MemoryUsage::getUsed);
-            StatisticCollector.Statistic committedMemory = getStatistic(after, before, MemoryUsage::getCommitted);
-            StatisticCollector.Statistic maxMemory = getStatistic(after, before, MemoryUsage::getMax);
+            Statistic usedMemory = from(after, before, MemoryUsage::getUsed);
+            Statistic committedMemory = from(after, before, MemoryUsage::getCommitted);
+            Statistic maxMemory = from(after, before, MemoryUsage::getMax);
 
             MemoryFootprint minimum = new MemoryFootprint(usedMemory.min, maxMemory.min, committedMemory.min);
             MemoryFootprint maximum = new MemoryFootprint(usedMemory.max, maxMemory.max, committedMemory.max);

@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static memory.benchmark.internal.collect.StatisticCollector.getStatistic;
+import static memory.benchmark.internal.collect.Statistic.from;
 
 public abstract class AbstractMemoryPoolDataCollector implements BenchmarkDataCollector {
 
@@ -64,9 +64,9 @@ public abstract class AbstractMemoryPoolDataCollector implements BenchmarkDataCo
 
         } else {
 
-            StatisticCollector.Statistic usedMemory = getStatistic(afterMemoryUsages, beforeMemoryUsages, MemoryUsage::getUsed);
-            StatisticCollector.Statistic committedMemory = getStatistic(afterMemoryUsages, beforeMemoryUsages, MemoryUsage::getCommitted);
-            StatisticCollector.Statistic maxMemory = getStatistic(afterMemoryUsages, beforeMemoryUsages, MemoryUsage::getMax);
+            Statistic usedMemory = from(afterMemoryUsages, beforeMemoryUsages, MemoryUsage::getUsed);
+            Statistic committedMemory = from(afterMemoryUsages, beforeMemoryUsages, MemoryUsage::getCommitted);
+            Statistic maxMemory = from(afterMemoryUsages, beforeMemoryUsages, MemoryUsage::getMax);
 
             MemoryFootprint minimum = new MemoryFootprint(usedMemory.min, maxMemory.min, committedMemory.min);
             MemoryFootprint maximum = new MemoryFootprint(usedMemory.max, maxMemory.max, committedMemory.max);

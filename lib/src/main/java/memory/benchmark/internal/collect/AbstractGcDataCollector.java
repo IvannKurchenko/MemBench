@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static memory.benchmark.internal.collect.StatisticCollector.getStatistic;
+import static memory.benchmark.internal.collect.Statistic.from;
 
 public abstract class AbstractGcDataCollector implements BenchmarkDataCollector {
 
@@ -61,8 +61,8 @@ public abstract class AbstractGcDataCollector implements BenchmarkDataCollector 
             return new StatisticView<>(new GcUsage(beforeGcUsage, afterGcUsage));
         } else {
 
-            StatisticCollector.Statistic gcTime = getStatistic(after, before, GcUsage::getGcTime);
-            StatisticCollector.Statistic gcCount = getStatistic(after, before, GcUsage::getGcCount);
+            Statistic gcTime = from(after, before, GcUsage::getGcTime);
+            Statistic gcCount = from(after, before, GcUsage::getGcCount);
 
             GcUsage minimum = new GcUsage(gcMxBeanName, gcTime.min, gcCount.min);
             GcUsage maximum = new GcUsage(gcMxBeanName, gcTime.max, gcCount.max);

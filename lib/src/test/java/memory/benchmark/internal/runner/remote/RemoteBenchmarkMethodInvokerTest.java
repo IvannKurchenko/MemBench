@@ -1,6 +1,5 @@
 package memory.benchmark.internal.runner.remote;
 
-import memory.benchmark.api.Options;
 import memory.benchmark.api.exception.BenchmarkRunException;
 import org.junit.Before;
 import org.junit.Test;

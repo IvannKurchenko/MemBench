@@ -1,6 +1,8 @@
 package memory.benchmark.api;
 
 import memory.benchmark.api.result.BenchmarkResult;
+import memory.benchmark.internal.report.BenchmarkReportFormatter;
+import memory.benchmark.internal.report.BenchmarkReportFormatterFactory;
 import memory.benchmark.internal.runner.BenchmarkRunner;
 import memory.benchmark.internal.runner.BenchmarkRunnerFactory;
 import org.reflections.Reflections;
@@ -23,7 +25,10 @@ public class Runner {
      */
     public static List<BenchmarkResult> run(Options options, Collection<Class<?>> testClasses) {
         BenchmarkRunner benchmarkRunner = BenchmarkRunnerFactory.createBenchmarkRunner(testClasses, options);
-        return benchmarkRunner.run();
+        BenchmarkReportFormatter benchmarkReportFormatter = BenchmarkReportFormatterFactory.createFormatter(options);
+        List<BenchmarkResult> benchmarkResults = benchmarkRunner.run();
+        benchmarkReportFormatter.formatReport(benchmarkResults);
+        return benchmarkResults;
     }
 
     /**

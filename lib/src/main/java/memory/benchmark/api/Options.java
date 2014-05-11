@@ -71,6 +71,22 @@ public class Options {
         SEPARATE_PROCESS
     }
 
+
+    /**
+     *
+     */
+    public enum ReportFormat {
+        /**
+         *
+         */
+        CONSOLE,
+
+        /**
+         *
+         */
+        HTML
+    }
+
     private final Set<ReportInformation> reportInformation;
     private final MemoryValueConverter memoryValueConverter;
     private final RunMode runMode;
@@ -79,6 +95,7 @@ public class Options {
     private final int remotePort;
     private final int mxBeanRemotePort;
     private final boolean allowedInternalLogging;
+    private final ReportFormat reportFormat;
 
     private Options(Builder builder) {
         this.reportInformation = builder.reportInformation;
@@ -89,6 +106,7 @@ public class Options {
         this.remotePort = builder.remotePort;
         this.mxBeanRemotePort = builder.mxBeanRemotePort;
         this.allowedInternalLogging = builder.allowedInternalLogging;
+        this.reportFormat = builder.reportFormat;
     }
 
     public Set<ReportInformation> getReportInformation() {
@@ -123,6 +141,10 @@ public class Options {
         return allowedInternalLogging;
     }
 
+    public ReportFormat getReportFormat() {
+        return reportFormat;
+    }
+
     /**
      *
      */
@@ -132,6 +154,7 @@ public class Options {
         private static final TimeUnit DEFAULT_GC_TIME_UNIT = TimeUnit.SECONDS;
         private static final int DEFAULT_REMOTE_PORT = 10000;
         private static final int DEFAULT_MX_BEAN_REMOTE_PORT = 10001;
+        private static final ReportFormat DEFAULT_REPORT_FORMAT  = ReportFormat.CONSOLE;
 
         private Set<ReportInformation> reportInformation;
         private MemoryValueConverter memoryValueConverter;
@@ -141,6 +164,7 @@ public class Options {
         private int remotePort;
         private int mxBeanRemotePort;
         private boolean allowedInternalLogging;
+        private ReportFormat reportFormat;
 
         public Builder() {
             reportInformation = EnumSet.allOf(ReportInformation.class);
@@ -151,6 +175,7 @@ public class Options {
             remotePort = DEFAULT_REMOTE_PORT;
             mxBeanRemotePort = DEFAULT_MX_BEAN_REMOTE_PORT;
             allowedInternalLogging = true;
+            reportFormat = DEFAULT_REPORT_FORMAT;
         }
 
         /**
@@ -203,6 +228,16 @@ public class Options {
          */
         public Builder mxBeanRemotePort(int mxBeanRemotePort) {
             this.mxBeanRemotePort = mxBeanRemotePort;
+            return this;
+        }
+
+        /**
+         *
+         * @param reportFormat
+         * @return
+         */
+        public Builder reportFormat(ReportFormat reportFormat) {
+            this.reportFormat = reportFormat;
             return this;
         }
 

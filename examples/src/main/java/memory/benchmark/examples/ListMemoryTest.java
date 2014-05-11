@@ -5,8 +5,8 @@ import memory.benchmark.api.Runner;
 import memory.benchmark.api.annotations.After;
 import memory.benchmark.api.annotations.Before;
 import memory.benchmark.api.annotations.Benchmark;
-import memory.benchmark.api.report.BenchmarkReportFormatter;
-import memory.benchmark.api.report.ConsoleBenchmarkReportFormatter;
+import memory.benchmark.internal.report.BenchmarkReportFormatter;
+import memory.benchmark.internal.report.ConsoleBenchmarkReportFormatter;
 import memory.benchmark.api.result.BenchmarkResult;
 import memory.benchmark.api.util.MemoryValueConverter;
 

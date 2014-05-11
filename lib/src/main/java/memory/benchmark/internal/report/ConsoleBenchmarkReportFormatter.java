@@ -1,4 +1,4 @@
-package memory.benchmark.api.report;
+package memory.benchmark.internal.report;
 
 import memory.benchmark.api.Options;
 import memory.benchmark.api.Options.ReportInformation;

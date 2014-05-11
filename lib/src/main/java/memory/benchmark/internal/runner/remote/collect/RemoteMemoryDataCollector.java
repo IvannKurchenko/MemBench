@@ -9,11 +9,11 @@ import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryUsage;
 
 import static memory.benchmark.internal.runner.remote.collect.CompositeDataConverter.toMemoryUsage;
-import static memory.benchmark.internal.util.ThrowableHandler.handleThrowableFunction;
+import static memory.benchmark.internal.util.ThrowableHandlers.rethrowThrowableFunction;
 
 public class RemoteMemoryDataCollector extends AbstractMemoryDataCollector {
 
-    static final ObjectName OBJECT_NAME = handleThrowableFunction(() -> new ObjectName(ManagementFactory.MEMORY_MXBEAN_NAME));
+    static final ObjectName OBJECT_NAME = rethrowThrowableFunction(() -> new ObjectName(ManagementFactory.MEMORY_MXBEAN_NAME));
     static final String HEAP_MEMORY_USAGE = "HeapMemoryUsage";
     static final String NON_HEAP_MEMORY_USAGE = "NonHeapMemoryUsage";
 
@@ -34,6 +34,6 @@ public class RemoteMemoryDataCollector extends AbstractMemoryDataCollector {
     }
 
     private MemoryUsage getMemoryUsage(String usageProperty) {
-        return toMemoryUsage(handleThrowableFunction(() -> (CompositeData) remote.getAttribute(OBJECT_NAME, usageProperty)));
+        return toMemoryUsage(rethrowThrowableFunction(() -> (CompositeData) remote.getAttribute(OBJECT_NAME, usageProperty)));
     }
 }

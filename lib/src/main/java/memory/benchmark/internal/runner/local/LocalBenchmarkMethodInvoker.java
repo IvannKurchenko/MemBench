@@ -1,31 +1,30 @@
 package memory.benchmark.internal.runner.local;
 
-import memory.benchmark.api.Options;
 import memory.benchmark.internal.runner.BenchmarkMethodInvoker;
-import memory.benchmark.internal.util.ThrowableHandler;
+import memory.benchmark.internal.util.GcHelper;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Optional;
 
-import static memory.benchmark.internal.util.ThrowableHandler.handleThrowableAction;
-import static memory.benchmark.internal.util.ThrowableHandler.handleThrowableFunction;
+import static memory.benchmark.internal.util.ThrowableHandlers.rethrowThrowableAction;
+import static memory.benchmark.internal.util.ThrowableHandlers.rethrowThrowableFunction;
 
 public class LocalBenchmarkMethodInvoker implements BenchmarkMethodInvoker {
 
-    private final Options options;
+    private final GcHelper gcHelper;
     private final Object benchmarkObject;
     private final Optional<Method> beforeMethod;
     private final List<Method> testMethods;
     private final Optional<Method> afterMethod;
 
-    public LocalBenchmarkMethodInvoker(Options options,
-                                       Object benchmarkObject,
-                                       Optional<Method> beforeMethod,
-                                       List<Method> testMethods,
-                                       Optional<Method> afterMethod) {
-        this.options = options;
+    public LocalBenchmarkMethodInvoker( GcHelper gcHelper,
+                                        Object benchmarkObject,
+                                        Optional<Method> beforeMethod,
+                                        List<Method> testMethods,
+                                        Optional<Method> afterMethod) {
+        this.gcHelper = gcHelper;
         this.benchmarkObject = benchmarkObject;
         this.beforeMethod = beforeMethod;
         this.testMethods = testMethods;
@@ -34,17 +33,17 @@ public class LocalBenchmarkMethodInvoker implements BenchmarkMethodInvoker {
 
     @Override
     public void invokeBefore() {
-        handleThrowableAction(() -> invokeOptionalMethod(beforeMethod));
+        rethrowThrowableAction(() -> invokeOptionalMethod(beforeMethod));
     }
 
     @Override
     public void invokeBenchmark(Method benchmarkMethod) {
-        handleThrowableFunction(() -> benchmarkMethod.invoke(benchmarkObject));
+        rethrowThrowableFunction(() -> benchmarkMethod.invoke(benchmarkObject));
     }
 
     @Override
     public void invokeAfter() {
-        handleThrowableAction(() -> invokeOptionalMethod(afterMethod));
+        rethrowThrowableAction(() -> invokeOptionalMethod(afterMethod));
     }
 
     @Override
@@ -54,19 +53,8 @@ public class LocalBenchmarkMethodInvoker implements BenchmarkMethodInvoker {
 
     private void invokeOptionalMethod(Optional<Method> optional) throws InvocationTargetException, IllegalAccessException {
         optional.ifPresent(m -> {
-            handleThrowableFunction(() -> m.invoke(benchmarkObject));
+            rethrowThrowableFunction(() -> m.invoke(benchmarkObject));
         });
-        tryGc();
-    }
-
-    private void tryGc() {
-        try {
-
-            System.gc();
-            options.getGcTimeUnit().sleep(options.getGcTime());
-
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        gcHelper.tryGc();
     }
 }

@@ -1,5 +1,6 @@
 package memory.benchmark.internal.runner.remote;
 
+import memory.benchmark.internal.util.GcHelper;
 import memory.benchmark.internal.util.Log;
 
 import javax.management.MBeanServer;
@@ -72,7 +73,8 @@ public class RemoteServer {
     private void registerBenchmarkRemote() throws Exception {
         Class benchmarkClass = Class.forName(benchmarkClassName);
         Object benchmarkObject = benchmarkClass.newInstance();
-        BenchmarkRemote benchmarkRemote = new BenchmarkRemoteImpl(benchmarkObject, gcTime, gcTimeUnit);
+        GcHelper gcHelper = new GcHelper(gcTime, gcTimeUnit);
+        BenchmarkRemote benchmarkRemote = new BenchmarkRemoteImpl(benchmarkObject, gcHelper);
         BenchmarkRemote stub = (BenchmarkRemote) exportObject(benchmarkRemote, 0);
         Registry registry = createRegistry(benchmarkRmiPort);
         registry.bind(BENCHMARK_OBJECT_NAME, stub);

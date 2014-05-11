@@ -10,7 +10,7 @@ import javax.management.remote.JMXConnectorFactory;
 import javax.management.remote.JMXServiceURL;
 import java.io.IOException;
 
-import static memory.benchmark.internal.util.ThrowableHandler.handleThrowableFunction;
+import static memory.benchmark.internal.util.ThrowableHandlers.rethrowThrowableFunction;
 
 public class RemoteBenchmarkDataCollectorFactory implements Factory<BenchmarkDataCollector, Object> {
 
@@ -24,7 +24,7 @@ public class RemoteBenchmarkDataCollectorFactory implements Factory<BenchmarkDat
 
     @Override
     public BenchmarkDataCollector create() {
-        return handleThrowableFunction(this::createCollector);
+        return rethrowThrowableFunction(this::createCollector);
     }
 
     private BenchmarkDataCollector createCollector() throws IOException {

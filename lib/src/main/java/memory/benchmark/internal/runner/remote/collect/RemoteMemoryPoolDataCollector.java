@@ -14,7 +14,7 @@ import java.util.List;
 
 import static java.util.stream.Collectors.toList;
 import static memory.benchmark.internal.runner.remote.collect.CompositeDataConverter.toMemoryUsage;
-import static memory.benchmark.internal.util.ThrowableHandler.handleThrowableFunction;
+import static memory.benchmark.internal.util.ThrowableHandlers.rethrowThrowableFunction;
 
 public class RemoteMemoryPoolDataCollector extends AbstractMemoryPoolDataCollector {
 
@@ -27,7 +27,7 @@ public class RemoteMemoryPoolDataCollector extends AbstractMemoryPoolDataCollect
 
     public RemoteMemoryPoolDataCollector(MBeanServerConnection remote) {
         this.remote = remote;
-        this.memoryBeanPoolNames = handleThrowableFunction(this::queryMemoryPoolBeanNames);
+        this.memoryBeanPoolNames = rethrowThrowableFunction(this::queryMemoryPoolBeanNames);
     }
 
     private List<ObjectName> queryMemoryPoolBeanNames() throws MalformedObjectNameException, IOException {
@@ -56,6 +56,6 @@ public class RemoteMemoryPoolDataCollector extends AbstractMemoryPoolDataCollect
     }
 
     private Object getAttribute(ObjectName name, String attribute) {
-        return handleThrowableFunction(() -> remote.getAttribute(name, attribute));
+        return rethrowThrowableFunction(() -> remote.getAttribute(name, attribute));
     }
 }

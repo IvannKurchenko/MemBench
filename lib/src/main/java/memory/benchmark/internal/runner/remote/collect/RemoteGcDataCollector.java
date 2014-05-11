@@ -11,7 +11,7 @@ import java.util.List;
 
 import static java.lang.Integer.parseInt;
 import static java.util.stream.Collectors.toList;
-import static memory.benchmark.internal.util.ThrowableHandler.handleThrowableFunction;
+import static memory.benchmark.internal.util.ThrowableHandlers.rethrowThrowableFunction;
 
 public class RemoteGcDataCollector extends AbstractGcDataCollector {
 
@@ -24,7 +24,7 @@ public class RemoteGcDataCollector extends AbstractGcDataCollector {
 
     public RemoteGcDataCollector(MBeanServerConnection remote) {
         this.remote = remote;
-        this.gcBeanPoolNames = handleThrowableFunction(this::queryGcBeanNames);
+        this.gcBeanPoolNames = rethrowThrowableFunction(this::queryGcBeanNames);
     }
 
     private List<ObjectName> queryGcBeanNames() throws MalformedObjectNameException, IOException {
@@ -57,6 +57,6 @@ public class RemoteGcDataCollector extends AbstractGcDataCollector {
     }
 
     private Object getAttribute(ObjectName name, String attribute) {
-        return handleThrowableFunction(() -> remote.getAttribute(name, attribute));
+        return rethrowThrowableFunction(() -> remote.getAttribute(name, attribute));
     }
 }

@@ -9,7 +9,7 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.concurrent.TimeUnit;
 
-import static memory.benchmark.internal.util.ThrowableHandler.handleThrowableFunction;
+import static memory.benchmark.internal.util.ThrowableHandlers.rethrowThrowableFunction;
 
 public class RemoteBenchmarkProcessFactory implements Factory<BenchmarkProcess, Class> {
 
@@ -21,7 +21,7 @@ public class RemoteBenchmarkProcessFactory implements Factory<BenchmarkProcess, 
 
     @Override
     public BenchmarkProcess create(Class clazz) {
-        Process process = handleThrowableFunction(() -> runRemoteProcess(clazz));
+        Process process = rethrowThrowableFunction(() -> runRemoteProcess(clazz));
         BenchmarkRemote benchmarkRemote = bindToProcess();
         return new BenchmarkProcess(process, benchmarkRemote);
     }
@@ -52,7 +52,7 @@ public class RemoteBenchmarkProcessFactory implements Factory<BenchmarkProcess, 
     }
 
     public BenchmarkRemote bindToProcess() {
-        Registry registry = handleThrowableFunction(() -> LocateRegistry.getRegistry(options.getRemotePort()));
-        return handleThrowableFunction(() -> (BenchmarkRemote) registry.lookup(RemoteServer.BENCHMARK_OBJECT_NAME));
+        Registry registry = rethrowThrowableFunction(() -> LocateRegistry.getRegistry(options.getRemotePort()));
+        return rethrowThrowableFunction(() -> (BenchmarkRemote) registry.lookup(RemoteServer.BENCHMARK_OBJECT_NAME));
     }
 }

@@ -6,7 +6,7 @@ import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Optional;
 
-import static memory.benchmark.internal.util.ThrowableHandler.handleThrowableAction;
+import static memory.benchmark.internal.util.ThrowableHandlers.rethrowThrowableAction;
 
 public class RemoteBenchmarkMethodInvoker implements BenchmarkMethodInvoker {
 
@@ -33,7 +33,7 @@ public class RemoteBenchmarkMethodInvoker implements BenchmarkMethodInvoker {
 
     @Override
     public void invokeBenchmark(Method benchmarkMethod) {
-        handleThrowableAction(() -> benchmarkProcess.getBenchmarkRemote().invoke(benchmarkMethod.getName()));
+        rethrowThrowableAction(() -> benchmarkProcess.getBenchmarkRemote().invoke(benchmarkMethod.getName()));
     }
 
     @Override
@@ -53,10 +53,10 @@ public class RemoteBenchmarkMethodInvoker implements BenchmarkMethodInvoker {
     }
 
     private void invokeGc() {
-        handleThrowableAction(benchmarkProcess.getBenchmarkRemote()::gc);
+        rethrowThrowableAction(benchmarkProcess.getBenchmarkRemote()::gc);
     }
 
     private void invokeOptionalMethod(Optional<Method> optional) {
-        optional.ifPresent(m -> handleThrowableAction(() -> benchmarkProcess.getBenchmarkRemote().invoke(m.getName())));
+        optional.ifPresent(m -> rethrowThrowableAction(() -> benchmarkProcess.getBenchmarkRemote().invoke(m.getName())));
     }
 }

@@ -4,7 +4,9 @@ import memory.benchmark.internal.collect.BenchmarkDataCollector;
 import memory.benchmark.internal.collect.BenchmarkDataCollectors;
 
 import javax.management.remote.JMXConnector;
-import java.io.IOException;
+
+import static memory.benchmark.internal.util.ThrowableHandlers.ignoreThrowableAction;
+import static memory.benchmark.internal.util.ThrowableHandlers.printThrowableAction;
 
 public class RemoteBenchmarkDataCollectors extends BenchmarkDataCollectors {
 
@@ -17,10 +19,6 @@ public class RemoteBenchmarkDataCollectors extends BenchmarkDataCollectors {
 
     @Override
     public void close() {
-        try {
-            connector.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        ignoreThrowableAction(connector::close);
     }
 }

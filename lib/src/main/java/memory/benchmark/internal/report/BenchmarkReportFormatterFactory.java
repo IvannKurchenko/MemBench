@@ -11,7 +11,7 @@ public class BenchmarkReportFormatterFactory {
                 return new ConsoleBenchmarkReportFormatter(options);
 
             case HTML:
-                return null;
+                return new HtmlBenchmarkReportFormatter(options);
 
             default:
                 throw new UnsupportedOperationException();

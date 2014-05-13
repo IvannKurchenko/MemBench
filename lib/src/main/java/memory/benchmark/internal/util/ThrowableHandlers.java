@@ -5,7 +5,8 @@ import memory.benchmark.api.exception.BenchmarkRunException;
 public class ThrowableHandlers {
 
     public static ThrowableHandler PRINT_HANDLER = Throwable::printStackTrace;
-    public static ThrowableHandler RETHROW_HANDLER = t -> {throw new BenchmarkRunException(t);} ;
+    public static ThrowableHandler RETHROW_HANDLER = t -> {throw new BenchmarkRunException(t);};
+    public static ThrowableHandler EMPTY_HANDLER = t -> {};
 
     public static void rethrowThrowableAction(ThrowableAction action) {
         handleThrowableAction(action, RETHROW_HANDLER);
@@ -21,6 +22,14 @@ public class ThrowableHandlers {
 
     public static <T> T printThrowableFunction(ThrowableFunction<T> function) {
         return rethrowThrowableFunction(function, PRINT_HANDLER);
+    }
+
+    public static void ignoreThrowableAction(ThrowableAction action) {
+        handleThrowableAction(action, EMPTY_HANDLER);
+    }
+
+    public static <T> T ignoreThrowableFunction(ThrowableFunction<T> function) {
+        return rethrowThrowableFunction(function, EMPTY_HANDLER);
     }
 
     public static void handleThrowableAction(ThrowableAction action, ThrowableHandler throwableHandler) {

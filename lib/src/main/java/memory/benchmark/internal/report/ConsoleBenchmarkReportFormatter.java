@@ -4,6 +4,7 @@ import memory.benchmark.api.Options;
 import memory.benchmark.api.Options.ReportInformation;
 import memory.benchmark.api.result.*;
 import memory.benchmark.api.util.MemoryValueConverter;
+import memory.benchmark.internal.util.Log;
 
 import java.lang.management.MemoryType;
 import java.util.List;
@@ -13,7 +14,7 @@ import static memory.benchmark.api.Options.ReportInformation.*;
 /**
  *
  */
-public class ConsoleBenchmarkReportFormatter implements BenchmarkReportFormatter<String> {
+public class ConsoleBenchmarkReportFormatter implements BenchmarkReportFormatter {
 
     private static final String EOL = Character.toString('\n');
     private static final String TAB = Character.toString('\t');
@@ -25,10 +26,10 @@ public class ConsoleBenchmarkReportFormatter implements BenchmarkReportFormatter
     }
 
     @Override
-    public String formatReport(List<BenchmarkResult> benchmarkResults) {
+    public void formatReport(List<BenchmarkResult> benchmarkResults) {
         StringBuilder builder = new StringBuilder();
         benchmarkResults.forEach(result -> appendResult(builder, result));
-        return builder.toString();
+        Log.SYS_OUT.log(builder);
     }
 
     private void appendResult(StringBuilder builder, BenchmarkResult benchmarkResult) {

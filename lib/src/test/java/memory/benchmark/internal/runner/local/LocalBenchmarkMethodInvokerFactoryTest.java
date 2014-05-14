@@ -4,13 +4,12 @@ import memory.benchmark.api.Options;
 import memory.benchmark.internal.BenchmarkMethodExtractor;
 import memory.benchmark.internal.runner.BenchmarkMethodInvoker;
 import memory.benchmark.internal.util.Factory;
+import memory.benchmark.internal.util.Log;
 import memory.benchmark.internal.validation.BenchmarkValidator;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.lang.reflect.Method;
-import java.util.List;
-import java.util.Optional;
 
 import static java.util.Collections.emptyList;
 import static java.util.Optional.empty;
@@ -34,6 +33,7 @@ public class LocalBenchmarkMethodInvokerFactoryTest {
         methodExtractor = mock(BenchmarkMethodExtractor.class);
         benchmarkObjectClassFactory = mock(Factory.class);
         localBenchmarkMethodInvokerFactory = new LocalBenchmarkMethodInvokerFactory(options,
+                                                                                    Log.EMPTY_LOG,
                                                                                     methodBenchmarkValidator,
                                                                                     classBenchmarkValidator,
                                                                                     methodExtractor,

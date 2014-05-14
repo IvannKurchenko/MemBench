@@ -20,7 +20,7 @@
 
 <body>
     <#list chartIdentifiers as chartIdentifier>
-        <div id="${chartIdentifier}"></div>
+        <div style="width:800px; margin:0 auto;" id="${chartIdentifier}"></div>
     </#list>
 </body>
 </html>

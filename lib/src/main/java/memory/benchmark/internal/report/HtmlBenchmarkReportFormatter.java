@@ -27,12 +27,23 @@ public class HtmlBenchmarkReportFormatter implements BenchmarkReportFormatter {
     private static final String CHART_FUNCTIONS_TAG = "chartFunctions";
     private static final String CHART_IDENTIFIERS_TAG = "chartIdentifiers";
 
-    private static final String USED_HEAP_MEMORY_ID = "used_heap_memory";
-    private static final String COMMITTED_HEAP_MEMORY_ID = "committed_heap_memory";
-    private static final String MAX_HEAP_MEMORY_ID = "max_heap_memory";
-    public static final String USED_HEAP_MEMORY_TITLE = "Used heap memory";
-    public static final String COMMITTED_HEAP_MEMORY_TITLE = "Committed heap memory";
-    public static final String MAX_HEAP_MEMORY_TITLE = "Max heap memory";
+    private static final String USED_HEAP_MEMORY_ID_TAG = "used_heap_memory";
+    private static final String USED_HEAP_MEMORY_TITLE_TAG = "Used heap memory";
+
+    private static final String COMMITTED_HEAP_MEMORY_ID_TAG = "committed_heap_memory";
+    private static final String COMMITTED_HEAP_MEMORY_TITLE_TAG = "Committed heap memory";
+
+    private static final String MAX_HEAP_MEMORY_ID_TAG = "max_heap_memory";
+    private static final String MAX_HEAP_MEMORY_TITLE_TAG = "Max heap memory";
+
+    private static final String USED_NON_HEAP_MEMORY_ID_TAG = "used_non_heap_memory";
+    private static final String USED_NON_HEAP_MEMORY_TITLE_TAG = "Used non heap memory";
+
+    private static final String COMMITTED_NON_HEAP_MEMORY_ID_TAG = "committed_non_heap_memory";
+    private static final String COMMITTED_NON_HEAP_MEMORY_TITLE_TAG = "Committed non heap memory";
+
+    private static final String MAX_NON_HEAP_MEMORY_ID_TAG = "max_non_heap_memory";
+    private static final String MAX_NON_HEAP_MEMORY_TITLE_TAG = "Max non heap memory";
 
     private final Options options;
 
@@ -72,7 +83,13 @@ public class HtmlBenchmarkReportFormatter implements BenchmarkReportFormatter {
         List<String> chartFunctions = new ArrayList<>();
         List<String> chartIdentifiers = new ArrayList<>();
 
-        addHeapMemoryUsage(configuration, benchmarkResults, chartFunctions, chartIdentifiers);
+        if(options.getReportInformation().contains(Options.ReportInformation.HEAP_MEMORY_FOOTPRINT)) {
+            addHeapMemoryUsage(configuration, benchmarkResults, chartFunctions, chartIdentifiers);
+        }
+
+        if(options.getReportInformation().contains(Options.ReportInformation.NON_HEAP_MEMORY_FOOTPRINT)) {
+            addNonHeapMemoryUsage(configuration, benchmarkResults, chartFunctions, chartIdentifiers);
+        }
 
         parameters.put(CHART_FUNCTIONS_TAG, chartFunctions);
         parameters.put(CHART_IDENTIFIERS_TAG, chartIdentifiers);
@@ -98,42 +115,84 @@ public class HtmlBenchmarkReportFormatter implements BenchmarkReportFormatter {
 
     private void addHeapMemoryUsage(Configuration configuration, List<BenchmarkResult> benchmarkResults, List<String> chartFunctions, List<String> chartIdentifiers) throws IOException, TemplateException {
         chartFunctions.add(createUsedHeapMemoryFootprintChartFunction(configuration, benchmarkResults));
-        chartIdentifiers.add(USED_HEAP_MEMORY_ID);
+        chartIdentifiers.add(USED_HEAP_MEMORY_ID_TAG);
 
         chartFunctions.add(createCommittedHeapMemoryFootprintChartFunction(configuration, benchmarkResults));
-        chartIdentifiers.add(COMMITTED_HEAP_MEMORY_ID);
+        chartIdentifiers.add(COMMITTED_HEAP_MEMORY_ID_TAG);
 
         chartFunctions.add(createMaxHeapMemoryFootprintChartFunction(configuration, benchmarkResults));
-        chartIdentifiers.add(MAX_HEAP_MEMORY_ID);
+        chartIdentifiers.add(MAX_HEAP_MEMORY_ID_TAG);
     }
+
+    private void addNonHeapMemoryUsage(Configuration configuration, List<BenchmarkResult> benchmarkResults, List<String> chartFunctions, List<String> chartIdentifiers) throws IOException, TemplateException {
+        chartFunctions.add(createUsedNonHeapMemoryFootprintChartFunction(configuration, benchmarkResults));
+        chartIdentifiers.add(USED_NON_HEAP_MEMORY_ID_TAG);
+
+        chartFunctions.add(createCommittedNonHeapMemoryFootprintChartFunction(configuration, benchmarkResults));
+        chartIdentifiers.add(COMMITTED_NON_HEAP_MEMORY_ID_TAG);
+
+        chartFunctions.add(createMaxNonHeapMemoryFootprintChartFunction(configuration, benchmarkResults));
+        chartIdentifiers.add(MAX_NON_HEAP_MEMORY_ID_TAG);
+    }
+
 
     private String createUsedHeapMemoryFootprintChartFunction(Configuration configuration, List<BenchmarkResult> benchmarkResult) throws IOException, TemplateException {
         Map<String, Object> parameters = new HashMap<>();
-        parameters.put(CHART_NAME, USED_HEAP_MEMORY_ID);
+        parameters.put(CHART_NAME, USED_HEAP_MEMORY_ID_TAG);
         parameters.put(MEMORY_VALUE, "Mb");
-        parameters.put(TITLE, USED_HEAP_MEMORY_TITLE);
+        parameters.put(TITLE, USED_HEAP_MEMORY_TITLE_TAG);
         parameters.put(CHART_DATA_TAG, mapChartData(benchmarkResult, this::usedHeapMemoryFootprintToChartData));
-        parameters.put(CHART_IDENTIFIER_TAG, USED_HEAP_MEMORY_ID);
+        parameters.put(CHART_IDENTIFIER_TAG, USED_HEAP_MEMORY_ID_TAG);
         return createChartFunction(configuration, parameters);
     }
 
     private String createCommittedHeapMemoryFootprintChartFunction(Configuration configuration, List<BenchmarkResult> benchmarkResult) throws IOException, TemplateException {
         Map<String, Object> parameters = new HashMap<>();
-        parameters.put(CHART_NAME, COMMITTED_HEAP_MEMORY_ID);
+        parameters.put(CHART_NAME, COMMITTED_HEAP_MEMORY_ID_TAG);
         parameters.put(MEMORY_VALUE, "Mb");
-        parameters.put(TITLE, COMMITTED_HEAP_MEMORY_TITLE);
+        parameters.put(TITLE, COMMITTED_HEAP_MEMORY_TITLE_TAG);
         parameters.put(CHART_DATA_TAG, mapChartData(benchmarkResult, this::committedHeapMemoryFootprintToChartData));
-        parameters.put(CHART_IDENTIFIER_TAG, COMMITTED_HEAP_MEMORY_ID);
+        parameters.put(CHART_IDENTIFIER_TAG, COMMITTED_HEAP_MEMORY_ID_TAG);
         return createChartFunction(configuration, parameters);
     }
 
     private String createMaxHeapMemoryFootprintChartFunction(Configuration configuration, List<BenchmarkResult> benchmarkResult) throws IOException, TemplateException {
         Map<String, Object> parameters = new HashMap<>();
-        parameters.put(CHART_NAME, MAX_HEAP_MEMORY_ID);
+        parameters.put(CHART_NAME, MAX_HEAP_MEMORY_ID_TAG);
         parameters.put(MEMORY_VALUE, "Mb");
-        parameters.put(TITLE, MAX_HEAP_MEMORY_TITLE);
+        parameters.put(TITLE, MAX_HEAP_MEMORY_TITLE_TAG);
         parameters.put(CHART_DATA_TAG, mapChartData(benchmarkResult, this::maxHeapMemoryFootprintToChartData));
-        parameters.put(CHART_IDENTIFIER_TAG, MAX_HEAP_MEMORY_ID);
+        parameters.put(CHART_IDENTIFIER_TAG, MAX_HEAP_MEMORY_ID_TAG);
+        return createChartFunction(configuration, parameters);
+    }
+
+    private String createUsedNonHeapMemoryFootprintChartFunction(Configuration configuration, List<BenchmarkResult> benchmarkResult) throws IOException, TemplateException {
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put(CHART_NAME, USED_NON_HEAP_MEMORY_ID_TAG);
+        parameters.put(MEMORY_VALUE, "Mb");
+        parameters.put(TITLE, USED_NON_HEAP_MEMORY_TITLE_TAG);
+        parameters.put(CHART_DATA_TAG, mapChartData(benchmarkResult, this::usedNonHeapMemoryFootprintToChartData));
+        parameters.put(CHART_IDENTIFIER_TAG, USED_NON_HEAP_MEMORY_ID_TAG);
+        return createChartFunction(configuration, parameters);
+    }
+
+    private String createCommittedNonHeapMemoryFootprintChartFunction(Configuration configuration, List<BenchmarkResult> benchmarkResult) throws IOException, TemplateException {
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put(CHART_NAME, COMMITTED_NON_HEAP_MEMORY_ID_TAG);
+        parameters.put(MEMORY_VALUE, "Mb");
+        parameters.put(TITLE, COMMITTED_NON_HEAP_MEMORY_TITLE_TAG);
+        parameters.put(CHART_DATA_TAG, mapChartData(benchmarkResult, this::committedNonHeapMemoryFootprintToChartData));
+        parameters.put(CHART_IDENTIFIER_TAG, COMMITTED_NON_HEAP_MEMORY_ID_TAG);
+        return createChartFunction(configuration, parameters);
+    }
+
+    private String createMaxNonHeapMemoryFootprintChartFunction(Configuration configuration, List<BenchmarkResult> benchmarkResult) throws IOException, TemplateException {
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put(CHART_NAME, MAX_NON_HEAP_MEMORY_ID_TAG);
+        parameters.put(MEMORY_VALUE, "Mb");
+        parameters.put(TITLE, MAX_NON_HEAP_MEMORY_TITLE_TAG);
+        parameters.put(CHART_DATA_TAG, mapChartData(benchmarkResult, this::maxNonHeapMemoryFootprintToChartData));
+        parameters.put(CHART_IDENTIFIER_TAG, MAX_NON_HEAP_MEMORY_ID_TAG);
         return createChartFunction(configuration, parameters);
     }
 

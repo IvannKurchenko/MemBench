@@ -10,17 +10,20 @@ public class GcHelper {
 
     private final long gcTime;
     private final TimeUnit gcTimeUnit;
+    private final Log log;
 
-    public GcHelper(Options options) {
-        this(options.getGcTime(), options.getGcTimeUnit());
+    public GcHelper(Options options, Log log) {
+        this(options.getGcTime(), options.getGcTimeUnit(), log);
     }
 
-    public GcHelper(long gcTime, TimeUnit gcTimeUnit) {
+    public GcHelper(long gcTime, TimeUnit gcTimeUnit, Log log) {
         this.gcTime = gcTime;
         this.gcTimeUnit = gcTimeUnit;
+        this.log = log;
     }
 
     public void tryGc() {
+        log.log("try GC...");
         System.gc();
         printThrowableAction(() -> gcTimeUnit.sleep(gcTime));
     }

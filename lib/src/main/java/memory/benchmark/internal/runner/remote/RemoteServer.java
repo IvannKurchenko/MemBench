@@ -73,7 +73,7 @@ public class RemoteServer {
     private void registerBenchmarkRemote() throws Exception {
         Class benchmarkClass = Class.forName(benchmarkClassName);
         Object benchmarkObject = benchmarkClass.newInstance();
-        GcHelper gcHelper = new GcHelper(gcTime, gcTimeUnit);
+        GcHelper gcHelper = new GcHelper(gcTime, gcTimeUnit, LOG);
         BenchmarkRemote benchmarkRemote = new BenchmarkRemoteImpl(benchmarkObject, gcHelper);
         BenchmarkRemote stub = (BenchmarkRemote) exportObject(benchmarkRemote, 0);
         Registry registry = createRegistry(benchmarkRmiPort);

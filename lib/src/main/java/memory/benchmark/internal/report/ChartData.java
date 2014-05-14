@@ -3,9 +3,9 @@ package memory.benchmark.internal.report;
 public class ChartData {
 
     private final String title;
-    private final long value;
+    private final String value;
 
-    public ChartData(String title, long value) {
+    public ChartData(String title, String value) {
         this.title = title;
         this.value = value;
     }
@@ -14,7 +14,7 @@ public class ChartData {
         return title;
     }
 
-    public long getValue() {
+    public String getValue() {
         return value;
     }
 }

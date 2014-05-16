@@ -19,8 +19,8 @@ import java.util.Collection;
 
 public class BenchmarkRunnerFactory {
 
-    public static BenchmarkRunner createBenchmarkRunner(Collection<Class<?>> benchmarkClasses, Options options) {
-        Log log = Log.of(Log.SYS_OUT, options);
+    public static BenchmarkRunner createBenchmarkRunner(Collection<Class<?>> benchmarkClasses, Options options, Log log) {
+
         Factory<BenchmarkDataCollector, ?> collectorFactory = createCollectorFactory(options);
         Factory<BenchmarkMethodInvoker, Class> methodInvokerFactory = createMethodInvokerFactory(options, log);
         return new BenchmarkRunner(benchmarkClasses, collectorFactory, methodInvokerFactory, log);

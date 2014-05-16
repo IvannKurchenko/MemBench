@@ -23,8 +23,9 @@ public class GcHelper {
     }
 
     public void tryGc() {
-        log.log("try GC...");
+        log.log("Start GC...");
         System.gc();
         printThrowableAction(() -> gcTimeUnit.sleep(gcTime));
+        log.log("Finish GC...");
     }
 }

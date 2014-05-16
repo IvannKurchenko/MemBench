@@ -5,6 +5,7 @@ import memory.benchmark.internal.report.BenchmarkReportFormatter;
 import memory.benchmark.internal.report.BenchmarkReportFormatterFactory;
 import memory.benchmark.internal.runner.BenchmarkRunner;
 import memory.benchmark.internal.runner.BenchmarkRunnerFactory;
+import memory.benchmark.internal.util.Log;
 import org.reflections.Reflections;
 
 import java.util.Collection;
@@ -24,8 +25,9 @@ public class Runner {
      * @return
      */
     public static List<BenchmarkResult> run(Options options, Collection<Class<?>> testClasses) {
-        BenchmarkRunner benchmarkRunner = BenchmarkRunnerFactory.createBenchmarkRunner(testClasses, options);
-        BenchmarkReportFormatter benchmarkReportFormatter = BenchmarkReportFormatterFactory.createFormatter(options);
+        Log log = Log.of(Log.SYS_OUT, options);
+        BenchmarkRunner benchmarkRunner = BenchmarkRunnerFactory.createBenchmarkRunner(testClasses, options, log);
+        BenchmarkReportFormatter benchmarkReportFormatter = BenchmarkReportFormatterFactory.createFormatter(options, log);
         List<BenchmarkResult> benchmarkResults = benchmarkRunner.run();
         benchmarkReportFormatter.formatReport(benchmarkResults);
         return benchmarkResults;

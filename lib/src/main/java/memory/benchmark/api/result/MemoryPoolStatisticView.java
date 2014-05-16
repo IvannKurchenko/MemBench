@@ -2,6 +2,9 @@ package memory.benchmark.api.result;
 
 import java.lang.management.MemoryType;
 
+/**
+ *
+ */
 public class MemoryPoolStatisticView extends StatisticView<MemoryFootprint> {
 
     private final MemoryType memoryType;
@@ -19,10 +22,18 @@ public class MemoryPoolStatisticView extends StatisticView<MemoryFootprint> {
         this.name = name;
     }
 
+    /**
+     *
+     * @return
+     */
     public MemoryType getMemoryType() {
         return memoryType;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getName() {
         return name;
     }

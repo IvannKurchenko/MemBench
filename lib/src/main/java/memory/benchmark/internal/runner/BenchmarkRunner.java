@@ -48,7 +48,8 @@ public class BenchmarkRunner {
                 if (benchmarkMethods.size() > 0) {
                     BenchmarkDataCollector benchmarkDataCollector = collectorFactory.create();
                     benchmarkDataCollectorOpt = Optional.of(benchmarkDataCollector);
-                    benchmarkResults.addAll(runTests(benchmarkMethodInvoker, benchmarkDataCollector));
+                    List<BenchmarkResult> results = runTests(benchmarkMethodInvoker, benchmarkDataCollector);
+                    benchmarkResults.addAll(results);
                 }
 
             } finally {
@@ -74,11 +75,17 @@ public class BenchmarkRunner {
 
                 log.log("Benchmark #" + i);
 
+                log.log("Invoke before method");
+
                 benchmarkMethodInvoker.invokeBefore();
 
                 benchmarkDataCollector.onBeforeTest();
 
+                log.log("Invoke benchmark method");
+
                 benchmarkMethodInvoker.invokeBenchmark(testMethod);
+
+                log.log("Invoke after method");
 
                 benchmarkDataCollector.onAfterTest();
 

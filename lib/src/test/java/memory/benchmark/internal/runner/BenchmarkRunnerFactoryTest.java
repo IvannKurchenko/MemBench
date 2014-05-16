@@ -1,6 +1,7 @@
 package memory.benchmark.internal.runner;
 
 import memory.benchmark.api.Options;
+import memory.benchmark.internal.util.Log;
 import org.junit.Test;
 
 import java.util.Collection;
@@ -14,7 +15,7 @@ public class BenchmarkRunnerFactoryTest {
     public void testCreateBenchmarkRunner() throws Exception {
         Options options = new Options.Builder().build();
         Collection<Class<?>> benchmarkClasses = asList(TestClass.class);
-        assertNotNull(BenchmarkRunnerFactory.createBenchmarkRunner(benchmarkClasses, options));
+        assertNotNull(BenchmarkRunnerFactory.createBenchmarkRunner(benchmarkClasses, options, Log.EMPTY_LOG));
     }
 
     private static class TestClass{}

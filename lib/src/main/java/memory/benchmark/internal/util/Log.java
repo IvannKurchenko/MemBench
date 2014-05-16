@@ -9,9 +9,7 @@ public interface Log {
 
     public static final Log SYS_ERR = System.err::println;
 
-    public static final Log EMPTY_LOG = Log::emptyLog;
-
-    public static void emptyLog(Object message){}
+    public static final Log EMPTY_LOG = (m) -> {};
 
     public static Log of(Log log, Options options) {
         return options.isAllowedInternalLogging() ? log : EMPTY_LOG;

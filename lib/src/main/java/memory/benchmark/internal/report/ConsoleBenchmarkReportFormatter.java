@@ -20,16 +20,18 @@ public class ConsoleBenchmarkReportFormatter implements BenchmarkReportFormatter
     private static final String TAB = Character.toString('\t');
 
     private final Options options;
+    private final Log log;
 
-    public ConsoleBenchmarkReportFormatter(Options options) {
+    public ConsoleBenchmarkReportFormatter(Options options, Log log) {
         this.options = options;
+        this.log = log;
     }
 
     @Override
     public void formatReport(List<BenchmarkResult> benchmarkResults) {
         StringBuilder builder = new StringBuilder();
         benchmarkResults.forEach(result -> appendResult(builder, result));
-        Log.SYS_OUT.log(builder);
+        log.log(builder);
     }
 
     private void appendResult(StringBuilder builder, BenchmarkResult benchmarkResult) {

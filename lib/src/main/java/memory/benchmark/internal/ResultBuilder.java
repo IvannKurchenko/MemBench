@@ -14,7 +14,7 @@ public class ResultBuilder {
 
     private StatisticView<MemoryFootprint> heapMemoryFootprint, nonHeapMemoryFootprint;
     private List<MemoryPoolStatisticView> memoryPoolFootprints;
-    private List<StatisticView<GcUsage>> gcUsages;
+    private List<GcUsageStatisticView> gcUsages;
 
     public ResultBuilder(Class benchmarkClass, Method benchmarkMethod, Benchmark benchmark) {
         this.benchmarkClass = benchmarkClass;
@@ -44,11 +44,11 @@ public class ResultBuilder {
         this.memoryPoolFootprints = memoryPoolFootprints;
     }
 
-    public List<StatisticView<GcUsage>> getGcUsages() {
+    public List<GcUsageStatisticView> getGcUsages() {
         return gcUsages;
     }
 
-    public void setGcUsages(List<StatisticView<GcUsage>> gcUsages) {
+    public void setGcUsages(List<GcUsageStatisticView> gcUsages) {
         this.gcUsages = gcUsages;
     }
 

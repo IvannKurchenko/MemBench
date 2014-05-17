@@ -16,7 +16,7 @@ public class BenchmarkResult {
     private final Benchmark benchmark;
     private final StatisticView<MemoryFootprint> heapMemoryFootprint, nonHeapMemoryFootprint;
     private final List<MemoryPoolStatisticView> memoryPoolFootprints;
-    private final List<StatisticView<GcUsage>> gcUsages;
+    private final List<GcUsageStatisticView> gcUsages;
 
     public BenchmarkResult(ResultBuilder builder) {
         this.benchmarkClass = builder.getBenchmarkClass();
@@ -52,7 +52,7 @@ public class BenchmarkResult {
     /**
      * @return
      */
-    public List<StatisticView<GcUsage>> getGcUsages() {
+    public List<GcUsageStatisticView> getGcUsages() {
         return gcUsages;
     }
 

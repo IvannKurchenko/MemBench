@@ -2,10 +2,7 @@ package memory.benchmark.internal.report;
 
 import freemarker.template.*;
 import memory.benchmark.api.Options;
-import memory.benchmark.api.result.BenchmarkResult;
-import memory.benchmark.api.result.MemoryFootprint;
-import memory.benchmark.api.result.MemoryPoolStatisticView;
-import memory.benchmark.api.result.StatisticView;
+import memory.benchmark.api.result.*;
 import memory.benchmark.internal.util.Log;
 
 import java.io.*;
@@ -48,12 +45,17 @@ public class HtmlBenchmarkReportFormatter implements BenchmarkReportFormatter {
 
     private static final String MAX_NON_HEAP_MEMORY_ID_TAG = "max_non_heap_memory";
     private static final String MAX_NON_HEAP_MEMORY_TITLE_TAG = "Max non heap memory";
+
     public static final String USED_PREFIX = "Used";
     public static final String COMMITTED_POOL_PREFIX = "Committed";
     public static final String MAX_POOL_PREFIX = "Max";
 
     private final Options options;
     private final Log log;
+
+    private Configuration configuration;
+    private List<String> chartFunctions;
+    private List<String> chartIdentifiers;
 
     public HtmlBenchmarkReportFormatter(Options options, Log log) {
         this.options = options;
@@ -62,7 +64,7 @@ public class HtmlBenchmarkReportFormatter implements BenchmarkReportFormatter {
 
     @Override
     public void formatReport(List<BenchmarkResult> benchmarkResults) {
-        Configuration configuration = new Configuration();
+        configuration = new Configuration();
         configuration.setClassForTemplateLoading(HtmlBenchmarkReportFormatter.class, "");
         configuration.setIncompatibleImprovements(new Version(2, 3, 20));
         configuration.setDefaultEncoding("UTF-8");
@@ -76,7 +78,7 @@ public class HtmlBenchmarkReportFormatter implements BenchmarkReportFormatter {
             File reportFile = new File(REPORT_FILE_NAME);
             Writer fileWriter = new FileWriter(reportFile);
             fileWriterOptional = Optional.of(fileWriter);
-            Map<String, Object> templateParameters = createTemplateParameters(configuration, benchmarkResults);
+            Map<String, Object> templateParameters = createTemplateParameters(benchmarkResults);
             template.process(templateParameters, fileWriter);
 
             log.log("Report file : " + reportFile.getAbsoluteFile().getAbsolutePath());
@@ -88,17 +90,16 @@ public class HtmlBenchmarkReportFormatter implements BenchmarkReportFormatter {
         }
     }
 
-    private Map<String, Object> createTemplateParameters(Configuration configuration, List<BenchmarkResult> benchmarkResults) throws Exception {
+    private Map<String, Object> createTemplateParameters(List<BenchmarkResult> benchmarkResults) throws Exception {
         Map<String, Object> parameters = new HashMap<>();
         Map<Class, List<BenchmarkResult>> mappedBenchmarkResults = mapBenchmarksResult(benchmarkResults);
 
-        List<String> chartFunctions = new ArrayList<>();
-        List<String> chartIdentifiers = new ArrayList<>();
+        chartFunctions = new ArrayList<>();
+        chartIdentifiers = new ArrayList<>();
 
-        addHeapMemoryUsage(configuration, benchmarkResults, chartFunctions, chartIdentifiers);
-        addNonHeapMemoryUsage(configuration, benchmarkResults, chartFunctions, chartIdentifiers);
-
-        addMemoryPool(configuration, benchmarkResults, chartFunctions, chartIdentifiers);
+        addMemoryUsage(benchmarkResults);
+        addMemoryPool(benchmarkResults);
+        addGcInfo(benchmarkResults);
 
         parameters.put(CHART_FUNCTIONS_KEY, chartFunctions);
         parameters.put(CHART_IDENTIFIERS_KEY, chartIdentifiers);
@@ -122,12 +123,17 @@ public class HtmlBenchmarkReportFormatter implements BenchmarkReportFormatter {
         return classListMap;
     }
 
-    private void addHeapMemoryUsage(Configuration configuration, List<BenchmarkResult> benchmarkResults,
-                                    List<String> chartFunctions, List<String> chartIdentifiers) throws Exception {
+    private void addMemoryUsage(List<BenchmarkResult> benchmarkResults) throws Exception {
         if(!options.getReportInformation().contains(Options.ReportInformation.HEAP_MEMORY_FOOTPRINT)) {
-            return;
+            addHeapMemoryUsage(benchmarkResults);
         }
 
+        if(!options.getReportInformation().contains(Options.ReportInformation.NON_HEAP_MEMORY_FOOTPRINT)) {
+            addNonHeapMemoryUsage(benchmarkResults);
+        }
+    }
+
+    private void addHeapMemoryUsage(List<BenchmarkResult> benchmarkResults) throws Exception {
         chartFunctions.add(createChartFunction( configuration, USED_HEAP_MEMORY_ID_TAG, USED_HEAP_MEMORY_TITLE_TAG,
                 benchmarkResults, this::usedHeapMemoryFootprintToChartData));
         chartIdentifiers.add(USED_HEAP_MEMORY_ID_TAG);
@@ -141,12 +147,7 @@ public class HtmlBenchmarkReportFormatter implements BenchmarkReportFormatter {
         chartIdentifiers.add(MAX_HEAP_MEMORY_ID_TAG);
     }
 
-    private void addNonHeapMemoryUsage(Configuration configuration, List<BenchmarkResult> benchmarkResults,
-                                       List<String> chartFunctions, List<String> chartIdentifiers) throws Exception {
-        if(!options.getReportInformation().contains(Options.ReportInformation.NON_HEAP_MEMORY_FOOTPRINT)) {
-            return;
-        }
-
+    private void addNonHeapMemoryUsage(List<BenchmarkResult> benchmarkResults) throws Exception {
         chartFunctions.add(createChartFunction(configuration, USED_NON_HEAP_MEMORY_ID_TAG, USED_NON_HEAP_MEMORY_TITLE_TAG,
                 benchmarkResults, this::usedNonHeapMemoryFootprintToChartData));
         chartIdentifiers.add(USED_NON_HEAP_MEMORY_ID_TAG);
@@ -190,33 +191,24 @@ public class HtmlBenchmarkReportFormatter implements BenchmarkReportFormatter {
                 MemoryFootprint::getMaxMemoryFootprint);
     }
 
-    private void addMemoryPool(Configuration configuration, List<BenchmarkResult> benchmarkResults,
-                               List<String> chartFunctions, List<String> chartIdentifiers) throws Exception {
-
+    private void addMemoryPool(List<BenchmarkResult> benchmarkResults) throws Exception {
         if(options.getReportInformation().contains(Options.ReportInformation.HEAP_MEMORY_POOL_FOOTPRINT)) {
-            addMemoryPool(configuration, benchmarkResults, chartFunctions, chartIdentifiers, MemoryType.HEAP);
+            addMemoryPool(benchmarkResults, MemoryType.HEAP);
         }
 
         if(options.getReportInformation().contains(Options.ReportInformation.NON_HEAP_MEMORY_POOL_FOOTPRINT)) {
-            addMemoryPool(configuration, benchmarkResults, chartFunctions, chartIdentifiers, MemoryType.NON_HEAP);
+            addMemoryPool(benchmarkResults, MemoryType.NON_HEAP);
         }
     }
 
-    private void addMemoryPool(Configuration configuration, List<BenchmarkResult> benchmarkResults,
-                               List<String> chartFunctions, List<String> chartIdentifiers, MemoryType type) throws Exception {
-
-        addMemoryPoolFootprint( configuration, benchmarkResults, type, chartFunctions, chartIdentifiers,
-                                USED_PREFIX, MemoryFootprint::getUsedMemoryFootprint);
-
-        addMemoryPoolFootprint(configuration, benchmarkResults, type, chartFunctions, chartIdentifiers,
-                                COMMITTED_POOL_PREFIX,MemoryFootprint::getCommittedMemoryFootprint);
-
-        addMemoryPoolFootprint(configuration, benchmarkResults, type, chartFunctions, chartIdentifiers,
-                                MAX_POOL_PREFIX, MemoryFootprint::getMaxMemoryFootprint);
+    private void addMemoryPool(List<BenchmarkResult> benchmarkResults, MemoryType type) throws Exception {
+        addMemoryPoolFootprint(benchmarkResults, type, USED_PREFIX, MemoryFootprint::getUsedMemoryFootprint);
+        addMemoryPoolFootprint(benchmarkResults, type, COMMITTED_POOL_PREFIX,MemoryFootprint::getCommittedMemoryFootprint);
+        addMemoryPoolFootprint(benchmarkResults, type, MAX_POOL_PREFIX, MemoryFootprint::getMaxMemoryFootprint);
     }
 
-    private void addMemoryPoolFootprint(Configuration configuration, List<BenchmarkResult> benchmarkResults, MemoryType type,
-                                        List<String> chartFunctions, List<String> chartIdentifiers, String prefix,
+    private void addMemoryPoolFootprint(List<BenchmarkResult> benchmarkResults, MemoryType type,
+                                        String prefix,
                                         Function<MemoryFootprint, Long> valueExtractor) throws Exception {
 
         Map<String, List<ChartData>> heapPoolResults = groupMemoryPoolResultByName(benchmarkResults, type, valueExtractor);
@@ -232,7 +224,6 @@ public class HtmlBenchmarkReportFormatter implements BenchmarkReportFormatter {
 
     private Map<String, List<ChartData>> groupMemoryPoolResultByName(List<BenchmarkResult> benchmarkResults, MemoryType memoryType,
                                                                      Function<MemoryFootprint, Long> valueExtractor) {
-
         Map<String, List<ChartData>> memoryPoolResults = new HashMap<>();
         for(BenchmarkResult result : benchmarkResults) {
             List<MemoryPoolStatisticView> statisticViews = filterMemoryPoolFootprintsByType(result, memoryType);
@@ -253,11 +244,47 @@ public class HtmlBenchmarkReportFormatter implements BenchmarkReportFormatter {
         return result.getMemoryPoolFootprints().stream().filter(r -> r.getMemoryType() == memoryType).collect(toList());
     }
 
+    private void addGcInfo(List<BenchmarkResult> benchmarkResults) throws Exception {
+        if(options.getReportInformation().contains(Options.ReportInformation.GC_USAGE)){
+            addGcInfo(benchmarkResults, "Time", GcUsage::getGcTime);
+        }
+    }
+
+    private void addGcInfo(List<BenchmarkResult> benchmarkResults, String prefix, Function<GcUsage, Long> valueExtractor) throws Exception {
+        Map<String, List<ChartData>> gcUsageResults = groupGcUsageResultByName(benchmarkResults, valueExtractor);
+        for(Map.Entry<String, List<ChartData>> gcUsageResult : gcUsageResults.entrySet()) {
+            String gcName = gcUsageResult.getKey().replaceAll(" ", "_");
+            String name = prefix + gcName.replaceAll(" ", "_");
+            String title = prefix + " " + gcName;
+            String chart = createChartFunction(configuration, name, title, gcUsageResult.getValue(), d->d);
+            chartIdentifiers.add(name);
+            chartFunctions.add(chart);
+        }
+    }
+
+    private Map<String, List<ChartData>> groupGcUsageResultByName(List<BenchmarkResult> benchmarkResults,
+                                                                  Function<GcUsage,Long> valueExtractor) {
+        Map<String, List<ChartData>> gcUsageResults = new HashMap<>();
+        for(BenchmarkResult result : benchmarkResults) {
+            List<GcUsageStatisticView> statisticViews = result.getGcUsages();
+            for(GcUsageStatisticView statisticView : statisticViews) {
+                String poolName = statisticView.getGcName();
+                List<ChartData> views = gcUsageResults.get(poolName);
+                if(views == null) {
+                    views = new ArrayList<>();
+                    gcUsageResults.put(poolName, views);
+                }
+                views.add(statisticViewToChartData(result, statisticView, valueExtractor));
+            }
+        }
+        return gcUsageResults;
+    }
+
     private <T> String createChartFunction(Configuration configuration, String name, String title, List<T> results,
                                            Function<T, ChartData> mapper) throws Exception {
         Map<String, Object> parameters = new HashMap<>();
         parameters.put(CHART_NAME_KEY, name);
-        parameters.put(MEMORY_VALUE_KEY, "Mb");
+        parameters.put(MEMORY_VALUE_KEY, options.getMemoryValueConverter().getSuffix());
         parameters.put(CHART_TITLE_KEY, title);
         parameters.put(CHART_DATA_TAG, mapChartData(results, mapper));
         parameters.put(CHART_IDENTIFIER_KEY, name);

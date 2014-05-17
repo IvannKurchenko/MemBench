@@ -5,23 +5,23 @@ package memory.benchmark.api.result;
  */
 public class GcUsageStatisticView extends StatisticView<GcUsage> {
 
-    private final String gcBame;
+    private final String gcName;
 
-    public GcUsageStatisticView(GcUsage singleValue, String gcBame) {
+    public GcUsageStatisticView(GcUsage singleValue, String gcName) {
         super(singleValue);
-        this.gcBame = gcBame;
+        this.gcName = gcName;
     }
 
-    public GcUsageStatisticView(GcUsage minimumValue, GcUsage maximumValue, GcUsage averageValue, String gcBame) {
+    public GcUsageStatisticView(GcUsage minimumValue, GcUsage maximumValue, GcUsage averageValue, String gcName) {
         super(minimumValue, maximumValue, averageValue);
-        this.gcBame = gcBame;
+        this.gcName = gcName;
     }
 
     /**
      *
      * @return
      */
-    public String getGcBame() {
-        return gcBame;
+    public String getGcName() {
+        return gcName;
     }
 }

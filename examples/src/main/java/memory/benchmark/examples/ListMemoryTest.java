@@ -18,7 +18,7 @@ public class ListMemoryTest {
 
     public static void main(String... args) {
         Options options = new Builder().
-                reportInformation(Options.ReportInformation.HEAP_MEMORY_FOOTPRINT, Options.ReportInformation.HEAP_MEMORY_POOL_FOOTPRINT).
+                reportInformation(Options.ReportInformation.HEAP_MEMORY_FOOTPRINT, Options.ReportInformation.GC_USAGE).
                 memoryValueConverter(MemoryValueConverter.TO_MEGA_BYTES).
                 runMode(Options.RunMode.SEPARATE_PROCESS).
                 reportFormat(Options.ReportFormat.HTML).

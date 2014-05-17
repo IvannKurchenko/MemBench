@@ -3,28 +3,35 @@ package memory.benchmark.api.util;
 /**
  *
  */
-public interface MemoryValueConverter {
-
-    static final int KILOBYTE = 1024;
-    static final int MEGABYTE = 1000 * KILOBYTE;
-    static final int GIGABYTE = 1000 * MEGABYTE;
+public enum MemoryValueConverter {
+    /**
+     *
+     */
+    TO_GIGA_BYTES(1000 * 1000 * 1024, "Gb"),
 
     /**
      *
      */
-    public static final MemoryValueConverter TO_GIGA_BYTES = (value -> value / GIGABYTE + "Gb");
-    /**
-     *
-     */
-    public static final MemoryValueConverter TO_MEGA_BYTES = (value -> value / MEGABYTE + "Mb");
-    /**
-     *
-     */
-    public static final MemoryValueConverter TO_KILO_BYTES = (value -> value / KILOBYTE + "Kb");
+    TO_MEGA_BYTES(1000 * 1024, "Mb"),
 
     /**
-     * @param value
-     * @return
+     *
      */
-    String convert(long value);
+    TO_KILO_BYTES(1024, "Kb");
+
+    private final int derived;
+    private final String suffix;
+
+    MemoryValueConverter(int derived, String suffix) {
+        this.derived = derived;
+        this.suffix = suffix;
+    }
+
+    public String convert(long value) {
+        return value / derived + suffix;
+    }
+
+    public String getSuffix() {
+        return suffix;
+    }
 }

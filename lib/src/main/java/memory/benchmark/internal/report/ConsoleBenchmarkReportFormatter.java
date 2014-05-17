@@ -112,7 +112,7 @@ public class ConsoleBenchmarkReportFormatter implements BenchmarkReportFormatter
                 (footprintType == MemoryType.NON_HEAP && allowedToPrint(NON_HEAP_MEMORY_POOL_FOOTPRINT));
     }
 
-    private void appendGcUsages(StringBuilder builder, String appender, List<StatisticView<GcUsage>> gcUsages) {
+    private void appendGcUsages(StringBuilder builder, String appender, List<GcUsageStatisticView> gcUsages) {
         if (!allowedToPrint(GC_USAGE)) {
             return;
         }
@@ -135,7 +135,6 @@ public class ConsoleBenchmarkReportFormatter implements BenchmarkReportFormatter
     }
 
     private void appendGcUsage(StringBuilder builder, String appender, GcUsage gcUsage) {
-        append(builder, appender, "- Name : " + gcUsage.getName());
         append(builder, appender + TAB, "- GC count : " + gcUsage.getGcCount());
         append(builder, appender + TAB, "- GC time : " + gcUsage.getGcTime());
     }

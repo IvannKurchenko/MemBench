@@ -1,9 +1,8 @@
 package memory.benchmark.internal.runner.local.collect;
 
 import memory.benchmark.api.result.GcUsage;
-import memory.benchmark.api.result.StatisticView;
+import memory.benchmark.api.result.GcUsageStatisticView;
 import memory.benchmark.internal.ResultBuilder;
-import memory.benchmark.internal.runner.local.collect.LocalGcDataCollector;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -43,7 +42,7 @@ public class LocalGcDataCollectorTest {
         gcResultCollector.onAfterTest();
 
         ResultBuilder expectedBuilder = new ResultBuilder(null, null, null);
-        expectedBuilder.setGcUsages(asList(new StatisticView<GcUsage>(new GcUsage(TEST_GC_NAME, 100, 100))));
+        expectedBuilder.setGcUsages(asList(new GcUsageStatisticView(new GcUsage(100, 100), TEST_GC_NAME)));
 
         ResultBuilder actualBuilder = new ResultBuilder(null, null, null);
         gcResultCollector.collectBenchmarkData(actualBuilder);

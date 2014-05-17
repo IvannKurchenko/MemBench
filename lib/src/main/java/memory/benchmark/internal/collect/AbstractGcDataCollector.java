@@ -1,7 +1,7 @@
 package memory.benchmark.internal.collect;
 
 import memory.benchmark.api.result.GcUsage;
-import memory.benchmark.api.result.StatisticView;
+import memory.benchmark.api.result.GcUsageStatisticView;
 import memory.benchmark.internal.ResultBuilder;
 
 import java.util.ArrayList;
@@ -23,7 +23,7 @@ public abstract class AbstractGcDataCollector implements BenchmarkDataCollector 
 
     @Override
     public void collectBenchmarkData(ResultBuilder result) {
-        List<StatisticView<GcUsage>> gcUsages = new ArrayList<>();
+        List<GcUsageStatisticView> gcUsages = new ArrayList<>();
         beforeGarbageCollection.keySet().forEach(g -> gcUsages.add(createGcUsage(g)));
         result.setGcUsages(gcUsages);
     }
@@ -48,26 +48,27 @@ public abstract class AbstractGcDataCollector implements BenchmarkDataCollector 
             gcList = new ArrayList<>();
             mxBeanMap.put(gcName, gcList);
         }
-        gcList.add(new GcUsage(gcName, collectionsCount, collectionsTime));
+        gcList.add(new GcUsage(collectionsCount, collectionsTime));
     }
 
-    private StatisticView<GcUsage> createGcUsage(String gcMxBeanName) {
+    private GcUsageStatisticView createGcUsage(String gcMxBeanName) {
         List<GcUsage> before = beforeGarbageCollection.get(gcMxBeanName);
         List<GcUsage> after = afterGarbageCollection.get(gcMxBeanName);
 
         if (before.size() == 1) {
             GcUsage beforeGcUsage = before.get(0);
             GcUsage afterGcUsage = after.get(0);
-            return new StatisticView<>(new GcUsage(beforeGcUsage, afterGcUsage));
+            return new GcUsageStatisticView(new GcUsage(beforeGcUsage, afterGcUsage), gcMxBeanName);
+
         } else {
 
             Statistic gcTime = from(after, before, GcUsage::getGcTime);
             Statistic gcCount = from(after, before, GcUsage::getGcCount);
 
-            GcUsage minimum = new GcUsage(gcMxBeanName, gcTime.min, gcCount.min);
-            GcUsage maximum = new GcUsage(gcMxBeanName, gcTime.max, gcCount.max);
-            GcUsage average = new GcUsage(gcMxBeanName, gcTime.average, gcCount.average);
-            return new StatisticView<>(minimum, maximum, average);
+            GcUsage minimum = new GcUsage(gcTime.min, gcCount.min);
+            GcUsage maximum = new GcUsage(gcTime.max, gcCount.max);
+            GcUsage average = new GcUsage(gcTime.average, gcCount.average);
+            return new GcUsageStatisticView(minimum, maximum, average, gcMxBeanName);
         }
     }
 }

@@ -49,6 +49,7 @@ public class HtmlBenchmarkReportFormatter implements BenchmarkReportFormatter {
     public static final String USED_PREFIX = "Used";
     public static final String COMMITTED_POOL_PREFIX = "Committed";
     public static final String MAX_POOL_PREFIX = "Max";
+    public static final String TIME_GC_PREFIX = "Time";
 
     private final Options options;
     private final Log log;
@@ -56,6 +57,7 @@ public class HtmlBenchmarkReportFormatter implements BenchmarkReportFormatter {
     private Configuration configuration;
     private List<String> chartFunctions;
     private List<String> chartIdentifiers;
+    private List<BenchmarkResult> benchmarkResults;
 
     public HtmlBenchmarkReportFormatter(Options options, Log log) {
         this.options = options;
@@ -96,10 +98,11 @@ public class HtmlBenchmarkReportFormatter implements BenchmarkReportFormatter {
 
         chartFunctions = new ArrayList<>();
         chartIdentifiers = new ArrayList<>();
+        this.benchmarkResults = benchmarkResults;
 
-        addMemoryUsage(benchmarkResults);
-        addMemoryPool(benchmarkResults);
-        addGcInfo(benchmarkResults);
+        addMemoryUsage();
+        addMemoryPool();
+        addGcGcUsage();
 
         parameters.put(CHART_FUNCTIONS_KEY, chartFunctions);
         parameters.put(CHART_IDENTIFIERS_KEY, chartIdentifiers);
@@ -123,40 +126,40 @@ public class HtmlBenchmarkReportFormatter implements BenchmarkReportFormatter {
         return classListMap;
     }
 
-    private void addMemoryUsage(List<BenchmarkResult> benchmarkResults) throws Exception {
+    private void addMemoryUsage() throws Exception {
         if(!options.getReportInformation().contains(Options.ReportInformation.HEAP_MEMORY_FOOTPRINT)) {
-            addHeapMemoryUsage(benchmarkResults);
+            addHeapMemoryUsage();
         }
 
         if(!options.getReportInformation().contains(Options.ReportInformation.NON_HEAP_MEMORY_FOOTPRINT)) {
-            addNonHeapMemoryUsage(benchmarkResults);
+            addNonHeapMemoryUsage();
         }
     }
 
-    private void addHeapMemoryUsage(List<BenchmarkResult> benchmarkResults) throws Exception {
-        chartFunctions.add(createChartFunction( configuration, USED_HEAP_MEMORY_ID_TAG, USED_HEAP_MEMORY_TITLE_TAG,
+    private void addHeapMemoryUsage() throws Exception {
+        chartFunctions.add(createChartFunction(USED_HEAP_MEMORY_ID_TAG, USED_HEAP_MEMORY_TITLE_TAG,
                 benchmarkResults, this::usedHeapMemoryFootprintToChartData));
         chartIdentifiers.add(USED_HEAP_MEMORY_ID_TAG);
 
-        chartFunctions.add(createChartFunction(configuration, COMMITTED_HEAP_MEMORY_ID_TAG, COMMITTED_HEAP_MEMORY_TITLE_TAG,
+        chartFunctions.add(createChartFunction(COMMITTED_HEAP_MEMORY_ID_TAG, COMMITTED_HEAP_MEMORY_TITLE_TAG,
                 benchmarkResults, this::committedHeapMemoryFootprintToChartData));
         chartIdentifiers.add(COMMITTED_HEAP_MEMORY_ID_TAG);
 
-        chartFunctions.add(createChartFunction(configuration, MAX_HEAP_MEMORY_ID_TAG, MAX_HEAP_MEMORY_TITLE_TAG,
+        chartFunctions.add(createChartFunction(MAX_HEAP_MEMORY_ID_TAG, MAX_HEAP_MEMORY_TITLE_TAG,
                 benchmarkResults, this::maxHeapMemoryFootprintToChartData));
         chartIdentifiers.add(MAX_HEAP_MEMORY_ID_TAG);
     }
 
-    private void addNonHeapMemoryUsage(List<BenchmarkResult> benchmarkResults) throws Exception {
-        chartFunctions.add(createChartFunction(configuration, USED_NON_HEAP_MEMORY_ID_TAG, USED_NON_HEAP_MEMORY_TITLE_TAG,
+    private void addNonHeapMemoryUsage() throws Exception {
+        chartFunctions.add(createChartFunction(USED_NON_HEAP_MEMORY_ID_TAG, USED_NON_HEAP_MEMORY_TITLE_TAG,
                 benchmarkResults, this::usedNonHeapMemoryFootprintToChartData));
         chartIdentifiers.add(USED_NON_HEAP_MEMORY_ID_TAG);
 
-        chartFunctions.add(createChartFunction(configuration, COMMITTED_NON_HEAP_MEMORY_ID_TAG, COMMITTED_NON_HEAP_MEMORY_TITLE_TAG,
+        chartFunctions.add(createChartFunction(COMMITTED_NON_HEAP_MEMORY_ID_TAG, COMMITTED_NON_HEAP_MEMORY_TITLE_TAG,
                 benchmarkResults, this::committedNonHeapMemoryFootprintToChartData));
         chartIdentifiers.add(COMMITTED_NON_HEAP_MEMORY_ID_TAG);
 
-        chartFunctions.add(createChartFunction(configuration, MAX_NON_HEAP_MEMORY_ID_TAG, MAX_NON_HEAP_MEMORY_TITLE_TAG,
+        chartFunctions.add(createChartFunction(MAX_NON_HEAP_MEMORY_ID_TAG, MAX_NON_HEAP_MEMORY_TITLE_TAG,
                 benchmarkResults, this::maxNonHeapMemoryFootprintToChartData));
         chartIdentifiers.add(MAX_NON_HEAP_MEMORY_ID_TAG);
     }
@@ -191,97 +194,80 @@ public class HtmlBenchmarkReportFormatter implements BenchmarkReportFormatter {
                 MemoryFootprint::getMaxMemoryFootprint);
     }
 
-    private void addMemoryPool(List<BenchmarkResult> benchmarkResults) throws Exception {
+    private void addMemoryPool() throws Exception {
         if(options.getReportInformation().contains(Options.ReportInformation.HEAP_MEMORY_POOL_FOOTPRINT)) {
-            addMemoryPool(benchmarkResults, MemoryType.HEAP);
+            addMemoryPool(MemoryType.HEAP);
         }
 
         if(options.getReportInformation().contains(Options.ReportInformation.NON_HEAP_MEMORY_POOL_FOOTPRINT)) {
-            addMemoryPool(benchmarkResults, MemoryType.NON_HEAP);
+            addMemoryPool(MemoryType.NON_HEAP);
         }
     }
 
-    private void addMemoryPool(List<BenchmarkResult> benchmarkResults, MemoryType type) throws Exception {
-        addMemoryPoolFootprint(benchmarkResults, type, USED_PREFIX, MemoryFootprint::getUsedMemoryFootprint);
-        addMemoryPoolFootprint(benchmarkResults, type, COMMITTED_POOL_PREFIX,MemoryFootprint::getCommittedMemoryFootprint);
-        addMemoryPoolFootprint(benchmarkResults, type, MAX_POOL_PREFIX, MemoryFootprint::getMaxMemoryFootprint);
+    private void addMemoryPool(MemoryType type) throws Exception {
+        addMemoryPoolFootprint(type, USED_PREFIX, MemoryFootprint::getUsedMemoryFootprint);
+        addMemoryPoolFootprint(type, COMMITTED_POOL_PREFIX,MemoryFootprint::getCommittedMemoryFootprint);
+        addMemoryPoolFootprint(type, MAX_POOL_PREFIX, MemoryFootprint::getMaxMemoryFootprint);
     }
 
-    private void addMemoryPoolFootprint(List<BenchmarkResult> benchmarkResults, MemoryType type,
-                                        String prefix,
-                                        Function<MemoryFootprint, Long> valueExtractor) throws Exception {
-
-        Map<String, List<ChartData>> heapPoolResults = groupMemoryPoolResultByName(benchmarkResults, type, valueExtractor);
-        for(Map.Entry<String, List<ChartData>> heapPoolResult : heapPoolResults.entrySet()) {
-            String poolName = heapPoolResult.getKey().replaceAll(" ", "_");
-            String name = prefix + poolName.replaceAll(" ", "_");
-            String title = prefix + " " + poolName;
-            String chart = createChartFunction(configuration, name, title, heapPoolResult.getValue(), d->d);
-            chartIdentifiers.add(name);
-            chartFunctions.add(chart);
-        }
+    private void addMemoryPoolFootprint(MemoryType type, String prefix, Function<MemoryFootprint, Long> valueExtractor) throws Exception {
+        addChartData(groupMemoryPoolResultByName(type, valueExtractor), prefix);
     }
 
-    private Map<String, List<ChartData>> groupMemoryPoolResultByName(List<BenchmarkResult> benchmarkResults, MemoryType memoryType,
-                                                                     Function<MemoryFootprint, Long> valueExtractor) {
-        Map<String, List<ChartData>> memoryPoolResults = new HashMap<>();
-        for(BenchmarkResult result : benchmarkResults) {
-            List<MemoryPoolStatisticView> statisticViews = filterMemoryPoolFootprintsByType(result, memoryType);
-            for(MemoryPoolStatisticView poolStatisticView : statisticViews) {
-                String poolName = poolStatisticView.getName();
-                List<ChartData> views = memoryPoolResults.get(poolName);
-                if(views == null) {
-                    views = new ArrayList<>();
-                    memoryPoolResults.put(poolName, views);
-                }
-                views.add(statisticViewToChartData(result, poolStatisticView, valueExtractor));
-            }
-        }
-        return memoryPoolResults;
+    private Map<String, List<ChartData>> groupMemoryPoolResultByName(MemoryType memoryType, Function<MemoryFootprint, Long> valueExtractor) {
+        return groupResultsByName(r -> filterMemoryPoolFootprintsByType(r, memoryType), MemoryPoolStatisticView::getName, valueExtractor);
     }
 
     private List<MemoryPoolStatisticView> filterMemoryPoolFootprintsByType(BenchmarkResult result, MemoryType memoryType) {
         return result.getMemoryPoolFootprints().stream().filter(r -> r.getMemoryType() == memoryType).collect(toList());
     }
 
-    private void addGcInfo(List<BenchmarkResult> benchmarkResults) throws Exception {
+    private void addGcGcUsage() throws Exception {
         if(options.getReportInformation().contains(Options.ReportInformation.GC_USAGE)){
-            addGcInfo(benchmarkResults, "Time", GcUsage::getGcTime);
+            addGcUsage(TIME_GC_PREFIX, GcUsage::getGcTime);
         }
     }
 
-    private void addGcInfo(List<BenchmarkResult> benchmarkResults, String prefix, Function<GcUsage, Long> valueExtractor) throws Exception {
-        Map<String, List<ChartData>> gcUsageResults = groupGcUsageResultByName(benchmarkResults, valueExtractor);
-        for(Map.Entry<String, List<ChartData>> gcUsageResult : gcUsageResults.entrySet()) {
-            String gcName = gcUsageResult.getKey().replaceAll(" ", "_");
+    private void addGcUsage(String prefix, Function<GcUsage, Long> valueExtractor) throws Exception {
+        addChartData(groupGcUsageResultByName(valueExtractor), prefix);
+    }
+
+    private Map<String, List<ChartData>> groupGcUsageResultByName(Function<GcUsage, Long> valueExtractor) {
+        return groupResultsByName(BenchmarkResult::getGcUsages, GcUsageStatisticView::getGcName, valueExtractor);
+    }
+
+    private <V, T extends StatisticView<V>> Map<String, List<ChartData>> groupResultsByName(Function<BenchmarkResult, List<T>> viewsExtractor,
+                                                                                            Function<T, String> nameExtractor,
+                                                                                            Function<V, Long> valueExtractor) {
+        Map<String, List<ChartData>> results = new HashMap<>();
+        for(BenchmarkResult result : benchmarkResults) {
+            List<T> statisticViews = viewsExtractor.apply(result);
+            for(T statisticView : statisticViews) {
+                String name = nameExtractor.apply(statisticView);
+                List<ChartData> views = results.get(name);
+                if(views == null) {
+                    views = new ArrayList<>();
+                    results.put(name, views);
+                }
+                views.add(statisticViewToChartData(result, statisticView, valueExtractor));
+            }
+        }
+        return results;
+    }
+
+    private void addChartData(Map<String, List<ChartData>> chartData, String prefix) throws Exception {
+        for(Map.Entry<String, List<ChartData>> data : chartData.entrySet()) {
+            String gcName = data.getKey().replaceAll(" ", "_");
             String name = prefix + gcName.replaceAll(" ", "_");
             String title = prefix + " " + gcName;
-            String chart = createChartFunction(configuration, name, title, gcUsageResult.getValue(), d->d);
+            String chart = createChartFunction(name, title, data.getValue(), Function.identity());
             chartIdentifiers.add(name);
             chartFunctions.add(chart);
         }
     }
 
-    private Map<String, List<ChartData>> groupGcUsageResultByName(List<BenchmarkResult> benchmarkResults,
-                                                                  Function<GcUsage,Long> valueExtractor) {
-        Map<String, List<ChartData>> gcUsageResults = new HashMap<>();
-        for(BenchmarkResult result : benchmarkResults) {
-            List<GcUsageStatisticView> statisticViews = result.getGcUsages();
-            for(GcUsageStatisticView statisticView : statisticViews) {
-                String poolName = statisticView.getGcName();
-                List<ChartData> views = gcUsageResults.get(poolName);
-                if(views == null) {
-                    views = new ArrayList<>();
-                    gcUsageResults.put(poolName, views);
-                }
-                views.add(statisticViewToChartData(result, statisticView, valueExtractor));
-            }
-        }
-        return gcUsageResults;
-    }
 
-    private <T> String createChartFunction(Configuration configuration, String name, String title, List<T> results,
-                                           Function<T, ChartData> mapper) throws Exception {
+    private <T> String createChartFunction(String name, String title, List<T> results, Function<T, ChartData> mapper) throws Exception {
         Map<String, Object> parameters = new HashMap<>();
         parameters.put(CHART_NAME_KEY, name);
         parameters.put(MEMORY_VALUE_KEY, options.getMemoryValueConverter().getSuffix());

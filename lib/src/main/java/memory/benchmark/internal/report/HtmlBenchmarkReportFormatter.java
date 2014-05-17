@@ -10,12 +10,13 @@ import java.lang.management.MemoryType;
 import java.util.*;
 import java.util.function.Function;
 
+import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toList;
 import static memory.benchmark.internal.util.ThrowableHandlers.printThrowableAction;
 
 public class HtmlBenchmarkReportFormatter implements BenchmarkReportFormatter {
 
-    private static final String CHARTS_TEMPLATE_FILE = "charts.ftl";
+    private static final String CHARTS_TEMPLATE_FILE = "report_template.ftl";
     private static final String CHART_FUNCTION_TEMPLATE_FILE = "chart_func_template.ftl";
     private static final String REPORT_FILE_NAME = "report.html";
 
@@ -46,10 +47,10 @@ public class HtmlBenchmarkReportFormatter implements BenchmarkReportFormatter {
     private static final String MAX_NON_HEAP_MEMORY_ID_TAG = "max_non_heap_memory";
     private static final String MAX_NON_HEAP_MEMORY_TITLE_TAG = "Max non heap memory";
 
-    public static final String USED_PREFIX = "Used";
-    public static final String COMMITTED_POOL_PREFIX = "Committed";
-    public static final String MAX_POOL_PREFIX = "Max";
-    public static final String TIME_GC_PREFIX = "Time";
+    private static final String USED_PREFIX = "Used";
+    private static final String COMMITTED_POOL_PREFIX = "Committed";
+    private static final String MAX_POOL_PREFIX = "Max";
+    private static final String TIME_GC_PREFIX = "Time";
 
     private final Options options;
     private final Log log;
@@ -233,12 +234,19 @@ public class HtmlBenchmarkReportFormatter implements BenchmarkReportFormatter {
     }
 
     private Map<String, List<ChartData>> groupGcUsageResultByName(Function<GcUsage, Long> valueExtractor) {
-        return groupResultsByName(BenchmarkResult::getGcUsages, GcUsageStatisticView::getGcName, valueExtractor);
+        return groupResultsByName(BenchmarkResult::getGcUsages, GcUsageStatisticView::getGcName, valueExtractor, l -> Long.toString(l));
     }
 
     private <V, T extends StatisticView<V>> Map<String, List<ChartData>> groupResultsByName(Function<BenchmarkResult, List<T>> viewsExtractor,
                                                                                             Function<T, String> nameExtractor,
                                                                                             Function<V, Long> valueExtractor) {
+        return groupResultsByName(viewsExtractor, nameExtractor, valueExtractor, options.getMemoryValueConverter()::convert);
+    }
+
+    private <V, T extends StatisticView<V>> Map<String, List<ChartData>> groupResultsByName(Function<BenchmarkResult, List<T>> viewsExtractor,
+                                                                                            Function<T, String> nameExtractor,
+                                                                                            Function<V, Long> valueExtractor,
+                                                                                            Function<Long, String> converter) {
         Map<String, List<ChartData>> results = new HashMap<>();
         for(BenchmarkResult result : benchmarkResults) {
             List<T> statisticViews = viewsExtractor.apply(result);
@@ -249,7 +257,7 @@ public class HtmlBenchmarkReportFormatter implements BenchmarkReportFormatter {
                     views = new ArrayList<>();
                     results.put(name, views);
                 }
-                views.add(statisticViewToChartData(result, statisticView, valueExtractor));
+                views.add(statisticViewToChartData(result, statisticView, valueExtractor, converter));
             }
         }
         return results;
@@ -260,12 +268,11 @@ public class HtmlBenchmarkReportFormatter implements BenchmarkReportFormatter {
             String gcName = data.getKey().replaceAll(" ", "_");
             String name = prefix + gcName.replaceAll(" ", "_");
             String title = prefix + " " + gcName;
-            String chart = createChartFunction(name, title, data.getValue(), Function.identity());
+            String chart = createChartFunction(name, title, data.getValue(), identity());
             chartIdentifiers.add(name);
             chartFunctions.add(chart);
         }
     }
-
 
     private <T> String createChartFunction(String name, String title, List<T> results, Function<T, ChartData> mapper) throws Exception {
         Map<String, Object> parameters = new HashMap<>();
@@ -274,7 +281,6 @@ public class HtmlBenchmarkReportFormatter implements BenchmarkReportFormatter {
         parameters.put(CHART_TITLE_KEY, title);
         parameters.put(CHART_DATA_TAG, mapChartData(results, mapper));
         parameters.put(CHART_IDENTIFIER_KEY, name);
-
         Template template = configuration.getTemplate(CHART_FUNCTION_TEMPLATE_FILE);
         StringWriter writer = new StringWriter();
         template.process(parameters, writer);
@@ -285,11 +291,19 @@ public class HtmlBenchmarkReportFormatter implements BenchmarkReportFormatter {
         return benchmarkResult.stream().map(mapper).collect(toList());
     }
 
-    private <T> ChartData statisticViewToChartData(BenchmarkResult benchmarkResult, StatisticView<T> statisticView, Function<T,Long> valueExtractor) {
+    private <T> ChartData statisticViewToChartData(BenchmarkResult benchmarkResult, StatisticView<T> statisticView,
+                                                   Function<T,Long> valueExtractor) {
+        return statisticViewToChartData(benchmarkResult, statisticView, valueExtractor,
+                                        options.getMemoryValueConverter()::convert);
+    }
+
+    private <T> ChartData statisticViewToChartData(BenchmarkResult benchmarkResult, StatisticView<T> statisticView,
+                                                   Function<T,Long> valueExtractor, Function<Long, String> converter) {
+
         String title = benchmarkResult.getBenchmarkMethod().getName();
         long value = valueExtractor.apply(statisticView.getAverageValue());
-        String convertedValue = options.getMemoryValueConverter().convert(value);
-        convertedValue = convertedValue.substring(0, convertedValue.length() - 2);
+        String convertedValue = converter.apply(value);
+        convertedValue = convertedValue.substring(0, convertedValue.length());
         return new ChartData(title, convertedValue);
     }
 }

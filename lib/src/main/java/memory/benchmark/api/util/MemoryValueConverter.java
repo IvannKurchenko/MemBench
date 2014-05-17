@@ -28,7 +28,7 @@ public enum MemoryValueConverter {
     }
 
     public String convert(long value) {
-        return value / derived + suffix;
+        return Double.toString(Math.round(value / derived));
     }
 
     public String getSuffix() {

@@ -1,8 +1,11 @@
 package memory.benchmark.api;
 
 import memory.benchmark.api.result.BenchmarkResult;
+import memory.benchmark.api.test.TestClass;
+import memory.benchmark.api.test.TestClass1;
+import memory.benchmark.api.test.TestClass2;
+import memory.benchmark.api.test.TestClass3;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.lang.reflect.Method;
@@ -53,10 +56,9 @@ public class MemoryBenchmarkRunnerTest {
         verifyMockedTestClassInteraction(TestClass1.mockedTestClass, TestClass2.mockedTestClass);
     }
 
-    @Ignore
     @Test
-    public void testRunInPackage() throws NoSuchMethodException {
-        String testPackage = this.getClass().getCanonicalName().replace("." + this.getClass().getSimpleName(), "");
+    public void testRunInPackage() throws NoSuchMethodException, ClassNotFoundException {
+        String testPackage = this.getClass().getCanonicalName().replace(this.getClass().getSimpleName(), "") + "test";
         List<BenchmarkResult> results = MemoryBenchmarkRunner.run(options, testPackage);
 
         assertEquals(results.size(), 3);

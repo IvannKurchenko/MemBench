@@ -6,13 +6,15 @@ import memory.benchmark.internal.report.BenchmarkReportFormatterFactory;
 import memory.benchmark.internal.runner.BenchmarkRunner;
 import memory.benchmark.internal.runner.BenchmarkRunnerFactory;
 import memory.benchmark.internal.util.Log;
-import org.reflections.Reflections;
 
+import java.io.File;
+import java.net.URL;
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 import static java.util.Arrays.asList;
+import static java.util.stream.Collectors.toList;
+import static memory.benchmark.internal.util.ThrowableHandlers.rethrowThrowableFunction;
 
 /**
  * Main class to run memory benchmark tests.
@@ -27,6 +29,9 @@ public class MemoryBenchmarkRunner {
      *
      * @param options general benchmark options.
      * @param testClasses benchmark classes.
+     * @throws java.lang.NullPointerException is testClasses is null
+     * @throws memory.benchmark.api.exception.BenchmarkRunException if benchmark execution failed
+     * @throws memory.benchmark.api.exception.InvalidBenchmarkException if benchmark class have some defects
      * @return list of benchmark test results.
      */
     public static List<BenchmarkResult> run(BenchmarkOptions options, Collection<Class<?>> testClasses) {
@@ -43,6 +48,9 @@ public class MemoryBenchmarkRunner {
      *
      * @param options general benchmark options.
      * @param testClasses benchmark classes.
+     * @throws java.lang.NullPointerException is testClasses is null
+     * @throws memory.benchmark.api.exception.BenchmarkRunException if benchmark execution failed
+     * @throws memory.benchmark.api.exception.InvalidBenchmarkException if benchmark class have some defects
      * @return list of benchmark test results.
      */
     public static List<BenchmarkResult> run(BenchmarkOptions options, Class<?>... testClasses) {
@@ -54,12 +62,32 @@ public class MemoryBenchmarkRunner {
      *
      * @param options general benchmark options.
      * @param testPackage package with benchmark classes.
+     * @throws java.lang.NullPointerException is testPackage is null
+     * @throws memory.benchmark.api.exception.BenchmarkRunException if benchmark execution failed
+     * @throws memory.benchmark.api.exception.InvalidBenchmarkException if benchmark class have some defects
      * @return list of benchmark test results.
      */
     public static List<BenchmarkResult> run(BenchmarkOptions options, String testPackage) {
-        Reflections reflections = new Reflections(testPackage);
-        Set<Class<?>> allClasses = reflections.getSubTypesOf(Object.class);
+        List<Class<?>> allClasses = rethrowThrowableFunction(() -> getClassesInPackage(testPackage));
         return run(options, allClasses);
+    }
+
+    private static List<Class<?>> getClassesInPackage(String testPackage) throws ClassNotFoundException {
+        URL root = Thread.currentThread().getContextClassLoader().getResource(testPackage.replace(".", "/"));
+        File[] files = new File(root.getFile()).listFiles((File dir, String name) -> name.endsWith(".class"));
+        return asList(files).
+                stream().
+                map(f -> forName(testPackage, f)).
+                filter(MemoryBenchmarkRunner::isAcceptableClass).
+                collect(toList());
+    }
+
+    private static boolean isAcceptableClass(Class<?> clazz) {
+        return !clazz.isAnnotation() && !clazz.isAnonymousClass() && !clazz.isInterface();
+    }
+
+    private static Class<?> forName(String packagePath, File classFile) {
+        return rethrowThrowableFunction(() -> Class.forName(packagePath + "." + classFile.getName().replaceAll(".class$", "")));
     }
 
     /**

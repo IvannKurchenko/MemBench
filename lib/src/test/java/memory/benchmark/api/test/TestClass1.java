@@ -1,12 +1,12 @@
-package memory.benchmark.api;
+package memory.benchmark.api.test;
 
 import memory.benchmark.api.annotations.Before;
 import memory.benchmark.api.annotations.Benchmark;
-import org.junit.After;
+import memory.benchmark.api.annotations.After;
 
 import static org.mockito.Mockito.mock;
 
-public class TestClass3 {
+public class TestClass1 {
 
     public static final TestClass mockedTestClass = mock(TestClass.class);
 

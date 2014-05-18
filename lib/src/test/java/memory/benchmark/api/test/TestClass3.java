@@ -1,4 +1,4 @@
-package memory.benchmark.api;
+package memory.benchmark.api.test;
 
 import memory.benchmark.api.annotations.Before;
 import memory.benchmark.api.annotations.Benchmark;
@@ -6,7 +6,7 @@ import memory.benchmark.api.annotations.After;
 
 import static org.mockito.Mockito.mock;
 
-public class TestClass2 {
+public class TestClass3 {
 
     public static final TestClass mockedTestClass = mock(TestClass.class);
 

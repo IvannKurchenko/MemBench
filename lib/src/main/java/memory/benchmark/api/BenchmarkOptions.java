@@ -329,6 +329,16 @@ public class BenchmarkOptions {
             return new BenchmarkOptions(this);
         }
 
+        /**
+         *
+         * @param allowedInternalLogging
+         * @return
+         */
+        public Builder allowedInternalLogging(boolean allowedInternalLogging){
+            this.allowedInternalLogging = allowedInternalLogging;
+            return this;
+        }
+
         private static void checkValidArgument(boolean validCondition, String errorMessage) {
             if(!validCondition) {
                 throw new IllegalArgumentException(errorMessage);

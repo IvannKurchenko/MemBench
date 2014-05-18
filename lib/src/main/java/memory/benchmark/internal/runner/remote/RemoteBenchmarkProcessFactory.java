@@ -1,6 +1,6 @@
 package memory.benchmark.internal.runner.remote;
 
-import memory.benchmark.api.Options;
+import memory.benchmark.api.BenchmarkOptions;
 import memory.benchmark.internal.util.Factory;
 import memory.benchmark.internal.util.Log;
 
@@ -17,10 +17,10 @@ import static memory.benchmark.internal.util.ThrowableHandlers.rethrowThrowableF
 
 public class RemoteBenchmarkProcessFactory implements Factory<BenchmarkProcess, Class> {
 
-    private final Options options;
+    private final BenchmarkOptions options;
     private final Log log;
 
-    public RemoteBenchmarkProcessFactory(Options options, Log log) {
+    public RemoteBenchmarkProcessFactory(BenchmarkOptions options, Log log) {
         this.options = options;
         this.log = log;
     }

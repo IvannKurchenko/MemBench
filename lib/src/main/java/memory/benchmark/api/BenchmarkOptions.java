@@ -11,7 +11,7 @@ import static java.util.Objects.requireNonNull;
 /**
  *
  */
-public class Options {
+public class BenchmarkOptions {
 
     /**
      * Enum that represents information included to report.
@@ -98,7 +98,7 @@ public class Options {
     private final ReportFormat reportFormat;
     private final String[] virtualMachineArguments;
 
-    private Options(Builder builder) {
+    private BenchmarkOptions(Builder builder) {
         this.reportInformation = builder.reportInformation;
         this.memoryValueConverter = builder.memoryValueConverter;
         this.runMode = builder.runMode;
@@ -259,8 +259,8 @@ public class Options {
             return this;
         }
 
-        public Options build() {
-            return new Options(this);
+        public BenchmarkOptions build() {
+            return new BenchmarkOptions(this);
         }
     }
 }

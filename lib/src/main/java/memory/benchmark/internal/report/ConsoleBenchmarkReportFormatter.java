@@ -1,7 +1,7 @@
 package memory.benchmark.internal.report;
 
-import memory.benchmark.api.Options;
-import memory.benchmark.api.Options.ReportInformation;
+import memory.benchmark.api.BenchmarkOptions;
+import memory.benchmark.api.BenchmarkOptions.ReportInformation;
 import memory.benchmark.api.result.*;
 import memory.benchmark.api.util.MemoryValueConverter;
 import memory.benchmark.internal.util.Log;
@@ -9,7 +9,7 @@ import memory.benchmark.internal.util.Log;
 import java.lang.management.MemoryType;
 import java.util.List;
 
-import static memory.benchmark.api.Options.ReportInformation.*;
+import static memory.benchmark.api.BenchmarkOptions.ReportInformation.*;
 
 /**
  *
@@ -19,10 +19,10 @@ public class ConsoleBenchmarkReportFormatter implements BenchmarkReportFormatter
     private static final String EOL = Character.toString('\n');
     private static final String TAB = Character.toString('\t');
 
-    private final Options options;
+    private final BenchmarkOptions options;
     private final Log log;
 
-    public ConsoleBenchmarkReportFormatter(Options options, Log log) {
+    public ConsoleBenchmarkReportFormatter(BenchmarkOptions options, Log log) {
         this.options = options;
         this.log = log;
     }

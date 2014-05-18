@@ -1,6 +1,6 @@
 package memory.benchmark.internal.runner;
 
-import memory.benchmark.api.Options;
+import memory.benchmark.api.BenchmarkOptions;
 import memory.benchmark.internal.BenchmarkMethodExtractor;
 import memory.benchmark.internal.collect.BenchmarkDataCollector;
 import memory.benchmark.internal.runner.local.LocalBenchmarkMethodInvokerFactory;
@@ -19,26 +19,26 @@ import java.util.Collection;
 
 public class BenchmarkRunnerFactory {
 
-    public static BenchmarkRunner createBenchmarkRunner(Collection<Class<?>> benchmarkClasses, Options options, Log log) {
+    public static BenchmarkRunner createBenchmarkRunner(Collection<Class<?>> benchmarkClasses, BenchmarkOptions options, Log log) {
 
         Factory<BenchmarkDataCollector, ?> collectorFactory = createCollectorFactory(options);
         Factory<BenchmarkMethodInvoker, Class> methodInvokerFactory = createMethodInvokerFactory(options, log);
         return new BenchmarkRunner(benchmarkClasses, collectorFactory, methodInvokerFactory, log);
     }
 
-    private static Factory<BenchmarkDataCollector, ?> createCollectorFactory(Options options) {
-        return Options.RunMode.SEPARATE_PROCESS == options.getRunMode() ?
+    private static Factory<BenchmarkDataCollector, ?> createCollectorFactory(BenchmarkOptions options) {
+        return BenchmarkOptions.RunMode.SEPARATE_PROCESS == options.getRunMode() ?
                 new RemoteBenchmarkDataCollectorFactory(options) :
                 new LocalBenchmarkDataCollectorFactory();
     }
 
-    private static Factory<BenchmarkMethodInvoker, Class> createMethodInvokerFactory(Options options, Log log) {
-        return Options.RunMode.SEPARATE_PROCESS == options.getRunMode() ?
+    private static Factory<BenchmarkMethodInvoker, Class> createMethodInvokerFactory(BenchmarkOptions options, Log log) {
+        return BenchmarkOptions.RunMode.SEPARATE_PROCESS == options.getRunMode() ?
                 createRemoteMethodInvoker(options, log) :
                 createLocalMethodInvoker(options, log);
     }
 
-    private static Factory<BenchmarkMethodInvoker, Class> createLocalMethodInvoker(Options options, Log log) {
+    private static Factory<BenchmarkMethodInvoker, Class> createLocalMethodInvoker(BenchmarkOptions options, Log log) {
         BenchmarkMethodValidator methodBenchmarkValidator = new BenchmarkMethodValidator();
         BenchmarkClassValidator classBenchmarkValidator = new BenchmarkClassValidator();
         BenchmarkMethodExtractor methodExtractor = new BenchmarkMethodExtractor();
@@ -51,7 +51,7 @@ public class BenchmarkRunnerFactory {
                                                         benchmarkObjectFactory);
     }
 
-    private static Factory<BenchmarkMethodInvoker, Class> createRemoteMethodInvoker(Options options, Log log) {
+    private static Factory<BenchmarkMethodInvoker, Class> createRemoteMethodInvoker(BenchmarkOptions options, Log log) {
         BenchmarkMethodValidator methodBenchmarkValidator = new BenchmarkMethodValidator();
         BenchmarkClassValidator classBenchmarkValidator = new BenchmarkClassValidator();
         BenchmarkMethodExtractor methodExtractor = new BenchmarkMethodExtractor();

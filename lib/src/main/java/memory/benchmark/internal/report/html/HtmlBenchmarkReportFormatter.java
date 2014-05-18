@@ -1,15 +1,13 @@
 package memory.benchmark.internal.report.html;
 
 import freemarker.template.*;
-import memory.benchmark.api.Options;
-import memory.benchmark.api.annotations.Benchmark;
+import memory.benchmark.api.BenchmarkOptions;
 import memory.benchmark.api.result.*;
 import memory.benchmark.internal.report.BenchmarkReportFormatter;
 import memory.benchmark.internal.util.Log;
 
 import java.io.*;
 import java.lang.management.MemoryType;
-import java.lang.management.MemoryUsage;
 import java.util.*;
 import java.util.function.Function;
 
@@ -56,7 +54,7 @@ public class HtmlBenchmarkReportFormatter implements BenchmarkReportFormatter {
     private static final String MAX_POOL_PREFIX = "Max";
     private static final String TIME_GC_PREFIX = "Time";
 
-    private final Options options;
+    private final BenchmarkOptions options;
     private final Log log;
 
     private Configuration configuration;
@@ -64,7 +62,7 @@ public class HtmlBenchmarkReportFormatter implements BenchmarkReportFormatter {
     private List<ReportSection> reportSections;
     private List<BenchmarkResult> benchmarkResults;
 
-    public HtmlBenchmarkReportFormatter(Options options, Log log) {
+    public HtmlBenchmarkReportFormatter(BenchmarkOptions options, Log log) {
         this.options = options;
         this.log = log;
     }
@@ -132,11 +130,11 @@ public class HtmlBenchmarkReportFormatter implements BenchmarkReportFormatter {
     }
 
     private void addMemoryUsage() throws Exception {
-        if(options.getReportInformation().contains(Options.ReportInformation.HEAP_MEMORY_FOOTPRINT)) {
+        if(options.getReportInformation().contains(BenchmarkOptions.ReportInformation.HEAP_MEMORY_FOOTPRINT)) {
             addHeapMemoryUsage();
         }
 
-        if(options.getReportInformation().contains(Options.ReportInformation.NON_HEAP_MEMORY_FOOTPRINT)) {
+        if(options.getReportInformation().contains(BenchmarkOptions.ReportInformation.NON_HEAP_MEMORY_FOOTPRINT)) {
             addNonHeapMemoryUsage();
         }
     }
@@ -216,11 +214,11 @@ public class HtmlBenchmarkReportFormatter implements BenchmarkReportFormatter {
     }
 
     private void addMemoryPool() throws Exception {
-        if(options.getReportInformation().contains(Options.ReportInformation.HEAP_MEMORY_POOL_FOOTPRINT)) {
+        if(options.getReportInformation().contains(BenchmarkOptions.ReportInformation.HEAP_MEMORY_POOL_FOOTPRINT)) {
             addMemoryPool(MemoryType.HEAP);
         }
 
-        if(options.getReportInformation().contains(Options.ReportInformation.NON_HEAP_MEMORY_POOL_FOOTPRINT)) {
+        if(options.getReportInformation().contains(BenchmarkOptions.ReportInformation.NON_HEAP_MEMORY_POOL_FOOTPRINT)) {
             addMemoryPool(MemoryType.NON_HEAP);
         }
     }
@@ -256,7 +254,7 @@ public class HtmlBenchmarkReportFormatter implements BenchmarkReportFormatter {
     }
 
     private void addGcGcUsage() throws Exception {
-        if(options.getReportInformation().contains(Options.ReportInformation.GC_USAGE)){
+        if(options.getReportInformation().contains(BenchmarkOptions.ReportInformation.GC_USAGE)){
             addGcUsage(TIME_GC_PREFIX, GcUsage::getGcTime);
         }
     }

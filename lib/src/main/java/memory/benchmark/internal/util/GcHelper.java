@@ -1,6 +1,6 @@
 package memory.benchmark.internal.util;
 
-import memory.benchmark.api.Options;
+import memory.benchmark.api.BenchmarkOptions;
 
 import java.util.concurrent.TimeUnit;
 
@@ -12,7 +12,7 @@ public class GcHelper {
     private final TimeUnit gcTimeUnit;
     private final Log log;
 
-    public GcHelper(Options options, Log log) {
+    public GcHelper(BenchmarkOptions options, Log log) {
         this(options.getGcTime(), options.getGcTimeUnit(), log);
     }
 

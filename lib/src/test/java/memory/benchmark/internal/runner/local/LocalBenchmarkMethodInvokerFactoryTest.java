@@ -1,6 +1,6 @@
 package memory.benchmark.internal.runner.local;
 
-import memory.benchmark.api.Options;
+import memory.benchmark.api.BenchmarkOptions;
 import memory.benchmark.internal.BenchmarkMethodExtractor;
 import memory.benchmark.internal.runner.BenchmarkMethodInvoker;
 import memory.benchmark.internal.util.Factory;
@@ -18,7 +18,7 @@ import static org.mockito.Mockito.*;
 
 public class LocalBenchmarkMethodInvokerFactoryTest {
 
-    private Options options;
+    private BenchmarkOptions options;
     private BenchmarkValidator<Method> methodBenchmarkValidator;
     private BenchmarkValidator<Class> classBenchmarkValidator;
     private BenchmarkMethodExtractor methodExtractor;
@@ -27,7 +27,7 @@ public class LocalBenchmarkMethodInvokerFactoryTest {
 
     @Before
     public void setUp() {
-        options = new Options.Builder().build();
+        options = new BenchmarkOptions.Builder().build();
         methodBenchmarkValidator = mock(BenchmarkValidator.class);
         classBenchmarkValidator = mock(BenchmarkValidator.class);
         methodExtractor = mock(BenchmarkMethodExtractor.class);

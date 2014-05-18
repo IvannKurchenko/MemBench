@@ -14,7 +14,7 @@ import java.util.Collection;
 import static java.util.Arrays.asList;
 import static org.mockito.Mockito.*;
 
-public class BenchmarkRunnerTest {
+public class BenchmarkMemoryBenchmarkRunnerTest {
 
     private Method testMethod;
     private BenchmarkDataCollector benchmarkDataCollector;

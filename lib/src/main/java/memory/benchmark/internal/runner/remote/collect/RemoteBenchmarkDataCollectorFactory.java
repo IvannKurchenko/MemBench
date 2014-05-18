@@ -1,6 +1,6 @@
 package memory.benchmark.internal.runner.remote.collect;
 
-import memory.benchmark.api.Options;
+import memory.benchmark.api.BenchmarkOptions;
 import memory.benchmark.internal.collect.BenchmarkDataCollector;
 import memory.benchmark.internal.util.Factory;
 
@@ -16,9 +16,9 @@ public class RemoteBenchmarkDataCollectorFactory implements Factory<BenchmarkDat
 
     private static final String SERVICE_URL_PATTERN = "service:jmx:rmi:///jndi/rmi://localhost:%d/jmxrmi";
 
-    private final Options options;
+    private final BenchmarkOptions options;
 
-    public RemoteBenchmarkDataCollectorFactory(Options options) {
+    public RemoteBenchmarkDataCollectorFactory(BenchmarkOptions options) {
         this.options = options;
     }
 

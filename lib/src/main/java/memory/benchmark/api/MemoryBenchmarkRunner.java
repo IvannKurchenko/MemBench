@@ -17,14 +17,14 @@ import static java.util.Arrays.asList;
 /**
  *
  */
-public class Runner {
+public class MemoryBenchmarkRunner {
 
     /**
      * @param options
      * @param testClasses
      * @return
      */
-    public static List<BenchmarkResult> run(Options options, Collection<Class<?>> testClasses) {
+    public static List<BenchmarkResult> run(BenchmarkOptions options, Collection<Class<?>> testClasses) {
         Log log = Log.of(Log.SYS_OUT, options);
         BenchmarkRunner benchmarkRunner = BenchmarkRunnerFactory.createBenchmarkRunner(testClasses, options, log);
         BenchmarkReportFormatter benchmarkReportFormatter = BenchmarkReportFormatterFactory.createFormatter(options, log);
@@ -38,7 +38,7 @@ public class Runner {
      * @param testClass
      * @return
      */
-    public static List<BenchmarkResult> run(Options options, Class<?>... testClass) {
+    public static List<BenchmarkResult> run(BenchmarkOptions options, Class<?>... testClass) {
         return run(options, asList(testClass));
     }
 
@@ -47,7 +47,7 @@ public class Runner {
      * @param packageName
      * @return
      */
-    public static List<BenchmarkResult> run(Options options, String packageName) {
+    public static List<BenchmarkResult> run(BenchmarkOptions options, String packageName) {
         Reflections reflections = new Reflections(packageName);
         Set<Class<?>> allClasses = reflections.getSubTypesOf(Object.class);
         return run(options, allClasses);

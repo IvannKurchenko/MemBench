@@ -1,6 +1,6 @@
 package memory.benchmark.internal.runner.local;
 
-import memory.benchmark.api.Options;
+import memory.benchmark.api.BenchmarkOptions;
 import memory.benchmark.internal.BenchmarkMethodExtractor;
 import memory.benchmark.internal.runner.BenchmarkMethodInvoker;
 import memory.benchmark.internal.util.Factory;
@@ -14,14 +14,14 @@ import java.util.Optional;
 
 public class LocalBenchmarkMethodInvokerFactory implements Factory<BenchmarkMethodInvoker, Class> {
 
-    private final Options options;
+    private final BenchmarkOptions options;
     private final Log log;
     private final BenchmarkValidator<Method> methodBenchmarkValidator;
     private final BenchmarkValidator<Class> classBenchmarkValidator;
     private final BenchmarkMethodExtractor methodExtractor;
     private final Factory<Object, Class> benchmarkObjectClassFactory;
 
-    public LocalBenchmarkMethodInvokerFactory(Options options,
+    public LocalBenchmarkMethodInvokerFactory(BenchmarkOptions options,
 
                                               Log log, BenchmarkValidator<Method> methodBenchmarkValidator,
                                               BenchmarkValidator<Class> classBenchmarkValidator,

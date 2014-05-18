@@ -1,7 +1,7 @@
 package memory.benchmark.examples;
 
-import memory.benchmark.api.Options;
-import memory.benchmark.api.Runner;
+import memory.benchmark.api.BenchmarkOptions;
+import memory.benchmark.api.MemoryBenchmarkRunner;
 import memory.benchmark.api.annotations.After;
 import memory.benchmark.api.annotations.Before;
 import memory.benchmark.api.annotations.Benchmark;
@@ -11,20 +11,20 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import static memory.benchmark.api.Options.Builder;
+import static memory.benchmark.api.BenchmarkOptions.Builder;
 
 public class ListMemoryTest {
 
     public static void main(String... args) {
-        Options options = new Builder().
-                reportInformation(Options.ReportInformation.HEAP_MEMORY_FOOTPRINT).
+        BenchmarkOptions options = new Builder().
+                reportInformation(BenchmarkOptions.ReportInformation.HEAP_MEMORY_FOOTPRINT).
                 memoryValueConverter(MemoryValueConverter.TO_MEGA_BYTES).
-                runMode(Options.RunMode.SEPARATE_PROCESS).
-                reportFormat(Options.ReportFormat.HTML).
+                runMode(BenchmarkOptions.RunMode.SEPARATE_PROCESS).
+                reportFormat(BenchmarkOptions.ReportFormat.HTML).
                 virtualMachineArguments("-Xmx1000M").
                 build();
 
-        Runner.run(options, ListMemoryTest.class);
+        MemoryBenchmarkRunner.run(options, ListMemoryTest.class);
     }
 
     private static final int TEST_DATA_COUNT = 1_000_000;

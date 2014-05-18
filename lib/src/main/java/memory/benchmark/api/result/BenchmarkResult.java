@@ -7,7 +7,14 @@ import java.lang.reflect.Method;
 import java.util.List;
 
 /**
+ * Represents result of benchmark test for each method annotated with
+ * {@link memory.benchmark.api.annotations.Benchmark} annotation.
  *
+ * @see memory.benchmark.api.result.StatisticView
+ * @see memory.benchmark.api.result.MemoryFootprint
+ * @see memory.benchmark.api.result.MemoryPoolStatisticView
+ * @see memory.benchmark.api.result.GcUsageStatisticView
+ * @see memory.benchmark.api.result.GcUsage
  */
 public class BenchmarkResult {
 
@@ -29,42 +36,42 @@ public class BenchmarkResult {
     }
 
     /**
-     * @return
+     * @return collected data about consumption of heap memory.
      */
     public StatisticView<MemoryFootprint> getHeapMemoryFootprint() {
         return heapMemoryFootprint;
     }
 
     /**
-     * @return
+     * @return collected data about consumption of heap non memory.
      */
     public StatisticView<MemoryFootprint> getNonHeapMemoryFootprint() {
         return nonHeapMemoryFootprint;
     }
 
     /**
-     * @return
+     * @return collected data about memory consumption of memory pools.
      */
     public List<MemoryPoolStatisticView> getMemoryPoolFootprints() {
         return memoryPoolFootprints;
     }
 
     /**
-     * @return
+     * @return collected data about garbage collecting.
      */
     public List<GcUsageStatisticView> getGcUsages() {
         return gcUsages;
     }
 
     /**
-     * @return
+     * @return class of benchmark test method.
      */
     public Class getBenchmarkClass() {
         return benchmarkClass;
     }
 
     /**
-     * @return
+     * @return benchmark method under the test.
      */
     public Method getBenchmarkMethod() {
         return benchmarkMethod;

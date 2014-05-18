@@ -1,5 +1,12 @@
 package memory.benchmark.api.result;
 
+/**
+ * Represents collected benchmark data about garbage collection.
+ * Based on using of {@link java.lang.management.GarbageCollectorMXBean}.
+ *
+ * @see java.lang.management.GarbageCollectorMXBean
+ * @see java.lang.management.ManagementFactory#getGarbageCollectorMXBeans()
+ */
 public class GcUsage {
 
     private final long gcCount;
@@ -15,10 +22,18 @@ public class GcUsage {
         this.gcTime = gcTime;
     }
 
+    /**
+     * @see java.lang.management.GarbageCollectorMXBean#getCollectionTime()
+     * @return garbage collecting counts that takes during benchmark execution.
+     */
     public long getGcCount() {
         return gcCount;
     }
 
+    /**
+     * @see java.lang.management.GarbageCollectorMXBean#getCollectionTime()
+     * @return garbage collection time that takes during benchmark execution.
+     */
     public long getGcTime() {
         return gcTime;
     }

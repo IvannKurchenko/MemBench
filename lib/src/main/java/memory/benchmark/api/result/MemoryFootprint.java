@@ -3,7 +3,20 @@ package memory.benchmark.api.result;
 import java.lang.management.MemoryUsage;
 
 /**
+ * Represents collected data about any memory consumption during benchmark execution.
+ * In other words it shows memory consumption difference before benchmark method execution and after it.
  *
+ *  <pre>
+ *  ^               ___________
+ *  |              |   |
+ *  |              |   |         {@link memory.benchmark.api.result.MemoryFootprint}
+ *  |    __________|___|_______
+ *  |   |   |      |   |
+ *  |___|___|______|___|____
+ *      Before     After
+ *  </pre>
+ *
+ * @see java.lang.management.MemoryUsage
  */
 public class MemoryFootprint {
 
@@ -24,21 +37,24 @@ public class MemoryFootprint {
     }
 
     /**
-     * @return
+     * @see java.lang.management.MemoryUsage#getUsed()
+     * @return used memory footprint.
      */
     public long getUsedMemoryFootprint() {
         return usedMemoryFootprint;
     }
 
     /**
-     * @return
+     * @see java.lang.management.MemoryUsage#getMax()
+     * @return max memory footprint.
      */
     public long getMaxMemoryFootprint() {
         return maxMemoryFootprint;
     }
 
     /**
-     * @return
+     * @see java.lang.management.MemoryUsage#getCommitted()
+     * @return committed memory footprint.
      */
     public long getCommittedMemoryFootprint() {
         return committedMemoryFootprint;

@@ -1,10 +1,8 @@
 package memory.benchmark.api.result;
 
 /**
- * Represents holder that contains minimum, maximum and average statistic data.
- * Can contain multiple data and single date.
- *
- * @param <T> - data type
+ * Represents holder that contains main measured statistic results of benchmark :
+ * minimum, maximum and average values of related benchmark.
  */
 public class StatisticView<T> {
 
@@ -28,7 +26,7 @@ public class StatisticView<T> {
     }
 
     /**
-     * @return minimum value
+     * @return minimum value.
      */
     public T getMinimumValue() {
         return minimumValue;
@@ -56,7 +54,7 @@ public class StatisticView<T> {
     }
 
     /**
-     * @return 'true' if contains just one value
+     * @return 'true' if contains just one value, 'false' otherwise.
      */
     public boolean containsSingleValue() {
         return singleValue != null;

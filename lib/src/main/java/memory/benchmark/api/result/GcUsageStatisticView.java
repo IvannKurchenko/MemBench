@@ -1,7 +1,12 @@
 package memory.benchmark.api.result;
 
 /**
+ * Represents {@link memory.benchmark.api.result.StatisticView} which contains name of related
+ * garbage collector.
  *
+ * @see java.lang.management.GarbageCollectorMXBean
+ * @see java.lang.management.ManagementFactory#getGarbageCollectorMXBeans()
+ * @see memory.benchmark.api.result.GcUsage
  */
 public class GcUsageStatisticView extends StatisticView<GcUsage> {
 
@@ -18,8 +23,8 @@ public class GcUsageStatisticView extends StatisticView<GcUsage> {
     }
 
     /**
-     *
-     * @return
+     * @see java.lang.management.GarbageCollectorMXBean#getName()
+     * @return name of garbage collector related to this {@link memory.benchmark.api.result.StatisticView}
      */
     public String getGcName() {
         return gcName;

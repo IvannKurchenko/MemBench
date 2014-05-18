@@ -1,23 +1,12 @@
 package memory.benchmark.api.exception;
 
 /**
- *
+ * Exception that signals about some problems during benchmark executions.
+ * Usually wraps other exceptions that was thrown from benchmark class.
  */
 public class BenchmarkRunException extends RuntimeException {
 
-    public BenchmarkRunException() {
-        super();
-    }
-
     public BenchmarkRunException(Throwable cause) {
         super(cause);
-    }
-
-    public BenchmarkRunException(String message) {
-        super(message);
-    }
-
-    public BenchmarkRunException(String message, Throwable cause) {
-        super(message, cause);
     }
 }

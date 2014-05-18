@@ -7,30 +7,26 @@ import memory.benchmark.api.annotations.Before;
 import memory.benchmark.api.annotations.Benchmark;
 import memory.benchmark.api.util.MemoryValueConverter;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
-import static memory.benchmark.api.BenchmarkOptions.Builder;
-
-public class ListMemoryTest {
+public class SetMemoryTest {
 
     public static void main(String... args) {
-        BenchmarkOptions options = new Builder().memoryValueConverter(MemoryValueConverter.TO_MEGA_BYTES).build();
-        MemoryBenchmarkRunner.run(options, ListMemoryTest.class);
+        BenchmarkOptions options = new BenchmarkOptions.Builder().memoryValueConverter(MemoryValueConverter.TO_MEGA_BYTES).build();
+        MemoryBenchmarkRunner.run(options, SetMemoryTest.class);
     }
 
     private static final int TEST_DATA_COUNT = 1_000_000;
 
-    private List<Integer> arrayList;
-    private List<Integer> linkedList;
+    private Set<Integer> hashSet;
+    private Set<Integer> treeSet;
     private Integer[] arrayInteger;
     private int[] arrayInt;
 
     @Before
     public void setUp() {
-        arrayList = new ArrayList<>();
-        linkedList = new LinkedList<>();
+        hashSet = new HashSet<>();
+        treeSet = new TreeSet<>();
     }
 
     @Benchmark(testTimes = 6)
@@ -50,26 +46,26 @@ public class ListMemoryTest {
     }
 
     @Benchmark(testTimes = 6)
-    public void arrayList() {
-        fillList(arrayList);
+    public void hashSet() {
+        fillSet(hashSet);
     }
 
     @Benchmark(testTimes = 6)
-    public void linkedList() {
-        fillList(linkedList);
+    public void treeSet() {
+        fillSet(treeSet);
     }
 
     @After
     public void tearDown() {
         arrayInteger = null;
         arrayInt = null;
-        arrayList = null;
-        linkedList = null;
+        hashSet = null;
+        treeSet = null;
     }
 
-    private void fillList(List<Integer> list) {
+    private void fillSet(Set<Integer> set) {
         for (int i = 0; i < TEST_DATA_COUNT; i++) {
-            list.add(i);
+            set.add(i);
         }
     }
 }

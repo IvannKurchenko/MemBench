@@ -15,14 +15,19 @@ import java.util.Set;
 import static java.util.Arrays.asList;
 
 /**
+ * Main class to run memory benchmark tests.
  *
+ * @see memory.benchmark.api.BenchmarkOptions
+ * @see memory.benchmark.api.result.BenchmarkResult
  */
 public class MemoryBenchmarkRunner {
 
     /**
-     * @param options
-     * @param testClasses
-     * @return
+     * Runs given collection of benchmark classes and creates benchmark benchmark report.
+     *
+     * @param options general benchmark options.
+     * @param testClasses benchmark classes.
+     * @return list of benchmark test results.
      */
     public static List<BenchmarkResult> run(BenchmarkOptions options, Collection<Class<?>> testClasses) {
         Log log = Log.of(Log.SYS_OUT, options);
@@ -34,22 +39,31 @@ public class MemoryBenchmarkRunner {
     }
 
     /**
-     * @param options
-     * @param testClass
-     * @return
+     * Runs given collection of benchmark classes and creates benchmark benchmark report.
+     *
+     * @param options general benchmark options.
+     * @param testClasses benchmark classes.
+     * @return list of benchmark test results.
      */
-    public static List<BenchmarkResult> run(BenchmarkOptions options, Class<?>... testClass) {
-        return run(options, asList(testClass));
+    public static List<BenchmarkResult> run(BenchmarkOptions options, Class<?>... testClasses) {
+        return run(options, asList(testClasses));
     }
 
     /**
-     * @param options
-     * @param packageName
-     * @return
+     * Runs all benchmark classes inside given package.
+     *
+     * @param options general benchmark options.
+     * @param testPackage package with benchmark classes.
+     * @return list of benchmark test results.
      */
-    public static List<BenchmarkResult> run(BenchmarkOptions options, String packageName) {
-        Reflections reflections = new Reflections(packageName);
+    public static List<BenchmarkResult> run(BenchmarkOptions options, String testPackage) {
+        Reflections reflections = new Reflections(testPackage);
         Set<Class<?>> allClasses = reflections.getSubTypesOf(Object.class);
         return run(options, allClasses);
     }
+
+    /**
+     * Cannot be instantiated directly.
+     */
+    private MemoryBenchmarkRunner(){}
 }

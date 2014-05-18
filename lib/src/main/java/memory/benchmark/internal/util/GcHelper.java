@@ -23,6 +23,10 @@ public class GcHelper {
     }
 
     public void tryGc() {
+        if(gcTime < 0) {
+            return;
+        }
+
         log.log("Start GC...");
         System.gc();
         printThrowableAction(() -> gcTimeUnit.sleep(gcTime));

@@ -21,6 +21,7 @@ public class ListMemoryTest {
                 memoryValueConverter(MemoryValueConverter.TO_MEGA_BYTES).
                 runMode(Options.RunMode.SEPARATE_PROCESS).
                 reportFormat(Options.ReportFormat.HTML).
+                virtualMachineArguments("-Xmx1000M").
                 build();
 
         Runner.run(options, ListMemoryTest.class);

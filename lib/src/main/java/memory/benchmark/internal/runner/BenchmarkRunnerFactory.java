@@ -34,7 +34,7 @@ public class BenchmarkRunnerFactory {
 
     private static Factory<BenchmarkMethodInvoker, Class> createMethodInvokerFactory(Options options, Log log) {
         return Options.RunMode.SEPARATE_PROCESS == options.getRunMode() ?
-                createRemoteMethodInvoker(options) :
+                createRemoteMethodInvoker(options, log) :
                 createLocalMethodInvoker(options, log);
     }
 
@@ -51,11 +51,11 @@ public class BenchmarkRunnerFactory {
                                                         benchmarkObjectFactory);
     }
 
-    private static Factory<BenchmarkMethodInvoker, Class> createRemoteMethodInvoker(Options options) {
+    private static Factory<BenchmarkMethodInvoker, Class> createRemoteMethodInvoker(Options options, Log log) {
         BenchmarkMethodValidator methodBenchmarkValidator = new BenchmarkMethodValidator();
         BenchmarkClassValidator classBenchmarkValidator = new BenchmarkClassValidator();
         BenchmarkMethodExtractor methodExtractor = new BenchmarkMethodExtractor();
-        Factory<BenchmarkProcess, Class> benchmarkRemoteFactory = new RemoteBenchmarkProcessFactory(options);
+        Factory<BenchmarkProcess, Class> benchmarkRemoteFactory = new RemoteBenchmarkProcessFactory(options, log);
         return new RemoteBenchmarkMethodInvokerFactory( methodBenchmarkValidator,
                                                         classBenchmarkValidator,
                                                         methodExtractor,

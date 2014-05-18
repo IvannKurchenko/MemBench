@@ -96,6 +96,7 @@ public class Options {
     private final int mxBeanRemotePort;
     private final boolean allowedInternalLogging;
     private final ReportFormat reportFormat;
+    private final String[] virtualMachineArguments;
 
     private Options(Builder builder) {
         this.reportInformation = builder.reportInformation;
@@ -107,6 +108,7 @@ public class Options {
         this.mxBeanRemotePort = builder.mxBeanRemotePort;
         this.allowedInternalLogging = builder.allowedInternalLogging;
         this.reportFormat = builder.reportFormat;
+        this.virtualMachineArguments = builder.virtualMachineArguments;
     }
 
     public Set<ReportInformation> getReportInformation() {
@@ -145,6 +147,10 @@ public class Options {
         return reportFormat;
     }
 
+    public String[] getVirtualMachineArguments() {
+        return virtualMachineArguments;
+    }
+
     /**
      *
      */
@@ -165,6 +171,7 @@ public class Options {
         private int mxBeanRemotePort;
         private boolean allowedInternalLogging;
         private ReportFormat reportFormat;
+        private String[] virtualMachineArguments;
 
         public Builder() {
             reportInformation = EnumSet.allOf(ReportInformation.class);
@@ -176,6 +183,7 @@ public class Options {
             mxBeanRemotePort = DEFAULT_MX_BEAN_REMOTE_PORT;
             allowedInternalLogging = true;
             reportFormat = DEFAULT_REPORT_FORMAT;
+            virtualMachineArguments = new String[0];
         }
 
         /**
@@ -238,6 +246,16 @@ public class Options {
          */
         public Builder reportFormat(ReportFormat reportFormat) {
             this.reportFormat = reportFormat;
+            return this;
+        }
+
+        /**
+         *
+         * @param virtualMachineArguments
+         * @return
+         */
+        public Builder virtualMachineArguments(String... virtualMachineArguments) {
+            this.virtualMachineArguments = virtualMachineArguments;
             return this;
         }
 

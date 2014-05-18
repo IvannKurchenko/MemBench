@@ -1,17 +1,21 @@
-package memory.benchmark.internal.report;
+package memory.benchmark.internal.report.html;
 
 import freemarker.template.*;
 import memory.benchmark.api.Options;
+import memory.benchmark.api.annotations.Benchmark;
 import memory.benchmark.api.result.*;
+import memory.benchmark.internal.report.BenchmarkReportFormatter;
 import memory.benchmark.internal.util.Log;
 
 import java.io.*;
 import java.lang.management.MemoryType;
+import java.lang.management.MemoryUsage;
 import java.util.*;
 import java.util.function.Function;
 
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
 import static memory.benchmark.internal.util.ThrowableHandlers.printThrowableAction;
 
 public class HtmlBenchmarkReportFormatter implements BenchmarkReportFormatter {
@@ -27,7 +31,7 @@ public class HtmlBenchmarkReportFormatter implements BenchmarkReportFormatter {
     private static final String CHART_DATA_TAG = "chartData";
     private static final String CHART_IDENTIFIER_KEY = "chartIdentifier";
     private static final String CHART_FUNCTIONS_KEY = "chartFunctions";
-    private static final String CHART_IDENTIFIERS_KEY = "chartIdentifiers";
+    private static final String REPORT_SECTIONS_KEY = "reportSections";
 
     private static final String USED_HEAP_MEMORY_ID_TAG = "used_heap_memory";
     private static final String USED_HEAP_MEMORY_TITLE_TAG = "Used heap memory";
@@ -57,7 +61,7 @@ public class HtmlBenchmarkReportFormatter implements BenchmarkReportFormatter {
 
     private Configuration configuration;
     private List<String> chartFunctions;
-    private List<String> chartIdentifiers;
+    private List<ReportSection> reportSections;
     private List<BenchmarkResult> benchmarkResults;
 
     public HtmlBenchmarkReportFormatter(Options options, Log log) {
@@ -98,15 +102,15 @@ public class HtmlBenchmarkReportFormatter implements BenchmarkReportFormatter {
         Map<Class, List<BenchmarkResult>> mappedBenchmarkResults = mapBenchmarksResult(benchmarkResults);
 
         chartFunctions = new ArrayList<>();
-        chartIdentifiers = new ArrayList<>();
-        this.benchmarkResults = benchmarkResults;
+        reportSections = new ArrayList<>();
+        this.benchmarkResults = benchmarkResults;// temp crunch!
 
         addMemoryUsage();
         addMemoryPool();
         addGcGcUsage();
 
         parameters.put(CHART_FUNCTIONS_KEY, chartFunctions);
-        parameters.put(CHART_IDENTIFIERS_KEY, chartIdentifiers);
+        parameters.put(REPORT_SECTIONS_KEY, reportSections);
 
         return parameters;
     }
@@ -128,11 +132,11 @@ public class HtmlBenchmarkReportFormatter implements BenchmarkReportFormatter {
     }
 
     private void addMemoryUsage() throws Exception {
-        if(!options.getReportInformation().contains(Options.ReportInformation.HEAP_MEMORY_FOOTPRINT)) {
+        if(options.getReportInformation().contains(Options.ReportInformation.HEAP_MEMORY_FOOTPRINT)) {
             addHeapMemoryUsage();
         }
 
-        if(!options.getReportInformation().contains(Options.ReportInformation.NON_HEAP_MEMORY_FOOTPRINT)) {
+        if(options.getReportInformation().contains(Options.ReportInformation.NON_HEAP_MEMORY_FOOTPRINT)) {
             addNonHeapMemoryUsage();
         }
     }
@@ -140,29 +144,45 @@ public class HtmlBenchmarkReportFormatter implements BenchmarkReportFormatter {
     private void addHeapMemoryUsage() throws Exception {
         chartFunctions.add(createChartFunction(USED_HEAP_MEMORY_ID_TAG, USED_HEAP_MEMORY_TITLE_TAG,
                 benchmarkResults, this::usedHeapMemoryFootprintToChartData));
-        chartIdentifiers.add(USED_HEAP_MEMORY_ID_TAG);
+        reportSections.add(createHeapSection(USED_HEAP_MEMORY_TITLE_TAG, USED_HEAP_MEMORY_ID_TAG,
+                MemoryFootprint::getUsedMemoryFootprint));
 
         chartFunctions.add(createChartFunction(COMMITTED_HEAP_MEMORY_ID_TAG, COMMITTED_HEAP_MEMORY_TITLE_TAG,
                 benchmarkResults, this::committedHeapMemoryFootprintToChartData));
-        chartIdentifiers.add(COMMITTED_HEAP_MEMORY_ID_TAG);
+        reportSections.add(createHeapSection(COMMITTED_HEAP_MEMORY_TITLE_TAG, COMMITTED_HEAP_MEMORY_ID_TAG,
+                MemoryFootprint::getCommittedMemoryFootprint));
 
         chartFunctions.add(createChartFunction(MAX_HEAP_MEMORY_ID_TAG, MAX_HEAP_MEMORY_TITLE_TAG,
                 benchmarkResults, this::maxHeapMemoryFootprintToChartData));
-        chartIdentifiers.add(MAX_HEAP_MEMORY_ID_TAG);
+        reportSections.add(createHeapSection(MAX_HEAP_MEMORY_TITLE_TAG, MAX_HEAP_MEMORY_ID_TAG,
+                MemoryFootprint::getMaxMemoryFootprint));
+    }
+
+    private ReportSection createHeapSection(String title, String chartIdentifier, Function<MemoryFootprint, Long> converter) {
+        List<ReportSectionTable> tables = createSectionTables(BenchmarkResult::getHeapMemoryFootprint, converter);
+        return createSection(title, chartIdentifier, tables);
     }
 
     private void addNonHeapMemoryUsage() throws Exception {
         chartFunctions.add(createChartFunction(USED_NON_HEAP_MEMORY_ID_TAG, USED_NON_HEAP_MEMORY_TITLE_TAG,
                 benchmarkResults, this::usedNonHeapMemoryFootprintToChartData));
-        chartIdentifiers.add(USED_NON_HEAP_MEMORY_ID_TAG);
+        reportSections.add(createNonHeapSection(USED_NON_HEAP_MEMORY_TITLE_TAG, USED_NON_HEAP_MEMORY_ID_TAG,
+                MemoryFootprint::getUsedMemoryFootprint));
 
         chartFunctions.add(createChartFunction(COMMITTED_NON_HEAP_MEMORY_ID_TAG, COMMITTED_NON_HEAP_MEMORY_TITLE_TAG,
                 benchmarkResults, this::committedNonHeapMemoryFootprintToChartData));
-        chartIdentifiers.add(COMMITTED_NON_HEAP_MEMORY_ID_TAG);
+        reportSections.add(createNonHeapSection(COMMITTED_NON_HEAP_MEMORY_TITLE_TAG, COMMITTED_NON_HEAP_MEMORY_ID_TAG,
+                MemoryFootprint::getCommittedMemoryFootprint));
 
         chartFunctions.add(createChartFunction(MAX_NON_HEAP_MEMORY_ID_TAG, MAX_NON_HEAP_MEMORY_TITLE_TAG,
                 benchmarkResults, this::maxNonHeapMemoryFootprintToChartData));
-        chartIdentifiers.add(MAX_NON_HEAP_MEMORY_ID_TAG);
+        reportSections.add(createNonHeapSection(MAX_NON_HEAP_MEMORY_TITLE_TAG, MAX_NON_HEAP_MEMORY_ID_TAG,
+                MemoryFootprint::getMaxMemoryFootprint));
+    }
+
+    private ReportSection createNonHeapSection(String title, String chartIdentifier, Function<MemoryFootprint, Long> converter) {
+        List<ReportSectionTable> tables = createSectionTables(BenchmarkResult::getNonHeapMemoryFootprint, converter);
+        return createSection(title, chartIdentifier, tables);
     }
 
     private ChartData usedHeapMemoryFootprintToChartData(BenchmarkResult benchmarkResult) {
@@ -212,7 +232,19 @@ public class HtmlBenchmarkReportFormatter implements BenchmarkReportFormatter {
     }
 
     private void addMemoryPoolFootprint(MemoryType type, String prefix, Function<MemoryFootprint, Long> valueExtractor) throws Exception {
-        addChartData(groupMemoryPoolResultByName(type, valueExtractor), prefix);
+        addChartData(groupMemoryPoolResultByName(type, valueExtractor), prefix, p -> createMemoryPoolSection(p, prefix,valueExtractor));
+    }
+
+    private ReportSection createMemoryPoolSection(String poolName, String prefix, Function<MemoryFootprint, Long> converter) {
+        List<ReportSectionTable> tables = createSectionTables(r -> getMemoryPoolViewByName(r, poolName), converter);
+        String beanName = poolName.replaceAll(" ", "_");
+        String name = prefix + beanName;
+        String title = prefix + " " + beanName;
+        return createSection(title, name, tables);
+    }
+
+    private MemoryPoolStatisticView getMemoryPoolViewByName(BenchmarkResult result, String name) {
+        return result.getMemoryPoolFootprints().stream().filter(v -> v.getName().equals(name)).collect(toList()).get(0);
     }
 
     private Map<String, List<ChartData>> groupMemoryPoolResultByName(MemoryType memoryType, Function<MemoryFootprint, Long> valueExtractor) {
@@ -230,7 +262,20 @@ public class HtmlBenchmarkReportFormatter implements BenchmarkReportFormatter {
     }
 
     private void addGcUsage(String prefix, Function<GcUsage, Long> valueExtractor) throws Exception {
-        addChartData(groupGcUsageResultByName(valueExtractor), prefix);
+        addChartData(groupGcUsageResultByName(valueExtractor), prefix,
+                     p -> createGcUsageSection(p, prefix,valueExtractor));
+    }
+
+    private ReportSection createGcUsageSection(String poolName, String prefix, Function<GcUsage, Long> converter) {
+        List<ReportSectionTable> tables = createSectionTables(r -> getGcUsageViewByName(r, poolName), converter);
+        String beanName = poolName.replaceAll(" ", "_");
+        String name = prefix + beanName;
+        String title = prefix + " " + beanName;
+        return createSection(title, name, tables);
+    }
+
+    private GcUsageStatisticView getGcUsageViewByName(BenchmarkResult result, String name) {
+        return result.getGcUsages().stream().filter(v -> v.getGcName().equals(name)).collect(toList()).get(0);
     }
 
     private Map<String, List<ChartData>> groupGcUsageResultByName(Function<GcUsage, Long> valueExtractor) {
@@ -263,13 +308,14 @@ public class HtmlBenchmarkReportFormatter implements BenchmarkReportFormatter {
         return results;
     }
 
-    private void addChartData(Map<String, List<ChartData>> chartData, String prefix) throws Exception {
+    private void addChartData(Map<String, List<ChartData>> chartData, String prefix, Function<String, ReportSection> mapper) throws Exception {
         for(Map.Entry<String, List<ChartData>> data : chartData.entrySet()) {
-            String gcName = data.getKey().replaceAll(" ", "_");
-            String name = prefix + gcName.replaceAll(" ", "_");
-            String title = prefix + " " + gcName;
+            String beanName = data.getKey().replaceAll(" ", "_");
+            String name = prefix + beanName;
+            String title = prefix + " " + beanName;
             String chart = createChartFunction(name, title, data.getValue(), identity());
-            chartIdentifiers.add(name);
+            ReportSection reportSection = mapper.apply(data.getKey());
+            reportSections.add(reportSection);
             chartFunctions.add(chart);
         }
     }
@@ -305,5 +351,35 @@ public class HtmlBenchmarkReportFormatter implements BenchmarkReportFormatter {
         String convertedValue = converter.apply(value);
         convertedValue = convertedValue.substring(0, convertedValue.length());
         return new ChartData(title, convertedValue);
+    }
+
+    private ReportSection createSection(String reportSectionName, String chartIdentifier, List<ReportSectionTable> reportSectionTables) {
+        String suffix = options.getMemoryValueConverter().getSuffix();
+        return new ReportSection(reportSectionName, chartIdentifier, suffix, reportSectionTables);
+    }
+
+    private <T> List<ReportSectionTable> createSectionTables(Function<BenchmarkResult, StatisticView<T>> mapper,
+                                                             Function<T, Long> converter) {
+        return benchmarkResults.stream().map(r-> createSectionTable(r, mapper, converter)).collect(toList());
+    }
+
+    private <T> ReportSectionTable createSectionTable(BenchmarkResult result,
+                                                      Function<BenchmarkResult, StatisticView<T>> mapper,
+                                                      Function<T, Long> converter) {
+
+        return createSectionTable(result, mapper, converter, options.getMemoryValueConverter()::convert);
+    }
+
+    private <T> ReportSectionTable createSectionTable(BenchmarkResult result,
+                                                      Function<BenchmarkResult, StatisticView<T>> mapper,
+                                                      Function<T, Long> converter,
+                                                      Function<Long, String> valueConverter) {
+
+        String benchmark = result.getBenchmarkMethod().getName();
+        StatisticView<T> statisticView = mapper.apply(result);
+        String average = converter.andThen(valueConverter).apply(statisticView.getAverageValue());
+        String minimum = converter.andThen(valueConverter).apply(statisticView.getMinimumValue());
+        String maximum = converter.andThen(valueConverter).apply(statisticView.getMaximumValue());
+        return new ReportSectionTable(benchmark, average, minimum, maximum);
     }
 }

@@ -1,4 +1,4 @@
-package memory.benchmark.internal.report;
+package memory.benchmark.internal.report.html;
 
 public class ChartData {
 

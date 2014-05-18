@@ -1,6 +1,7 @@
 package memory.benchmark.internal.report;
 
 import memory.benchmark.api.Options;
+import memory.benchmark.internal.report.html.HtmlBenchmarkReportFormatter;
 import memory.benchmark.internal.util.Log;
 
 public class BenchmarkReportFormatterFactory {

@@ -8,24 +8,24 @@ MemoryBenchmark - it's simple library that provide possibility to write unit-lik
 
 How it works
 ========
-Benchmark lifecycle consist of three phases, which describes with next annotaions :
+Benchmark lifecycle consist of three phases, which describes with next annotations :
 * @Before (optional) - initialization method.
 * @Benchmark (mandatory) - code under the benchmark test.
 * @After (optional) - cleaning method
 
-This cycle library executes before each benchmrak running.
-Result of memory benchmark test execution based on difference of memory consuption between before @Benchmark annotated 
-method invokation and after it.
-All memory measurments library performs using memory related MXBeans : 
+This cycle library executes before each benchmark running.
+Result of memory benchmark test execution based on difference of memory consumption between before @Benchmark annotated 
+method invocation and after it.
+All memory measurement library performs using memory related MXBeans : 
 * [MemoryMXBean] (http://docs.oracle.com/javase/7/docs/api/java/lang/management/MemoryMXBean.html)
 * [MemoryPoolMXBean] (http://docs.oracle.com/javase/7/docs/api/java/lang/management/MemoryPoolMXBean.html)
 * [GarbageCollectorMXBean] (http://docs.oracle.com/javase/7/docs/api/java/lang/management/GarbageCollectorMXBean.html)
 
 There is two test running modes :
 * Same process - creating and running benchmark test object in same with library process .
-* Separate proceess (recomended) - creating and running benchmark test object in separate porcess. Library run separate process where 
-  instantiate new benchmark test object and comunicates with it though RMI. Separate process emulates 'sandbox' and 
-  allows to run test in 'clean' enviroment.
+* Separate process (recommended) - creating and running benchmark test object in separate process. Library run separate process where 
+  instantiate new benchmark test object and communicates with it though RMI. Separate process emulates 'sandbox' and 
+  allows to run test in 'clean' environment.
 
 
 Example

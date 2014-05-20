@@ -4,8 +4,10 @@ import memory.benchmark.api.annotations.Benchmark;
 import memory.benchmark.api.result.BenchmarkResult;
 import memory.benchmark.internal.ResultBuilder;
 import memory.benchmark.internal.collect.BenchmarkDataCollector;
+import memory.benchmark.internal.util.Action;
 import memory.benchmark.internal.util.Factory;
 import memory.benchmark.internal.util.Log;
+import memory.benchmark.internal.util.ThrowableAction;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -77,22 +79,22 @@ public class BenchmarkRunner {
 
                 log.log("Invoke before method");
 
-                benchmarkMethodInvoker.invokeBefore();
+                executeSafety(benchmarkMethodInvoker::invokeBefore, resultBuilder);
 
-                benchmarkDataCollector.onBeforeTest();
+                executeIfResultSucceed(benchmarkDataCollector::onBeforeTest, resultBuilder);
 
                 log.log("Invoke benchmark method");
 
-                benchmarkMethodInvoker.invokeBenchmark(testMethod);
+                executeSafetyIfResultSucceed(() -> benchmarkMethodInvoker.invokeBenchmark(testMethod), resultBuilder);
 
                 log.log("Invoke after method");
 
-                benchmarkDataCollector.onAfterTest();
+                executeIfResultSucceed(benchmarkDataCollector::onAfterTest, resultBuilder);
 
-                benchmarkMethodInvoker.invokeAfter();
+                executeSafety(benchmarkMethodInvoker::invokeAfter, resultBuilder);
             }
 
-            benchmarkDataCollector.collectBenchmarkData(resultBuilder);
+            executeIfResultSucceed(()->benchmarkDataCollector.collectBenchmarkData(resultBuilder), resultBuilder);
             benchmarkDataCollector.clear();
 
             benchmarkResultList.add(resultBuilder.build());
@@ -100,5 +102,28 @@ public class BenchmarkRunner {
             log.log("Finished benchmark method : " + testMethod.getName());
         }
         return benchmarkResultList;
+    }
+
+    private boolean executeSafety(ThrowableAction throwableAction, ResultBuilder resultBuilder) {
+        try {
+            throwableAction.execute();
+        } catch (Throwable throwable) {
+            resultBuilder.setFailedTestCause(throwable);
+            throwable.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
+    private void executeIfResultSucceed(Action action, ResultBuilder resultBuilder) {
+        if(resultBuilder.isSucceedResult()) {
+            action.execute();
+        }
+    }
+
+    private void executeSafetyIfResultSucceed(ThrowableAction throwableAction, ResultBuilder resultBuilder) {
+        if(resultBuilder.isSucceedResult()) {
+            executeSafety(throwableAction, resultBuilder);
+        }
     }
 }

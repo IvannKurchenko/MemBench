@@ -24,6 +24,7 @@ public class BenchmarkResult {
     private final StatisticView<MemoryFootprint> heapMemoryFootprint, nonHeapMemoryFootprint;
     private final List<MemoryPoolStatisticView> memoryPoolFootprints;
     private final List<GcUsageStatisticView> gcUsages;
+    private final Throwable testFailCause;
 
     public BenchmarkResult(ResultBuilder builder) {
         this.benchmarkClass = builder.getBenchmarkClass();
@@ -33,6 +34,7 @@ public class BenchmarkResult {
         this.nonHeapMemoryFootprint = builder.getNonHeapMemoryFootprint();
         this.memoryPoolFootprints = builder.getMemoryPoolFootprints();
         this.gcUsages = builder.getGcUsages();
+        this.testFailCause = builder.getTestFailCause();
     }
 
     /**
@@ -75,6 +77,14 @@ public class BenchmarkResult {
      */
     public Method getBenchmarkMethod() {
         return benchmarkMethod;
+    }
+
+
+    /**
+     * @return {@link java.lang.Throwable} which was thrown during benchmark test execution.
+     */
+    public Throwable getTestFailCause() {
+        return testFailCause;
     }
 
     @Override

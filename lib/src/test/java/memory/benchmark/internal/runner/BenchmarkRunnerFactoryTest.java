@@ -9,7 +9,7 @@ import java.util.Collection;
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertNotNull;
 
-public class BenchmarkMemoryBenchmarkRunnerFactoryTest {
+public class BenchmarkRunnerFactoryTest {
 
     @Test
     public void testCreateBenchmarkRunner() throws Exception {

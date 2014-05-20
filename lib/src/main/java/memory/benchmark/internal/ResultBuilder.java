@@ -16,16 +16,29 @@ public class ResultBuilder {
     private List<MemoryPoolStatisticView> memoryPoolFootprints;
     private List<GcUsageStatisticView> gcUsages;
 
+    private Throwable testFailCause;
+
     public ResultBuilder(Class benchmarkClass, Method benchmarkMethod, Benchmark benchmark) {
         this.benchmarkClass = benchmarkClass;
         this.benchmarkMethod = benchmarkMethod;
         this.benchmark = benchmark;
     }
 
-    public void setHeapMemoryDifference(StatisticView<MemoryFootprint> heapMemoryFootprint,
-                                        StatisticView<MemoryFootprint> nonHeapMemoryFootprint) {
-        this.heapMemoryFootprint = heapMemoryFootprint;
-        this.nonHeapMemoryFootprint = nonHeapMemoryFootprint;
+    public void setHeapMemoryDifference(StatisticView<MemoryFootprint> heap, StatisticView<MemoryFootprint> nonHeap) {
+        this.heapMemoryFootprint = heap;
+        this.nonHeapMemoryFootprint = nonHeap;
+    }
+
+    public void setMemoryPoolFootprints(List<MemoryPoolStatisticView> memoryPoolFootprints) {
+        this.memoryPoolFootprints = memoryPoolFootprints;
+    }
+
+    public void setGcUsages(List<GcUsageStatisticView> gcUsages) {
+        this.gcUsages = gcUsages;
+    }
+
+    public void setFailedTestCause(Throwable testCause) {
+        this.testFailCause = testCause;
     }
 
     public StatisticView<MemoryFootprint> getHeapMemoryFootprint() {
@@ -40,16 +53,8 @@ public class ResultBuilder {
         return memoryPoolFootprints;
     }
 
-    public void setMemoryPoolFootprints(List<MemoryPoolStatisticView> memoryPoolFootprints) {
-        this.memoryPoolFootprints = memoryPoolFootprints;
-    }
-
     public List<GcUsageStatisticView> getGcUsages() {
         return gcUsages;
-    }
-
-    public void setGcUsages(List<GcUsageStatisticView> gcUsages) {
-        this.gcUsages = gcUsages;
     }
 
     public Class getBenchmarkClass() {
@@ -62,6 +67,14 @@ public class ResultBuilder {
 
     public Benchmark getBenchmark() {
         return benchmark;
+    }
+
+    public Throwable getTestFailCause() {
+        return testFailCause;
+    }
+
+    public boolean isSucceedResult() {
+        return testFailCause == null;
     }
 
     public BenchmarkResult build() {

@@ -16,8 +16,9 @@ import java.lang.annotation.Target;
  * {@link memory.benchmark.api.annotations.Before} annotation
  * {@link memory.benchmark.api.exception.InvalidBenchmarkException} will be thrown.
  *
- * In case if some exception will be thrown benchmark test method will be ignored and
- * {@link memory.benchmark.api.annotations.After} will be called to clean initialized resource.
+ * In case if some exception will be thrown during {@link memory.benchmark.api.annotations.Before}
+ * method execution,  benchmark test method will be ignored and
+ * {@link memory.benchmark.api.annotations.After} will be called to clean initialized resources.
  *
  * @see memory.benchmark.api.annotations.After
  * @see memory.benchmark.api.annotations.Benchmark

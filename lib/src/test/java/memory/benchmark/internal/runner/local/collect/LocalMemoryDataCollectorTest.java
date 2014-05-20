@@ -2,8 +2,7 @@ package memory.benchmark.internal.runner.local.collect;
 
 import memory.benchmark.api.result.MemoryFootprint;
 import memory.benchmark.api.result.StatisticView;
-import memory.benchmark.internal.ResultBuilder;
-import memory.benchmark.internal.runner.local.collect.LocalMemoryDataCollector;
+import memory.benchmark.internal.runner.ResultBuilder;
 import org.junit.Before;
 import org.junit.Test;
 

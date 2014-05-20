@@ -1,7 +1,7 @@
 package memory.benchmark.api.result;
 
 import memory.benchmark.api.annotations.Benchmark;
-import memory.benchmark.internal.ResultBuilder;
+import memory.benchmark.internal.runner.ResultBuilder;
 
 import java.lang.reflect.Method;
 import java.util.List;

@@ -1,12 +1,12 @@
-package memory.benchmark.internal;
+package memory.benchmark.internal.runner;
 
 import memory.benchmark.api.annotations.Benchmark;
 import memory.benchmark.api.exception.InvalidBenchmarkException;
+import memory.benchmark.internal.runner.BenchmarkMethodExtractor;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.lang.reflect.Method;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 

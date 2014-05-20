@@ -2,7 +2,7 @@ package memory.benchmark.internal.collect;
 
 import memory.benchmark.api.result.MemoryFootprint;
 import memory.benchmark.api.result.StatisticView;
-import memory.benchmark.internal.ResultBuilder;
+import memory.benchmark.internal.runner.ResultBuilder;
 
 import java.lang.management.MemoryUsage;
 import java.util.ArrayList;

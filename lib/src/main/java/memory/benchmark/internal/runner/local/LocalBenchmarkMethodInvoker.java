@@ -19,11 +19,11 @@ public class LocalBenchmarkMethodInvoker implements BenchmarkMethodInvoker {
     private final List<Method> testMethods;
     private final Optional<Method> afterMethod;
 
-    public LocalBenchmarkMethodInvoker( GcHelper gcHelper,
-                                        Object benchmarkObject,
-                                        Optional<Method> beforeMethod,
-                                        List<Method> testMethods,
-                                        Optional<Method> afterMethod) {
+    public LocalBenchmarkMethodInvoker(GcHelper gcHelper,
+                                       Object benchmarkObject,
+                                       Optional<Method> beforeMethod,
+                                       List<Method> testMethods,
+                                       Optional<Method> afterMethod) {
         this.gcHelper = gcHelper;
         this.benchmarkObject = benchmarkObject;
         this.beforeMethod = beforeMethod;

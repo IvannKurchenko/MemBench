@@ -1,6 +1,6 @@
 package memory.benchmark.internal.collect;
 
-import memory.benchmark.internal.ResultBuilder;
+import memory.benchmark.internal.runner.ResultBuilder;
 
 import java.util.List;
 

@@ -1,7 +1,6 @@
 package memory.benchmark.internal.runner;
 
 import memory.benchmark.api.BenchmarkOptions;
-import memory.benchmark.internal.BenchmarkMethodExtractor;
 import memory.benchmark.internal.collect.BenchmarkDataCollector;
 import memory.benchmark.internal.runner.local.LocalBenchmarkMethodInvokerFactory;
 import memory.benchmark.internal.runner.local.LocalBenchmarkObjectFactory;

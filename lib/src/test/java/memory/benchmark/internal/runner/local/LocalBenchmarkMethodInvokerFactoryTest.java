@@ -1,7 +1,7 @@
 package memory.benchmark.internal.runner.local;
 
 import memory.benchmark.api.BenchmarkOptions;
-import memory.benchmark.internal.BenchmarkMethodExtractor;
+import memory.benchmark.internal.runner.BenchmarkMethodExtractor;
 import memory.benchmark.internal.runner.BenchmarkMethodInvoker;
 import memory.benchmark.internal.util.Factory;
 import memory.benchmark.internal.util.Log;

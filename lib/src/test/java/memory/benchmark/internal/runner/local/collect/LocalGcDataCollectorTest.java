@@ -2,7 +2,7 @@ package memory.benchmark.internal.runner.local.collect;
 
 import memory.benchmark.api.result.GcUsage;
 import memory.benchmark.api.result.GcUsageStatisticView;
-import memory.benchmark.internal.ResultBuilder;
+import memory.benchmark.internal.runner.ResultBuilder;
 import org.junit.Before;
 import org.junit.Test;
 

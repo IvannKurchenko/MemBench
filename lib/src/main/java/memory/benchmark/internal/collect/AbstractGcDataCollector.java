@@ -2,7 +2,7 @@ package memory.benchmark.internal.collect;
 
 import memory.benchmark.api.result.GcUsage;
 import memory.benchmark.api.result.GcUsageStatisticView;
-import memory.benchmark.internal.ResultBuilder;
+import memory.benchmark.internal.runner.ResultBuilder;
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -1,7 +1,5 @@
 package memory.benchmark.internal.runner;
 
-import memory.benchmark.api.annotations.Benchmark;
-import memory.benchmark.internal.ResultBuilder;
 import memory.benchmark.internal.collect.BenchmarkDataCollector;
 import memory.benchmark.internal.util.Factory;
 import memory.benchmark.internal.util.Log;
@@ -17,6 +15,8 @@ import static org.mockito.Mockito.*;
 public class BenchmarkRunnerTest {
 
     private Method testMethod;
+    private Factory<BenchmarkDataCollector, ?> collectorFactory;
+    private Factory<BenchmarkMethodInvoker, Class> methodInvokerFactory;
     private BenchmarkDataCollector benchmarkDataCollector;
     private BenchmarkMethodInvoker benchmarkMethodInvoker;
     private BenchmarkRunner benchmarkRunner;
@@ -25,8 +25,8 @@ public class BenchmarkRunnerTest {
     public void setUp() throws NoSuchMethodException {
         testMethod = TestClass.class.getMethod("testMethod");
         Collection<Class<?>> benchmarkClasses = asList(TestClass.class);
-        Factory<BenchmarkDataCollector, ?> collectorFactory = mock(Factory.class);
-        Factory<BenchmarkMethodInvoker, Class> methodInvokerFactory = mock(Factory.class);
+        collectorFactory = mock(Factory.class);
+        methodInvokerFactory = mock(Factory.class);
 
         benchmarkMethodInvoker = mock(BenchmarkMethodInvoker.class);
         benchmarkDataCollector = mock(BenchmarkDataCollector.class);
@@ -42,6 +42,9 @@ public class BenchmarkRunnerTest {
     @Test
     public void testRunTests() {
         benchmarkRunner.run();
+
+        verify(collectorFactory).create();
+        verify(methodInvokerFactory).create(TestClass.class);
 
         verify(benchmarkMethodInvoker, atLeastOnce()).getBenchmarkMethods();
         verify(benchmarkMethodInvoker).invokeBefore();
@@ -64,6 +67,9 @@ public class BenchmarkRunnerTest {
 
         benchmarkRunner.run();
 
+        verify(collectorFactory).create();
+        verify(methodInvokerFactory).create(TestClass.class);
+
         verify(benchmarkMethodInvoker, atLeastOnce()).getBenchmarkMethods();
         verify(benchmarkMethodInvoker).invokeBefore();
         verify(benchmarkMethodInvoker).invokeAfter();
@@ -80,6 +86,9 @@ public class BenchmarkRunnerTest {
         doThrow(new RuntimeException()).when(benchmarkMethodInvoker).invokeBenchmark(testMethod);
 
         benchmarkRunner.run();
+
+        verify(collectorFactory).create();
+        verify(methodInvokerFactory).create(TestClass.class);
 
         verify(benchmarkMethodInvoker, atLeastOnce()).getBenchmarkMethods();
         verify(benchmarkMethodInvoker).invokeBefore();
@@ -99,6 +108,9 @@ public class BenchmarkRunnerTest {
         doThrow(new RuntimeException()).when(benchmarkMethodInvoker).invokeAfter();
 
         benchmarkRunner.run();
+
+        verify(collectorFactory).create();
+        verify(methodInvokerFactory).create(TestClass.class);
 
         verify(benchmarkMethodInvoker, atLeastOnce()).getBenchmarkMethods();
         verify(benchmarkMethodInvoker).invokeBefore();

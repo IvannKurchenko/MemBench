@@ -2,7 +2,6 @@ package memory.benchmark.internal.runner;
 
 import memory.benchmark.api.annotations.Benchmark;
 import memory.benchmark.api.result.BenchmarkResult;
-import memory.benchmark.internal.ResultBuilder;
 import memory.benchmark.internal.collect.BenchmarkDataCollector;
 import memory.benchmark.internal.util.Action;
 import memory.benchmark.internal.util.Factory;
@@ -94,7 +93,7 @@ public class BenchmarkRunner {
                 executeSafety(benchmarkMethodInvoker::invokeAfter, resultBuilder);
             }
 
-            executeIfResultSucceed(()->benchmarkDataCollector.collectBenchmarkData(resultBuilder), resultBuilder);
+            executeIfResultSucceed(() -> benchmarkDataCollector.collectBenchmarkData(resultBuilder), resultBuilder);
             benchmarkDataCollector.clear();
 
             benchmarkResultList.add(resultBuilder.build());

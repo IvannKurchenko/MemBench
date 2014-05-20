@@ -1,4 +1,4 @@
-package memory.benchmark.internal;
+package memory.benchmark.internal.runner;
 
 import memory.benchmark.api.annotations.After;
 import memory.benchmark.api.annotations.Before;
